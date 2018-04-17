@@ -21,3 +21,7 @@ cabal.project.local
 doc/tiril.stg
 viril/bin
 viril/build
+tiril/.stack-work/
+tiril/tiril.cabal
+tiril/*~
+tiril/todo.txt
