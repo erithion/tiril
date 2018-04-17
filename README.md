@@ -7,5 +7,6 @@ It's written in Haskell and C++ mainly, save a couple of other languages for the
 
 Below is a demonstration of how Tiril and one of its clients, the VideoLAN plugin, operate to date.
 
-
 ![alt text](https://github.com/erithion/tiril/raw/master/doc/tiril.gif "Demo")
+
+# Build
