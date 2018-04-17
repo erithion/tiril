@@ -1,7 +1,7 @@
-/*****************************************************************************
+﻿/*****************************************************************************
 * poll.c: poll() emulation
 *****************************************************************************
-* Copyright � 2007-2012 R?mi Denis-Courmont
+* Copyright © 2007-2012 R?mi Denis-Courmont
 *
 * This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU Lesser General Public License as published by

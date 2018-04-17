@@ -1,11 +1,11 @@
-#include "tiril.h"
+п»ї#include "tiril.h"
 #include "vlc_helper.h"
 #include <mutex>
 
 char* mY_hACkY_wACky_StRDuP( const char* str )
 {
-    // Внутри функция text_segment_New дублирует С-строку с помощью strdup и сохраняет указатель внутри сегмента в psz_text. 
-    // Копируем строку, забираем указатель и "выкидываем" ненужный сегмент.
+    // Р’РЅСѓС‚СЂРё С„СѓРЅРєС†РёСЏ text_segment_New РґСѓР±Р»РёСЂСѓРµС‚ РЎ-СЃС‚СЂРѕРєСѓ СЃ РїРѕРјРѕС‰СЊСЋ strdup Рё СЃРѕС…СЂР°РЅСЏРµС‚ СѓРєР°Р·Р°С‚РµР»СЊ РІРЅСѓС‚СЂРё СЃРµРіРјРµРЅС‚Р° РІ psz_text. 
+    // РљРѕРїРёСЂСѓРµРј СЃС‚СЂРѕРєСѓ, Р·Р°Р±РёСЂР°РµРј СѓРєР°Р·Р°С‚РµР»СЊ Рё "РІС‹РєРёРґС‹РІР°РµРј" РЅРµРЅСѓР¶РЅС‹Р№ СЃРµРіРјРµРЅС‚.
     tiril::scoped_do< text_segment_t > unneeded_( text_segment_New( str ), [] ( text_segment_t* p )
     {
         text_segment_Delete( p );

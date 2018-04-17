@@ -1,4 +1,4 @@
-/*
+﻿/*
 * Dirent interface for Microsoft Visual Studio
 *
 * Copyright (C) 2006-2012 Toni Ronkko
