@@ -48,7 +48,7 @@ namespace tiril
         // Den oprinnelige til VLC er altfor lang og altfor merkelig. Vi har gjort det kortere
         static void redraw( subpicture_t* pic );
 
-        // SRTs funksjoner som oppdaterer texter er ikke trådstrygge altså vi oppfører oss her på den annen måten
+        // SRTs funksjoner som oppdaterer texter er ikke trådstrygge altså vi oppfører oss her på en annen måte
         static void redrawSrt( subpicture_t* pic );
 
     private:
