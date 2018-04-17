@@ -12,7 +12,7 @@ It's written in Haskell and C++ mainly, save a couple of other languages for the
 Below is a demonstration of how Tiril already strives to help you by having taught VLC media player to do something new.
 
 <details>
- <summary>Demo GIF</summary>
+ <summary>Click to see the image</summary>
   
 ![alt text](https://github.com/erithion/tiril/raw/master/doc/tiril.gif "Demo")
 </details>
