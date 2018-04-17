@@ -104,7 +104,7 @@ subpicture_t* filter( filter_t* flt, subpicture_t* pic )
         tiril::subpic::current( pic );
 
         // We do not support anything else for now. 
-        // For example for avcodec with VLC_CODEC_BD_PG it will crash, since there's no text information to read or update
+        // For example for avcodec with VLC_CODEC_BD_PG it would have crashed without this if, since there's no text information to read or update
         if ( codec == VLC_CODEC_SUBT )
         {
             // Upon receiving a new subtitle we are resetting the iterator to an empty one
