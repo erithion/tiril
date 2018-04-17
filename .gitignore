@@ -25,3 +25,7 @@ tiril/.stack-work/
 tiril/tiril.cabal
 tiril/*~
 tiril/todo.txt
+viril/.work
+.old
+bin
+build

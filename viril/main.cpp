@@ -127,6 +127,9 @@ int onkey( vlc_object_t* flt, char const* action, vlc_value_t, vlc_value_t newva
     std::scoped_lock< std::mutex > guard( mutex );
     auto                           subpic = tiril::subpic::current( );
 
+    if ( subpic == 0 )
+        return VLC_EGENERIC;
+
     if ( newval.i_int == KEY_INSERT )
     {
         auto word = *subrip_string_iterator( iter< subrip_bounds_iterator > );
@@ -140,7 +143,8 @@ int onkey( vlc_object_t* flt, char const* action, vlc_value_t, vlc_value_t newva
     {
         case VLC_CODEC_SUBT:
         {
-            if ( iter< subrip_bounds_iterator > == tiril::iterators::end< subrip_bounds_iterator >( ) )
+            if ( ( newval.i_int == KEY_END || newval.i_int == KEY_HOME ) 
+               && iter< subrip_bounds_iterator > == tiril::iterators::end< subrip_bounds_iterator >( ) )
                 // Setting up the real iterator if the user has pressed a key for the first time
                 iter< subrip_bounds_iterator > = subrip_bounds_iterator( subrip_buf( std::ref( subpic->updater.p_sys->region ) ), [] ( int a ) -> bool
             {
