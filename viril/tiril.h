@@ -10,7 +10,7 @@ namespace tiril
     template < typename T >
     using scoped_do = std::unique_ptr< T, std::function< void( T* ) > >;
 
-    // Jeg synes at "template polymorphism" er koseligere enn til å konvertere vlc_object_t* til filter_t* eller decoder_t* hver gang
+    // Jeg synes at "template polymorphism" er koseligere enn å konvertere vlc_object_t* til filter_t* eller decoder_t* hver gang
     template< typename T >
     struct module
     {
