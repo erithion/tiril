@@ -109,7 +109,7 @@ subpicture_t* filter( filter_t* flt, subpicture_t* pic )
         {
             // Upon receiving a new subtitle we are resetting the iterator to an empty one
             iter< subrip_bounds_iterator > = tiril::iterators::end< subrip_bounds_iterator >( );
-            tiril::subpic::redrawSrt( pic );
+            tiril::subpic::redraw_srt( pic );
         }
         else if ( codec == VLC_CODEC_SSA )
         {
@@ -155,7 +155,7 @@ int onkey( vlc_object_t* flt, char const* action, vlc_value_t, vlc_value_t newva
             else if ( newval.i_int == KEY_HOME ) --iter< subrip_bounds_iterator >;
 
             tiril::underscore::for_subrip( *iter< subrip_bounds_iterator >, subpic->updater.p_sys->region );
-            tiril::subpic::redrawSrt( subpic );
+            tiril::subpic::redraw_srt( subpic );
         }
         break;
         case VLC_CODEC_SSA:

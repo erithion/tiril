@@ -52,7 +52,7 @@ void tiril::subpic::redraw( subpicture_t* pic )
     }
 }
 
-void tiril::subpic::redrawSrt( subpicture_t* pic )
+void tiril::subpic::redraw_srt( subpicture_t* pic )
 {
     if ( pic != 0 )
     {

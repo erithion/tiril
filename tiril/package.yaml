@@ -1,10 +1,10 @@
 name:                tiril
 version:             0.1.0.0
 github:              "githubuser/tiril"
-license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2018 Author name here"
+license:             MIT
+author:              "Artyom Bondartsov"
+maintainer:          "erithion@gmail.com"
+copyright:           "2018 Artyom Bondartsov"
 
 extra-source-files:
 - README.md
@@ -33,6 +33,8 @@ dependencies:
 - hxt 
 - unicode-show
 - hxt-http
+- HDBC
+- HDBC-sqlite3
 
 library:
   source-dirs: src

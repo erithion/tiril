@@ -49,7 +49,7 @@ namespace tiril
         static void redraw( subpicture_t* pic );
 
         // SRTs funksjoner som oppdaterer texter er ikke trådstrygge altså vi oppfører oss her på en annen måte
-        static void redrawSrt( subpicture_t* pic );
+        static void redraw_srt( subpicture_t* pic );
 
     private:
         // A subpicture has pointers within and std::atomic doesn't help us much, just guarantees us atomic get/store. 

@@ -1,0 +1,1 @@
+stack runhaskell RunSqlScript.hs drop.sql

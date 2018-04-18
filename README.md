@@ -1,15 +1,15 @@
 # Tiril
 Tiril is an open source software aiming to assist in a language learning process.
 
-It's written in Haskell and C++ mainly, save a couple of other languages for the minor needs. While it is still in a Proof-Of-Concept form with lots of ideas awaiting to be implemented, the following components have already been added
-* Tiril - a server. To date it can operate dictionaries. And only with a few of them for now:
-  * [x] Google Translate
-  * [x] Lexin
-* Viril - a [VideoLAN](https://github.com/videolan) plugin to translate subtitles. Formats:
+While it still exists in a form of Proof-Of-Concept with lots of ideas still to be implemented, the following components have already been added
+* Tiril - a server. To date it operates merely dictionaries and handles just a few of them for now:
+  * [x] ![Google Translate](https://translate.google.com)
+  * [x] ![Lexin](http://lexin.udir.no)
+* Viril - a [VideoLAN](https://github.com/videolan) plugin to translate subtitles. Among supported formats are:
   * [x] Embedded and external SubRip 
   * [ ] ASS/SSA possibility has been confirmed and awaits implementation
   
-Below is a demonstration of how Tiril already strives to help you by having taught VLC media player to do something new.
+Below you can see a demonstration of how Tiril already strives to be helpful to you by having taught VLC media player to do something new in spite of having grown so small yet.
 
 <details>
  <summary>Click to see the image</summary>

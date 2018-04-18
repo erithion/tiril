@@ -41,7 +41,9 @@ packages:
 - .
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)
-#extra-deps: 
+extra-deps: 
+- HDBC-sqlite3-2.3.3.1
+
 #- google-translate-0.4.1
 
 #allow-newer: true
@@ -63,10 +65,10 @@ packages:
 # arch: x86_64
 #
 # Extra directories used by stack for building
-#extra-include-dirs: 
-#- C:\curl-7.52.1-win32-mingw\include
-#extra-lib-dirs: 
-#- C:\curl-7.52.1-win32-mingw\lib
+extra-include-dirs: 
+- C:\dev\sqlite
+extra-lib-dirs: 
+- C:\dev\sqlite
 #
 # Allow a newer minor version of GHC than the snapshot specifies
 # compiler-check: newer-minor
