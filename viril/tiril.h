@@ -10,7 +10,7 @@ namespace tiril
     template < typename T >
     using scoped_do = std::unique_ptr< T, std::function< void( T* ) > >;
 
-    // Jeg synes at "template polymorphism" er koseligere enn å konvertere vlc_object_t* til filter_t* eller decoder_t* hver gang
+    // Jeg synes at "template polymorphism" ser koseligere ut enn å konvertere vlc_object_t* til filter_t* hver gang
     template< typename T >
     struct module
     {
@@ -45,10 +45,10 @@ namespace tiril
         static subpicture_t* current( );
         static void current( subpicture_t* pic );
 
-        // Den oprinnelige til VLC er altfor lang og altfor merkelig. Vi har gjort det kortere
+        // Den oprinnelige til VLC er altfor lang og merkelig. Vi har gjort det kortere
         static void redraw( subpicture_t* pic );
 
-        // SRTs funksjoner som oppdaterer texter er ikke trådstrygge altså vi oppfører oss her på en annen måte
+        // SRTs funksjoner som oppdaterer texter er ikke trådstrygge altså vi handler den saken på en ellers måte
         static void redraw_srt( subpicture_t* pic );
 
     private:
@@ -57,8 +57,8 @@ namespace tiril
         static std::atomic< subpicture_t* >  subpic_;
     };
 
-    // Again due to lack of the legal way to get the extension manager, 
-    // we had to cheat and pretend to be something else in order to get that access.
+    // På grunn av mangel på den lovlige måten å få "extension manager",
+    // må vi jukse og late å være noe annet for å få denne informasjonen
     struct extension
     {
         static void intf( vlc_object_t* save );
