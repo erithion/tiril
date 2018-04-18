@@ -38,7 +38,7 @@ namespace tiril::iterators
         // To produce an empty iterator
         struct enable_end {};
 
-        // Vi lar kun "constructor"en for enable_end for å skape  den tomme "iterator"ens eksemplar
+        // Vi lar kun "constructor"en med enable_end for å skape eksemplaret til den tomme "iterator"en
         template < typename T >
         circular_bidirectional( T )
             : Traverser< buffer_type, ReturnAs >()
