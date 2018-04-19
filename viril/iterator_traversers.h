@@ -34,7 +34,7 @@ namespace tiril::iterators::traversers
 
     protected:
 
-        // The burden of keeping the data to lie on the user of the strategy - the derived class. 
+        // The burden of keeping the data is to be laid upon the user of the strategy, i.s. the derived class. 
         // Lest we would have required to duplicate the data and its handling within each new strategy
         virtual std::tuple< buffer_type*, int, std::vector< bounds > > data( ) const = 0;
     };
