@@ -56,7 +56,7 @@ template < typename It >
 static It               iter = tiril::iterators::end< subrip_bounds_iterator >( );
 static std::mutex		mutex;
 
-void StartSelection( subpicture_t*	pic )
+void POC______StartSelection( subpicture_t*	pic )
 {
     subpicture_updater_sys_t2* upd = reinterpret_cast< subpicture_updater_sys_t2* >( pic->updater.p_sys );
 
@@ -73,7 +73,7 @@ void StartSelection( subpicture_t*	pic )
     }
     vlc_mutex_unlock( &upd->p_dec_sys->lock );
 }
-void ChangeSelection( subpicture_t*	pic )
+void POC______ChangeSelection( subpicture_t*	pic )
 {
     subpicture_updater_sys_t2* tmp = reinterpret_cast< subpicture_updater_sys_t2* >( pic->updater.p_sys );
     vlc_mutex_lock( &tmp->p_dec_sys->lock );
@@ -104,7 +104,8 @@ subpicture_t* filter( filter_t* flt, subpicture_t* pic )
         tiril::subpic::current( pic );
 
         // We do not support anything else for now. 
-        // For example for avcodec with VLC_CODEC_BD_PG it would have crashed without this if, since there's no text information to read or update
+        // For example for avcodec with VLC_CODEC_BD_PG it would have crashed without this "if", 
+        // since there's no textual information to read or update
         if ( codec == VLC_CODEC_SUBT )
         {
             // Upon receiving a new subtitle we are resetting the iterator to an empty one
@@ -113,7 +114,7 @@ subpicture_t* filter( filter_t* flt, subpicture_t* pic )
         }
         else if ( codec == VLC_CODEC_SSA )
         {
-            StartSelection( pic );
+            POC______StartSelection( pic );
             tiril::subpic::redraw( pic );
         }
     }
@@ -161,7 +162,7 @@ int onkey( vlc_object_t* flt, char const* action, vlc_value_t, vlc_value_t newva
         case VLC_CODEC_SSA:
         {
             if ( newval.i_int == KEY_END )
-                ChangeSelection( subpic );
+                POC______ChangeSelection( subpic );
         }
     }
 
