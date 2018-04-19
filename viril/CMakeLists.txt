@@ -1,15 +1,14 @@
 cmake_minimum_required(VERSION 2.8.9)
-set(            _NAME_          libviril_plugin)
+set(            PROJECT_NAME            libviril_plugin)
 
-if(NOT DEFINED  _BOOST_)
-message(FATAL_ERROR "_BOOST_ variable is undefined. You may want to use `cmake.exe -D_BOOST_=<<path to boost root>> ..` to fix this")
-endif(NOT DEFINED _BOOST_)
+if(NOT DEFINED  BOOST_DIR)
+message(FATAL_ERROR "BOOST_DIR variable is undefined. You may want to use `cmake.exe -D_BOOST_=<<path to boost root>> ..` to fix this")
+endif(NOT DEFINED BOOST_DIR)
 
-#set(            _BOOST_         C:/ms/boost_1_66_0 )
-set(            _DEPENDS_       ${CMAKE_CURRENT_SOURCE_DIR}/depends/)
-file(GLOB       _SRC_           "*.cpp")
+set(            EXTERNAL_LIBS_DIR       ${CMAKE_CURRENT_SOURCE_DIR}/depends/)
+file(GLOB       SRC_FILES               "*.cpp")
 
-project(${_NAME_})
+project(${PROJECT_NAME})
 
 message(STATUS "Setting MSVC flags")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHc /std:c++latest")
@@ -22,21 +21,22 @@ add_definitions(-D_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING)
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/
-                    ${_BOOST_}
-                    ${_DEPENDS_}/libass 
-                    ${_DEPENDS_}/vlc-3.0.0/sdk/include/vlc 
-                    ${_DEPENDS_}/vlc-3.0.0/sdk/include/vlc/plugins
-                    ${_DEPENDS_}/vlc-3.0.0/sdk/include 
-                    ${_DEPENDS_}/utf8_v2_3_4/source)
+                    ${BOOST_DIR}
+                    ${EXTERNAL_LIBS_DIR}
+                    ${EXTERNAL_LIBS_DIR}/libass 
+                    ${EXTERNAL_LIBS_DIR}/vlc-3.0.0/sdk/include/vlc 
+                    ${EXTERNAL_LIBS_DIR}/vlc-3.0.0/sdk/include/vlc/plugins
+                    ${EXTERNAL_LIBS_DIR}/vlc-3.0.0/sdk/include 
+                    ${EXTERNAL_LIBS_DIR}/utf8_v2_3_4/source)
 link_directories(   ${CMAKE_CURRENT_SOURCE_DIR}/depends/vlc-3.0.0/sdk/lib 
-                    ${_BOOST_}/lib32-msvc-14.1)
+                    ${BOOST_DIR}/lib32-msvc-14.1)
 
 
-add_library(${_NAME_} SHARED ${_SRC_})
+add_library(${PROJECT_NAME} SHARED ${SRC_FILES} ${EXTERNAL_LIBS_DIR}/poll.cpp)
 
-target_link_libraries(${_NAME_} libvlc.lib)
-target_link_libraries(${_NAME_} libvlccore.lib)
-target_link_libraries(${_NAME_} Ws2_32.lib)
+target_link_libraries(${PROJECT_NAME} libvlc.lib)
+target_link_libraries(${PROJECT_NAME} libvlccore.lib)
+target_link_libraries(${PROJECT_NAME} Ws2_32.lib)
 
-install(TARGETS ${_NAME_} DESTINATION ${CMAKE_INSTALL_PREFIX}/copy_to_vlc/plugins/viril)
+install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/copy_to_vlc/plugins/viril)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/viril.lua ${CMAKE_INSTALL_PREFIX}/copy_to_vlc/extensions/viril.lua COPYONLY)

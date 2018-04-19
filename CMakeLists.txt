@@ -6,7 +6,7 @@ else()
 message(STATUS "CMAKE_INSTALL_PREFIX is ${CMAKE_INSTALL_PREFIX}")
 endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
-set(_BOOST_         C:/ms/boost_1_66_0 )
+set(BOOST_DIR         C:/ms/boost_1_66_0 )
 add_subdirectory(viril)
 
 execute_process(COMMAND stack setup WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril)
