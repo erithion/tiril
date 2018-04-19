@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.9)
 set(            PROJECT_NAME            libviril_plugin)
 
 if(NOT DEFINED  BOOST_DIR)
-message(FATAL_ERROR "BOOST_DIR variable is undefined. You may want to use `cmake.exe -D_BOOST_=<<path to boost root>> ..` to fix this")
+message(FATAL_ERROR "BOOST_DIR variable is undefined. You may want to use `cmake.exe -DBOOST_DIR=<<path to boost root>> ..` to fix this")
 endif(NOT DEFINED BOOST_DIR)
 
 set(            EXTERNAL_LIBS_DIR       ${CMAKE_CURRENT_SOURCE_DIR}/depends/)
