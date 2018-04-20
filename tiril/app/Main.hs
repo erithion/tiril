@@ -11,15 +11,33 @@ import           Network.Wai.Handler.Warp
 import           Network.HTTP.Types                         (status200)
 import           Blaze.ByteString.Builder                   (copyByteString)
 import           Control.Monad                                                  hiding (when)
+import           Database.HDBC.Sqlite3                      (connectSqlite3)
+import           Database.HDBC                              (disconnect)
 
 import           GoogleTranslate
 import           Lexin
 import           Session
+import           Db
  
+dbName =  "tiril.db" 
+
+-- TODO: Find a better solution where to store SQL scripts and how to access them
 main = do
-    let port = 3000
-    putStrLn $ "Listening on port " ++ show port
-    run port app
+    startOk <- dbExists dbName
+    startOk <-  if not startOk then do
+                    script <- readFile "F:/git/tiril/tiril/sql/create.sql"
+                    res <- dbCreate dbName script
+                    case res of 
+                        Left v -> do 
+                            putStrLn . show $ v
+                            return False
+                        _ -> return True
+                else return True
+    if startOk then do
+        let port = 3000
+        putStrLn $ "Listening on port " ++ show port
+        run port app
+    else return ()
  
 app :: Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> IO ResponseReceived
 app req respond = join $ respond <$>
@@ -35,8 +53,12 @@ app req respond = join $ respond <$>
                             let (ttx :: [T.Text]) = take 2 . map (T.pack . US.ushow) $ tx
                             return $ index ttx
         ("add":[x]) -> do
-                            addWord . T.fromStrict $ x
-                            return $ index "done"
+                            conn <- connectSqlite3 dbName
+                            r <- addWord conn . T.fromStrict $ x
+                            disconnect conn
+                            case r of
+                                Left v -> return $ index ( "error" ++ show v)
+                                Right _ -> return $ index "done"
  
  
 index :: Show a => a -> Network.Wai.Response

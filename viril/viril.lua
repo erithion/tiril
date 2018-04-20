@@ -95,10 +95,24 @@ function format_lex(name, arr)
 	return dt
 end
 
+function addWord(word)
+    req = "http://localhost:3000/add/" .. word
+    vlc.msg.dbg("[viril] Requesting " .. req)
+    r, status, resp = get(req)
+	if not r then 
+           vlc.msg.dbg("[viril] status "..tostring(status))
+           vlc.msg.dbg("[viril] resp "..tostring(resp))
+	else 
+           vlc.msg.dbg("[viril] word sent "..tostring(resp))
+    end
+end
+
 function activate()
 
   vlc.msg.dbg("[viril] Hi!")
-  dlg = vlc.dialog( "Viril" )
+  if dlg == nil then
+	dlg = vlc.dialog( "Viril" )
+  end
 
   lib = vlc.object.libvlc()
   v = vlc.var.get( lib, "tiril_word" )
@@ -145,6 +159,11 @@ function activate()
   end
 
   htm =  dlg:add_html(text, 4, 1, 4, 1)
+  btn = dlg:add_button("Add the word to Tiril", function() 
+		addWord(v) 
+		dlg:del_widget(btn)
+		btn = nil
+		end, 4, 2, 1, 1)
 
   dlg:show()
 end
@@ -156,7 +175,8 @@ end
 function deactivate()
 	-- Close & reset
 	if dlg ~= nil then
-       if htm then dlg:del_widget(htm); htm = nil end
+       if htm ~= nil then dlg:del_widget(htm); htm = nil end
+       if btn ~= nil then dlg:del_widget(btn); btn = nil end
 
 	    dlg:delete()
 		dlg = nil

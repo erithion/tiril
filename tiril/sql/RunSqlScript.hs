@@ -56,11 +56,14 @@ main =
             do  -- sequence $ putStrLn <$> xs
                 sequence $ flip map xs $ \x->
                       do -- Prepare of 'create index' fails if prepared 'create table' was not yet executed, thus we have to handle SQL command one by one :(
+                         putStrLn $ "Preparing " ++ x
                          q <- prepare conn x
+                         putStrLn $ "Execuring " ++ x
                          execute q []
+                         putStrLn $ "Succeeded"
                 commit conn
                
-                commit conn
+--                commit conn
         disconnect conn
             
 
