@@ -7,7 +7,7 @@ import           Type
 import qualified Data.Text.Lazy                 as T
 import qualified Data.Text.Lazy.Encoding        as TE
 
-import           Text.ParserCombinators.Parsec          (oneOf, manyTill, anyChar, string, eof, ParseError)
+import           Text.ParserCombinators.Parsec          (oneOf, manyTill, anyChar, string, char, eof, ParseError)
 import           Text.Parsec.Prim                       (runParser, Parsec, (<|>), (<?>), many, skipMany, runP)
 import           Network.HTTP.Simple
 import qualified Control.Arrow                  as Ar 
@@ -41,15 +41,15 @@ defaultTir = Tir
 -}   
 parserT :: Parsec T.Text st [Tir]
 parserT = 
-    do string "[[["
-       target <- manyTill anyChar (oneOf ",")
-       src <- manyTill anyChar (oneOf ",")
-       null1 <- manyTill anyChar (oneOf ",")
-       null2 <- manyTill anyChar (oneOf ",")
+    do string "[[[\""
+       target <- manyTill anyChar (oneOf "\"")
+       string ",\""
+       src <- manyTill anyChar (oneOf "\"")
+       string ",null,null,"
        num <- manyTill anyChar (oneOf "]")
-       string "],"
-       null3 <- manyTill anyChar (oneOf ",")
-       srcLang <- manyTill anyChar (oneOf "]")
+       string "],null,\""
+       srcLang <- manyTill anyChar (oneOf "\"")
+       char ']'
        eof
        return . (:[]) $ defaultTir { sourceText = T.pack src, targetText = Just (T.pack target), sourceLang = T.pack srcLang }
 

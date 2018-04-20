@@ -35,6 +35,7 @@ dependencies:
 - hxt-http
 - HDBC
 - HDBC-sqlite3
+- file-embed
 
 library:
   source-dirs: src

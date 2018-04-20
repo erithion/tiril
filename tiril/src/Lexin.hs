@@ -34,7 +34,8 @@ data LexinWord = LexinWord
 3. REMOVE ALL BLOCKS WHICH DO NOT CONTAIN SEARCHED WORD
 4. consider the possibility of lazy match in groups implementation 
 5. consider long time query processing 
-6. implement other languages and directions -}
+6. implement other languages and directions 
+7. make error handling similar to google translate -}
 lexinTranslate :: T.Text -> IO [[LexinWord]]
 lexinTranslate x =
     do

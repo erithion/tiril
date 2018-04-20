@@ -36,11 +36,9 @@ executeScript dbName scriptText = do
           
           doTransaction :: IConnection c => [String] -> c -> IO ()
           doTransaction xs conn = sequenceA_ $ flip map xs $ \x-> do
-                putStrLn $ "SQL Prepare: " ++ x
                 q <- prepare conn x
-                putStrLn $ "Executing"
                 execute q []
-                putStrLn $ "Succeeded"
+                putStrLn $ "SQL executed: " ++ x
           -- Parser
           commentLine:: ParsecT String st IO Script
           commentLine = string "--" >> manyTill anyChar newline >>= return . Comment
@@ -69,7 +67,7 @@ dbExists dbName = do
     conn <- connectSqlite3 dbName
     count <- length <$> getTables conn
     disconnect conn
-    putStrLn $ "DB tables " ++ show count
+    putStrLn $ "DB tables: " ++ show count
     return $ count /= 0
 
         

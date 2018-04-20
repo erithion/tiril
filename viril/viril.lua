@@ -53,7 +53,7 @@ error = [[ <p>%s ]]
 footer_page = [[ </BODY> </HTML>]]
 
 function google_get(data)
-   return data:match([["%[Tir {sourceText = (.-), sourceLang = (.-), targetText = Just \"\\\"(.-)\\\"\",]])
+   return data:match([[%[Tir {sourceText = (.-), sourceLang = (.-), targetText = Just "(.-)",]])
 end
 
 function lexin_get(data)
@@ -74,7 +74,7 @@ function lexin_get(data)
     ["ALT"] = function (word_, lang_) table.insert( alt, { w=word_, l=lang_} ) end,
   }
   for word, lang, type in
-                data:gmatch([[.-LexinWord {lexinWord = \"(.-)\", lexinLang = \"(.-)\", lexinType = \"(.-)\"}]])
+                data:gmatch([[.-LexinWord {lexinWord = "(.-)", lexinLang = "(.-)", lexinType = "(.-)"}]])
         do
            switch[type](word, lang)
         end
@@ -107,6 +107,7 @@ function addWord(word)
     end
 end
 
+-- add component function parameters : col, row, col_span, row_span ...; aligned on the QGridLayout
 function activate()
 
   vlc.msg.dbg("[viril] Hi!")
@@ -158,12 +159,14 @@ function activate()
     text = get("http://mirrors.ibiblio.org/CTAN/info/greek/gentle/readme.txt")
   end
 
-  htm =  dlg:add_html(text, 4, 1, 4, 1)
+  -- It seems the more you indent at the beginning, the more QGridLayout will allow you to extend
+  --                        col    row    col_span  row_span
+  htm =  dlg:add_html(text, 10,     1,      75,	      120)
   btn = dlg:add_button("Add the word to Tiril", function() 
 		addWord(v) 
 		dlg:del_widget(btn)
 		btn = nil
-		end, 4, 2, 1, 1)
+		end, 10, 121, 1, 1)
 
   dlg:show()
 end

@@ -133,6 +133,9 @@ int onkey( vlc_object_t* flt, char const* action, vlc_value_t, vlc_value_t newva
 
     if ( newval.i_int == KEY_INSERT )
     {
+        // In case it was active
+        // Debug and see why deactivate-activate doesn't work as expected
+//        tiril::extension::deactivate( tiril::extension::manager( flt ), "viril.lua" );
         auto word = *subrip_string_iterator( iter< subrip_bounds_iterator > );
         tiril::extension::var_string( flt, "tiril_word", word );
         tiril::extension::activate( tiril::extension::manager( flt ), "viril.lua" );

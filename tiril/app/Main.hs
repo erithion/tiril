@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE Arrows #-}
 module Main where
 
@@ -13,26 +14,28 @@ import           Blaze.ByteString.Builder                   (copyByteString)
 import           Control.Monad                                                  hiding (when)
 import           Database.HDBC.Sqlite3                      (connectSqlite3)
 import           Database.HDBC                              (disconnect)
+import           Data.FileEmbed
+import           Data.String
 
 import           GoogleTranslate
 import           Lexin
 import           Session
 import           Db
  
-dbName =  "tiril.db" 
-schemaPath = "F:/git/tiril/tiril/app/schema.sql"
+databaseName =  "tiril.db" 
 
--- TODO: Find a better solution where to store SQL scripts and how to access them
+schema :: IsString a => a
+schema = $(embedStringFile "./app/schema.sql")
+
 main = do
-    startOk <- dbExists dbName
+    startOk <- dbExists databaseName
     startOk <- if not startOk then do
-                    script <- readFile schemaPath
-                    res <- dbCreate dbName script
+                    res <- dbCreate databaseName schema
                     case res of 
                         Left v -> do 
                             putStrLn . show $ v
                             return False
-                        _ -> return True
+                        _ -> dbExists databaseName
                else return True
     if startOk then do
         let port = 3000
@@ -44,26 +47,19 @@ app :: Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> I
 app req respond = join $ respond <$>
     case pathInfo req of
         ("goo":[x]) -> do
-                            tx <- googleTranslateWithT . T.fromStrict $ x
-                            -- TODO: Think of a proper string type to avoid those packs and repacks
-                            let xxs = either (return . T.pack . US.ushow) (return . T.pack . US.ushow) tx
-                            index <$> xxs
+            tx <- googleTranslateWithT . T.fromStrict $ x
+            return $ either index index tx
         ("lex":[x]) -> do
-                            tx <- lexinTranslate . T.fromStrict $ x
-                            -- TODO: Currently you take merely 2 sections. Think of a proper extension to give out all available data
-                            let (ttx :: [T.Text]) = take 2 . map (T.pack . US.ushow) $ tx
-                            return $ index ttx
+            tx <- lexinTranslate . T.fromStrict $ x
+            -- TODO: Currently you take merely 2 sections. Think of a proper extension to give out all available data
+            return . index . take 2 $ tx
         ("add":[x]) -> do
-                            conn <- connectSqlite3 dbName
-                            r <- addWord conn . T.fromStrict $ x
-                            disconnect conn
-                            case r of
-                                Left v -> return $ index ( "error" ++ show v)
-                                Right _ -> return $ index "done"
- 
+            conn <- connectSqlite3 databaseName
+            r <- addWord conn . T.fromStrict $ x
+            disconnect conn
+            return $ either (index . show) (index . const "done") r
  
 index :: Show a => a -> Network.Wai.Response
 index x = 
     responseBuilder status200 [("Content-Type", "text/html; charset=UTF-8")] $ 
-        mconcat $ map copyByteString [ "<p>", BU.fromString .US.ushow  $ x, "</p>" ]
-
+        mconcat $ map copyByteString [ "<p>", BU.fromString . US.ushow $ x, "</p>" ]
