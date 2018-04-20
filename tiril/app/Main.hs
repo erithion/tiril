@@ -20,19 +20,20 @@ import           Session
 import           Db
  
 dbName =  "tiril.db" 
+schemaPath = "F:/git/tiril/tiril/app/schema.sql"
 
 -- TODO: Find a better solution where to store SQL scripts and how to access them
 main = do
     startOk <- dbExists dbName
-    startOk <-  if not startOk then do
-                    script <- readFile "F:/git/tiril/tiril/sql/create.sql"
+    startOk <- if not startOk then do
+                    script <- readFile schemaPath
                     res <- dbCreate dbName script
                     case res of 
                         Left v -> do 
                             putStrLn . show $ v
                             return False
                         _ -> return True
-                else return True
+               else return True
     if startOk then do
         let port = 3000
         putStrLn $ "Listening on port " ++ show port
