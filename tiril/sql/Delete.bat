@@ -1,1 +1,0 @@
-stack runhaskell RunSqlScript.hs delete.sql

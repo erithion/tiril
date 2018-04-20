@@ -39,45 +39,30 @@ sqlScript =
 
 data DbError = DbSQLErr SqlError | DbParseErr ParseError deriving (Show)
 
--- TODO Produces SQL API misuse error, have no idea why yet
---      Make this function work and remove the one below
-{- 
 executeScript :: String -> String -> IO (Either DbError ())
 executeScript dbName scriptText = do 
     (script::Either ParseError [String]) <- runPT sqlScript () "" scriptText
     conn <- connectSqlite3 dbName
-    let ret = either (return . Left . DbParseErr) (\x-> handleSql (return . Left . DbSQLErr) (Right <$> runTransaction conn x)) script
+    (ret :: Either DbError ()) <- either (return . Left . DbParseErr) (runScript conn) script 
     disconnect conn
-    ret
-    where 
-        runTransaction :: IConnection c => c -> [String] -> IO ()
-        runTransaction conn xs = withTransaction conn $ \_-> sequenceA_ $ flip map xs $ \x-> do
-            q <- prepare conn x
-            execute q []
--}
-
-executeScript :: String -> String -> IO (Either DbError ())
-executeScript dbName scriptText = do 
-    conn <- connectSqlite3 dbName
-    q <- prepare conn "DROP TABLE IF EXISTS session"
-    execute q []
-    q <- prepare conn "CREATE TABLE session (word TEXT UNIQUE ON CONFLICT IGNORE NOT NULL)"
-    execute q []
-    commit conn
-    disconnect conn
-    return $ Right ()
-
+    return ret
+    where runScript conn xs = handleSql (return . Left . DbSQLErr) . (<$>) Right . withTransaction conn . doTransaction $ xs
+          doTransaction xs conn = sequenceA_ $ flip map xs $ \x-> do
+                putStrLn $ "SQL Prepare: " ++ x
+                q <- prepare conn x
+                putStrLn $ "Executing"
+                execute q []
+                putStrLn $ "Succeeded"
+                
 dbCreate :: String -> String -> IO (Either DbError ())
 dbCreate name createScript = executeScript name createScript
             
--- Replace with getTables             
 dbExists :: String -> IO Bool
 dbExists dbName = do
     conn <- connectSqlite3 dbName
-    (ret :: Bool) <- handleSql (const . return $ False) $ do
-        (count :: Int) <- length <$> quickQuery conn "SELECT COUNT(*) FROM sqlite_master WHERE type='table'" []
-        return $ count /= 0
+    count <- length <$> getTables conn
     disconnect conn
-    return ret
+    putStrLn $ "DB tables " ++ show count
+    return $ count /= 0
 
         
