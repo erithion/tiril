@@ -25,3 +25,4 @@ execute_process(COMMAND stack setup WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR
 add_custom_target(tiril ALL stack build WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril)
 
 install(CODE "execute_process (COMMAND stack install --local-bin-path ${TIRIL_BUILD_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril)")
+install(DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}/tiril/static   DESTINATION ${TIRIL_BUILD_DIR})

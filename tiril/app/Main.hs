@@ -4,6 +4,7 @@
 {-# LANGUAGE Arrows #-}
 module Main where
 
+import qualified Data.Text                      as TS
 import qualified Data.Text.Lazy                 as T
 import qualified Data.ByteString.UTF8           as BU
 import qualified Text.Show.Unicode              as US 
@@ -13,9 +14,14 @@ import           Network.HTTP.Types                         (status200)
 import           Blaze.ByteString.Builder                   (copyByteString)
 import           Control.Monad                                                  hiding (when)
 import           Database.HDBC.Sqlite3                      (connectSqlite3)
-import           Database.HDBC                              (disconnect)
+import qualified Database.HDBC                  as HDBC     (disconnect)
 import           Data.FileEmbed
 import           Data.String
+import           System.Environment                         (getExecutablePath)
+import           System.FilePath                            (dropFileName, (</>))
+import qualified Graphics.UI.Threepenny         as UI
+import           Graphics.UI.Threepenny.Core
+import           Control.Concurrent                          (forkIO)
 
 import           GoogleTranslate
 import           Lexin
@@ -27,24 +33,40 @@ databaseName =  "tiril.db"
 schema :: IsString a => a
 schema = $(embedStringFile "./app/schema.sql")
 
+serverPort = 3000
+uiPort = 3001
+
 main = do
-    startOk <- dbExists databaseName
+    exeDir <- dropFileName <$> getExecutablePath
+    let dbPath = exeDir </> databaseName
+    putStrLn $ "DB path " ++ dbPath
+    startOk <- dbExists dbPath
     startOk <- if not startOk then do
-                    res <- dbCreate databaseName schema
+                    res <- dbCreate dbPath schema
                     case res of 
                         Left v -> do 
                             putStrLn . show $ v
                             return False
-                        _ -> dbExists databaseName
+                        _ -> dbExists dbPath
                else return True
     if startOk then do
-        let port = 3000
-        putStrLn $ "Listening on port " ++ show port
-        run port app
+        -- UI thread
+        putStrLn $ "AppUI at http://localhost:" ++ show uiPort
+        let static = exeDir </> "static"
+        putStrLn $ "Static dir " ++ show static
+        let config = defaultConfig
+                    { jsPort   = Just uiPort
+                    , jsStatic = Just static
+--                    , jsLog = const (return ()) 
+                    }
+        void $ forkIO $ startGUI config $ mainUi
+        
+        putStrLn $ "HTTP-server at http://localhost:" ++ show serverPort
+        run serverPort mainServer
     else return ()
  
-app :: Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> IO ResponseReceived
-app req respond = join $ respond <$>
+mainServer :: Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> IO ResponseReceived
+mainServer req respond = join $ respond <$>
     case pathInfo req of
         ("goo":[x]) -> do
             tx <- googleTranslateWithT . T.fromStrict $ x
@@ -56,8 +78,26 @@ app req respond = join $ respond <$>
         ("add":[x]) -> do
             conn <- connectSqlite3 databaseName
             r <- addWord conn . T.fromStrict $ x
-            disconnect conn
+            HDBC.disconnect conn
             return $ either (index . show) (index . const "done") r
+        _ -> return . index $ "Unknown command"
+            
+mainUi :: Window -> UI ()
+mainUi win = do
+    return win # set UI.title "Tiril"
+    UI.addStyleSheet win "buttons.css"
+    btn <- UI.button #. "button" # set text "Review current session"
+    getBody win #+
+        [UI.div #. "wrap" #+ [ UI.h1 #+ [string "Tiril"], string "Your language learning assistant", UI.br, element btn] ]
+    on UI.click btn $ const $ do
+        (vals :: [T.Text]) <- liftIO $ do
+            conn <- connectSqlite3 databaseName
+            res <- (either (flip (:) [] . T.pack . show) id) <$> getWords conn
+            HDBC.disconnect conn
+            return res
+        let spans = (\x-> (string . T.unpack) x # set UI.draggable True) <$> vals
+        getBody win #+ (concat [[UI.br, word] | word <- spans])
+
  
 index :: Show a => a -> Network.Wai.Response
 index x = 

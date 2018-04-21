@@ -36,6 +36,8 @@ dependencies:
 - HDBC
 - HDBC-sqlite3
 - file-embed
+- threepenny-gui
+- filepath
 
 library:
   source-dirs: src
