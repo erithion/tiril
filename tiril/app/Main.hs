@@ -24,6 +24,7 @@ import qualified Graphics.UI.Threepenny         as UI
 import           Graphics.UI.Threepenny.Core                                    hiding (get)
 import           Control.Concurrent                          (forkIO)
 import           Control.Monad.State
+import           Data.IORef
 
 import           GoogleTranslate
 import           Lexin
@@ -53,7 +54,6 @@ main = do
                         _ -> dbExists dbPath
                else return True
     if startOk then do
-        -- UI thread
         putStrLn $ "AppUI at http://localhost:" ++ show uiPort
         let static = exeDir </> "static"
         putStrLn $ "Static dir " ++ show static
@@ -84,35 +84,79 @@ mainServer req respond = join $ respond <$>
             HDBC.disconnect conn
             return $ either (index . show) (index . const "done") r
         _ -> return . index $ "Unknown command"
+
+type Color = String
             
 mainUi :: Window -> UI ()
 mainUi win = do
     return win # set UI.title "Tiril"
-    UI.addStyleSheet win "foundation.css" --"buttons.css"
+    UI.addStyleSheet win "foundation.css"
+    -- Removing flash artifacts. Suggested by Foundation CSS
+    html <- head <$> getElementsByTagName win "html"
+    element html #. "no-js"
 
-    -- Including stuff from Foundation 6
-    el <- mkElement "link"
-        # set (attr "rel" ) "stylesheet"
-        # set (attr "type") "text/css"
-        # set (attr "href") ("/static/css/app.css")
-    getHead win #+ [element el]
+    -- Including stuff from Foundation 6 + Dragula
+    getHead win #+ [mkElement "link" # set (attr "rel" ) "stylesheet"
+                                     # set (attr "type") "text/css"
+                                     # set (attr "href") ("/static/css/app.css")
+                   ,mkElement "link" # set (attr "rel" ) "stylesheet"
+                                     # set (attr "type") "text/css"
+                                     # set (attr "href") ("/static/css/dragula.css")]
 
-    void $ getBody win #+ [runTopBarMenu $ topbar "Tiril" 
-                                        >> tmenu "First" >> tsubmenu "Session" (sessionHandler win) 
-                                        >> tmenu "Second" >> tmenu "Third" ]
+    void $ getBody win #+ [runMenu $ createTopBarMenu "Tiril"
+                                        >> menu "First" >> subMenu "Session B1" (sessionHandler "b1" "board1") >> subMenu "Session B2" (sessionHandler "b2" "board2")
+                                        >> menu "Second" >> subMenu "Session B3" (sessionHandler "b3" "board3")]
                                         
-    -- Including stuff from Foundation 6
+    -- Including stuff from Foundation 6 + Dragula
     void $ getBody win #+ [ mkElement "script" # set (attr "src") ("/static/js/vendor/what-input.js")
+                          , mkElement "script" # set (attr "src") ("/static/js/vendor/dragula.js")
                           , mkElement "script" # set (attr "src") ("/static/js/vendor/foundation.js")
                           , mkElement "script" # set (attr "src") ("/static/js/app.js")]
-    where sessionHandler win = const $ do
+    where sessionHandler cardsId containerId = const $ do
             (vals :: [T.Text]) <- liftIO $ do
                 conn <- connectSqlite3 databaseName
                 res <- (either (flip (:) [] . T.pack . show) id) <$> getWords conn
                 HDBC.disconnect conn
                 return res
-            let spans = (\x-> (string . T.unpack) x # set UI.draggable True) <$> vals
-            void $ getBody win #+ (concat [[UI.br, word] | word <- spans])
+            let spans = T.unpack <$> vals
+            win <- askWindow
+            
+            elDrop <- UI.div #. "cards container-width dragula-container"
+                             # set (attr "id") cardsId
+
+            let container elements = element elDrop #+ elements
+            
+            void $ getBody win #+ ((:[]) . container $ makeWord "green" <$> spans)
+--            runFunction $ ffi "addDragula(%1)" (cardsId :: String)
+            
+          makeWord :: Color -> String -> UI Element
+          makeWord color word = do
+                a <- UI.a #. "cardtitle noselect"
+                          # set text word
+                elDrag <- UI.div #. "card word-font grow"
+                                 #+ [UI.img #. "draggable" 
+                                            # set (attr "src") "static/ico/drag.svg"
+                                    , element a]
+                on UI.click a $ const $ do
+                    runFunction $ ffi "resetWordsSelection()"
+                    element elDrag #. "card word-font selected grow"
+{-                    
+                    translations <- liftIO $ do
+                        tx1 <- googleTranslateWithT . T.pack $ word
+                        tx2 <- lexinTranslate . T.pack $ word
+                        let goo = either (const "Google Translate error") US.ushow tx1
+                        let lex = US.ushow $ tx2
+                        return [goo, lex]
+                    let spans = [UI.span #. "cardtitle noselect"
+                                         # set text txt | txt <- translations]
+                    elem <- UI.div #. "card"
+                                    #+ spans
+                    win <- askWindow
+                    void $ getBody win #+ [element elem]-}
+
+                return elDrag
+
+            
 
 index :: Show a => a -> Network.Wai.Response
 index x = 

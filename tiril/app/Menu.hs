@@ -4,7 +4,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE Arrows #-}
 module Menu 
-(runTopBarMenu, topbar, tmenu, tsubmenu)
+(createTopBarMenu, createStickyMenu, menu, subMenu, runMenu)
 where
 
 import qualified Graphics.UI.Threepenny         as UI
@@ -13,64 +13,101 @@ import           Control.Monad.State
 
 type TopBarFn = ([UI Element] -> UI Element)
 type TopBarState = ( TopBarFn, [ (TopBarFn, [UI Element]) ] )
+
 newtype TopBar a = TBar (State TopBarState a) 
-                   deriving (Functor, Applicative, Monad)
+                        deriving (Functor, Applicative, Monad)
+                   
+newtype TopBarSticky a = TBarSticky (State TopBarState a) 
+                        deriving (Functor, Applicative, Monad)
 
--- Typical usage: runTopBarMenu $ topbar "Product" 
---                                   >> tmenu "Menu1" >> tsubmenu "Submenu1" handler1 >> tsubmenu "Submenu2" handler2 
---                                   >> tmenu "Menu2" >> tmenu "Menu3"  ...
+-- Typical usage: runMenu $ createTopBarMenu "Product" 
+--                                   >> menu "Menu1" >> subMenu "Submenu1" handler1 >> subMenu "Submenu2" handler2 
+--                                   >> menu "Menu2" >> menu "Menu3"  ...
 
--- TODO: Make menu polymorphic - declare a class Menu and move out topbar, tmenu etc.
--- Align TopBar monad with >>= as well
-topbar :: String -> TopBar (UI Element)
-topbar name = TBar $ do
-    put (head name, [])
-    return $ head name []
-    where 
-        head name items = 
-            UI.div #. "top-bar" 
-                   #+ [UI.div #. "top-bar-left" 
-                              #+ [UI.ul #. "dropdown menu" 
-                                        # set (attr "data-dropdown-menu") ""
-                                        #+ ([UI.li #. "menu-text" 
-                                                   # set text name ] ++ items) ]]
-                                                   
-tmenu :: String -> TopBar (UI Element)
-tmenu name = TBar $ do
+class (Monad m) => TirilMenu m where
+    tirilMainMenu :: String -> m (UI Element)
+    menu :: String -> m (UI Element)
+    subMenu :: String -> (() -> UI void) -> m (UI Element)
+    runMenu :: m (UI Element) -> UI Element
+
+-- Align monad with >>= as well
+instance TirilMenu (TopBar) where
+    tirilMainMenu name = TBar $ do
+        put (head name, [])
+        return $ head name []
+        where 
+            head name items = 
+                UI.div #. "top-bar" 
+                       #+ [UI.div #. "top-bar-left" 
+                                  #+ [UI.ul #. "dropdown menu" 
+                                            # set (attr "data-dropdown-menu") ""
+                                            #+ ([UI.li #. "menu-text" 
+                                                       # set text name ] ++ items) ]]
+    menu name = TBar $ createDefaultTopBarMenu "menu vertical" name
+    subMenu name handler = TBar $ createDefaultTopBarSubMenu "menu vertical" name handler
+    runMenu (TBar m) = evalState m ((\x->undefined), []) -- initial state is never used
+
+instance TirilMenu (TopBarSticky) where
+    tirilMainMenu name = TBarSticky $ do
+        put (head name, [])
+        return $ head name []
+        where 
+            head name items = 
+                UI.div  # set (attr "data-sticky-container") ""
+                        #+ [UI.div # set (attr "data-sticky") "" 
+                                   # set (attr "data-options") "marginTop:0;"
+                                   #+ [ UI.div #. "title-bar" 
+                                               # set (attr "data-responsive-toggle") "example-menu"
+                                               # set (attr "data-hide-for") "medium"
+                                               #+ [UI.button #. "menu-icon"
+                                                             # set (attr "type") "button"
+                                                             # set (attr "data-toggle") "example-menu"
+                                                  ,UI.div #. "title-bar-title" 
+                                                          # set text "Menu" ]
+                                      , UI.div #. "top-bar"
+                                               # set (attr "id") "example-menu"
+                                               #+ [UI.ul #. "vertical medium-horizontal dropdown menu" 
+                                                         # set (attr "data-responsive-menu") "accordion medium-dropdown"
+                                                         #+ ([UI.li #. "menu-text" 
+                                                                    # set text name ] ++ items) ] ]]
+
+    menu name = TBarSticky $ createDefaultTopBarMenu "menu vertical nested" name
+    subMenu name handler = TBarSticky $ createDefaultTopBarSubMenu "menu vertical nested" name handler
+    runMenu (TBarSticky m) = evalState m ((\x->undefined), []) -- initial state is never used
+
+createTopBarMenu :: String -> TopBar (UI Element)
+createTopBarMenu = tirilMainMenu 
+
+createStickyMenu :: String -> TopBarSticky (UI Element)
+createStickyMenu = tirilMainMenu 
+    
+
+utilLiElem className name items = UI.li #+ [UI.a # set (attr "href") ("#") # set text name, UI.ul #. className #+ items]
+
+utilApplyFunction :: [(TopBarFn, [UI Element])] -> [UI Element]
+utilApplyFunction [] = []
+utilApplyFunction ((fn, ls):xs) = (fn ls):utilApplyFunction xs
+    
+createDefaultTopBarMenu :: String -> String -> State TopBarState (UI Element)
+createDefaultTopBarMenu className name = do
     (head, ls) <- get
-    let new = ls ++ [(li name, [])]
+    let new = ls ++ [(utilLiElem className name, [])]
     put (head, new)
-    return . head $ (apply ls) ++ [(li name [])]
-    where
-        li name items = UI.li #+ [UI.a # set (attr "href") ("#") # set text name, UI.ul #. "menu vertical" #+ items]
-        apply :: [(TopBarFn, [UI Element])] -> [UI Element]
-        apply [] = []
-        apply ((fn, ls):xs) = (fn ls):apply xs
-
--- TODO: Restrict types        
---tsubmenu :: String -> (e -> UI void) -> TopBar (UI Element)
-tsubmenu name handler = TBar $ do
+    return . head $ (utilApplyFunction ls) ++ [(utilLiElem className name [])]
+        
+createDefaultTopBarSubMenu :: String -> String -> (() -> UI void) -> State TopBarState (UI Element)
+createDefaultTopBarSubMenu className name handler = do
     (head_, ls) <- get
     let (prev_, (lst_fn, lst_ls)) = case null ls of
-                True -> ([], (li_to_delete "Forgot something?", []))
-                _ -> (init ls, last ls)
+            True -> ([], (utilLiElem className "Forgot something?", []))
+            _ -> (init ls, last ls)
     let new = lst_ls ++ [elem name handler]
     put (head_, prev_ ++ [(lst_fn, new)])
     (head2, ls2) <- get
-    return . head2 $ apply ls2
+    return . head2 $ utilApplyFunction ls2
     where 
-            -- TODO: it's a duplicate. move out
-            li_to_delete name items = UI.li #+ [UI.a # set (attr "href") ("#") # set text name, UI.ul #. "menu vertical" #+ items]
---            elem :: forall e void. String -> (e -> UI void) -> UI Element
-            elem txt handler = do
-                    a <- UI.a # set (attr "href") ("#") # set text txt
-                    on UI.click a handler
-                    UI.li #+ [element a]
-            -- TODO: it's a duplicate. move out
-            apply :: [(TopBarFn, [UI Element])] -> [UI Element]
-            apply [] = []
-            apply ((fn, ls):xs) = (fn ls):apply xs
-
-runTopBarMenu :: TopBar (UI Element) -> UI Element
-runTopBarMenu (TBar m) = evalState m ((\x->undefined), []) -- initial state is never used
-            
+        elem txt handler = do
+            a <- UI.a # set (attr "href") ("#") # set text txt
+            on UI.click a handler
+            UI.li #+ [element a]
+        

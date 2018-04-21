@@ -1,0 +1,73 @@
+* {margin:0;padding:0;border:0;height:auto;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box;-webkit-font-smoothing:antialiased;-webkit-animation-fill-mode: none !important;}
+
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400');
+
+/* body {background-color:#0067A9;font-family: 'Roboto', sans-serif;} */
+
+#board1 header {background-color:#BC3425;color:white}
+#board2 header {background-color:#92549E;color:white}
+#board3 header {background-color:#00B1CF;color:white}
+
+.cards {list-style-type:none;float:left;width:100%;padding:4px 8px;}
+.card {float:left;height:auto;background-color:white;padding:10px;margin:4px 0;border-radius:3px;box-shadow:1px 1px 1px rgba(0,0,0,.2); 
+/*my*/
+width:calc(100% - 1.5em); display: inline-block; margin-left:0.5em;}
+.cardtitle {width:100%;}
+.cards .is-moving {background-color:white;color:black}
+/*my*/
+.selected {margin-left: 1em;}
+
+/*my*/
+.grow { transition: .2s ease; }
+.grow:hover { -webkit-transform: scale(1.15); -ms-transform: scale(1.15); transform: scale(1.15); }
+
+
+/*my*/
+/*div img {*/
+.draggable{
+    width: 30px;
+    margin-right: 1em;
+    cursor:move; cursor:-webkit-grab; cursor:-moz-grab; cursor:grab;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+.gu-mirror {
+  cursor:move; cursor:-webkit-grabbing; cursor:-moz-grabbing; cursor:grabbing;
+  position: fixed !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+  opacity: 1;
+  -webkit-transform: rotate(5deg);
+transform: rotate(5deg);
+}
+.gu-hide {
+  display: none !important;
+}
+.gu-unselectable {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+.gu-transit {
+  opacity: 0.4;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+  filter: alpha(opacity=20);
+}
+
+
+
+
+
+
+.word-font {font-size:2vw;}
+.container-width {width:300px;}
