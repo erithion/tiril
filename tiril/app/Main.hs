@@ -89,6 +89,9 @@ mainUi :: Window -> UI ()
 mainUi win = do
     return win # set UI.title "Tiril"
     UI.addStyleSheet win "foundation.css" --"buttons.css"
+    -- Removing flash artifacts. Suggested by Foundation CSS
+    (htm:[]) <- getElementsByTagName win "html"
+    element htm #. "no-js"
 
     -- Including stuff from Foundation 6
     el <- mkElement "link"
@@ -98,8 +101,8 @@ mainUi win = do
     getHead win #+ [element el]
 
     void $ getBody win #+ [runTopBarMenu $ topbar "Tiril" 
-                                        >> tmenu "First" >> tsubmenu "Session" (sessionHandler win) 
-                                        >> tmenu "Second" >> tmenu "Third" ]
+                                        >> tmenu "First" >> tsubmenu "Session" (sessionHandler win) >> tsubmenu "Ses2" (sessionHandler win) 
+                                        >> tmenu "Second" >> tsubmenu "Ses3" (sessionHandler win) >> tmenu "Third" ]
                                         
     -- Including stuff from Foundation 6
     void $ getBody win #+ [ mkElement "script" # set (attr "src") ("/static/js/vendor/what-input.js")
