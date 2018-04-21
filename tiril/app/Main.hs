@@ -1,3 +1,4 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
@@ -20,13 +21,15 @@ import           Data.String
 import           System.Environment                         (getExecutablePath)
 import           System.FilePath                            (dropFileName, (</>))
 import qualified Graphics.UI.Threepenny         as UI
-import           Graphics.UI.Threepenny.Core
+import           Graphics.UI.Threepenny.Core                                    hiding (get)
 import           Control.Concurrent                          (forkIO)
+import           Control.Monad.State
 
 import           GoogleTranslate
 import           Lexin
 import           Session
 import           Db
+import           Menu
  
 databaseName =  "tiril.db" 
 
@@ -85,20 +88,32 @@ mainServer req respond = join $ respond <$>
 mainUi :: Window -> UI ()
 mainUi win = do
     return win # set UI.title "Tiril"
-    UI.addStyleSheet win "buttons.css"
-    btn <- UI.button #. "button" # set text "Review current session"
-    getBody win #+
-        [UI.div #. "wrap" #+ [ UI.h1 #+ [string "Tiril"], string "Your language learning assistant", UI.br, element btn] ]
-    on UI.click btn $ const $ do
-        (vals :: [T.Text]) <- liftIO $ do
-            conn <- connectSqlite3 databaseName
-            res <- (either (flip (:) [] . T.pack . show) id) <$> getWords conn
-            HDBC.disconnect conn
-            return res
-        let spans = (\x-> (string . T.unpack) x # set UI.draggable True) <$> vals
-        getBody win #+ (concat [[UI.br, word] | word <- spans])
+    UI.addStyleSheet win "foundation.css" --"buttons.css"
 
- 
+    -- Including stuff from Foundation 6
+    el <- mkElement "link"
+        # set (attr "rel" ) "stylesheet"
+        # set (attr "type") "text/css"
+        # set (attr "href") ("/static/css/app.css")
+    getHead win #+ [element el]
+
+    void $ getBody win #+ [runTopBarMenu $ topbar "Tiril" 
+                                        >> tmenu "First" >> tsubmenu "Session" (sessionHandler win) 
+                                        >> tmenu "Second" >> tmenu "Third" ]
+                                        
+    -- Including stuff from Foundation 6
+    void $ getBody win #+ [ mkElement "script" # set (attr "src") ("/static/js/vendor/what-input.js")
+                          , mkElement "script" # set (attr "src") ("/static/js/vendor/foundation.js")
+                          , mkElement "script" # set (attr "src") ("/static/js/app.js")]
+    where sessionHandler win = const $ do
+            (vals :: [T.Text]) <- liftIO $ do
+                conn <- connectSqlite3 databaseName
+                res <- (either (flip (:) [] . T.pack . show) id) <$> getWords conn
+                HDBC.disconnect conn
+                return res
+            let spans = (\x-> (string . T.unpack) x # set UI.draggable True) <$> vals
+            void $ getBody win #+ (concat [[UI.br, word] | word <- spans])
+
 index :: Show a => a -> Network.Wai.Response
 index x = 
     responseBuilder status200 [("Content-Type", "text/html; charset=UTF-8")] $ 

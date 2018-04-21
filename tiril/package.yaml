@@ -38,6 +38,7 @@ dependencies:
 - file-embed
 - threepenny-gui
 - filepath
+- mtl
 
 library:
   source-dirs: src
