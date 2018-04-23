@@ -90,17 +90,10 @@ type Color = String
 mainUi :: Window -> UI ()
 mainUi win = do
     return win # set UI.title "Tiril"
-<<<<<<< HEAD
     UI.addStyleSheet win "foundation.css"
     -- Removing flash artifacts. Suggested by Foundation CSS
     html <- head <$> getElementsByTagName win "html"
     element html #. "no-js"
-=======
-    UI.addStyleSheet win "foundation.css" --"buttons.css"
-    -- Removing flash artifacts. Suggested by Foundation CSS
-    (htm:[]) <- getElementsByTagName win "html"
-    element htm #. "no-js"
->>>>>>> 3ad545030c1402c1d6332e8e88074ede65480f77
 
     -- Including stuff from Foundation 6 + Dragula
     getHead win #+ [mkElement "link" # set (attr "rel" ) "stylesheet"
@@ -110,15 +103,9 @@ mainUi win = do
                                      # set (attr "type") "text/css"
                                      # set (attr "href") ("/static/css/dragula.css")]
 
-<<<<<<< HEAD
     void $ getBody win #+ [runMenu $ createTopBarMenu "Tiril"
                                         >> menu "First" >> subMenu "Session B1" (sessionHandler "b1" "board1") >> subMenu "Session B2" (sessionHandler "b2" "board2")
                                         >> menu "Second" >> subMenu "Session B3" (sessionHandler "b3" "board3")]
-=======
-    void $ getBody win #+ [runTopBarMenu $ topbar "Tiril" 
-                                        >> tmenu "First" >> tsubmenu "Session" (sessionHandler win) >> tsubmenu "Ses2" (sessionHandler win) 
-                                        >> tmenu "Second" >> tsubmenu "Ses3" (sessionHandler win) >> tmenu "Third" ]
->>>>>>> 3ad545030c1402c1d6332e8e88074ede65480f77
                                         
     -- Including stuff from Foundation 6 + Dragula
     void $ getBody win #+ [ mkElement "script" # set (attr "src") ("/static/js/vendor/what-input.js")
