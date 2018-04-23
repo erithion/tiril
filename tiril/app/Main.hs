@@ -105,6 +105,10 @@ uiSetup win = do
         createTopBarMenu "Tiril"
         menu "Review"
         subMenu "Session" viewSession
+        menu "Export"
+        subMenu "Anki" (empty "Anki!? Not yet, but it's coming ...")
+        subMenu "Memrise"  (empty "Memrise!? Not yet, but it's coming ...")
+                
     void $ getBody win #+ [element mainMenu]
                                         
     -- Including stuff from Foundation 6 + Dragula
@@ -112,14 +116,26 @@ uiSetup win = do
                           , mkElement "script" # set UI.src "/static/js/vendor/dragula.js"
                           , mkElement "script" # set UI.src "/static/js/vendor/foundation.js"
                           , mkElement "script" # set UI.src "/static/js/app.js" ]
-    where viewSession = const $ do
+    where deleteViews className = do
+            win <- askWindow
+            docs <- getElementsByClassName win className
+            sequence $ delete <$> docs
+            
+          empty msg = const $ do
+            deleteViews "tiril-main"
+            win <- askWindow
+            void $ getBody win #+ [ UI.div #. "tiril-main"
+                                           # set text msg ]
+
+          viewSession = const $ do
             sessionWords <- liftIO $ do
                 conn <- connectSqlite3 databaseName
                 res <- (either (flip (:) [] . T.pack . show) id) <$> getWords conn
                 HDBC.disconnect conn
                 return res
+            deleteViews "tiril-main"
             win <- askWindow
-            void $ getBody win #+ [ UI.div #. "card-list dragula-container" 
+            void $ getBody win #+ [ UI.div #. "card-list dragula-container tiril-main" 
                                            #+ (makeCard . T.unpack <$> sessionWords) ]
             
           makeCard :: String -> UI Element
@@ -128,8 +144,8 @@ uiSetup win = do
                                #+ [ UI.img #. "draggable" 
                                            # set UI.src "static/ico/drag.svg"
                                   , UI.a # set text word ]
-                on UI.click card $ const $ runFunction $ ffi "selectCard(%1)" card
-{-                    
+                on UI.click card $ const $ do
+                    runFunction $ ffi "selectCard(%1)" card
                     translations <- liftIO $ do
                         tx1 <- googleTranslateWithT . T.pack $ word
                         tx2 <- lexinTranslate . T.pack $ word
@@ -138,9 +154,9 @@ uiSetup win = do
                         return [goo, lex]
                     let spans = [UI.span #. "cardtitle noselect"
                                          # set text txt | txt <- translations]
-                    elem <- UI.div #. "card"
-                                    #+ spans
+                    elem <- UI.div #. "card-detail tiril-main"
+                                   #+ spans
                     win <- askWindow
-                    void $ getBody win #+ [element elem]-}
+                    void $ getBody win #+ [element elem]
 
                 return card
