@@ -92,47 +92,43 @@ httpServer req respond = join $ respond <$>
 uiSetup :: Window -> UI ()
 uiSetup win = do
     return win # set UI.title "Tiril"
+    -- Including stuff from Foundation 6 + Dragula
     UI.addStyleSheet win "foundation.css"
+    UI.addStyleSheet win "dragula.css"
+    UI.addStyleSheet win "app.css"
     -- Removing flash artifacts. Suggested by Foundation CSS
     html <- head <$> getElementsByTagName win "html"
     element html #. "no-js"
 
-    -- Including stuff from Foundation 6 + Dragula
-    getHead win #+ [ mkElement "link" # set (attr "rel" ) "stylesheet"
-                                      # set (attr "type") "text/css"
-                                      # set (attr "href") "/static/css/app.css"
-                   , mkElement "link" # set (attr "rel" ) "stylesheet"
-                                      # set (attr "type") "text/css"
-                                      # set (attr "href") "/static/css/dragula.css" ]
-
-    void $ getBody win #+ [ runMenu $ createTopBarMenu "Tiril"
-                                        >> menu "Review" 
-                                            >> subMenu "Session" sessionHandler ]
+    -- Adding menu
+    mainMenu <- runMenu $ do 
+        createTopBarMenu "Tiril"
+        menu "Review"
+        subMenu "Session" viewSession
+    void $ getBody win #+ [element mainMenu]
                                         
     -- Including stuff from Foundation 6 + Dragula
-    void $ getBody win #+ [ mkElement "script" # set (attr "src") "/static/js/vendor/what-input.js"
-                          , mkElement "script" # set (attr "src") "/static/js/vendor/dragula.js"
-                          , mkElement "script" # set (attr "src") "/static/js/vendor/foundation.js"
-                          , mkElement "script" # set (attr "src") "/static/js/app.js" ]
-    where sessionHandler = const $ do
-            words <- liftIO $ do
+    void $ getBody win #+ [ mkElement "script" # set UI.src "/static/js/vendor/what-input.js"
+                          , mkElement "script" # set UI.src "/static/js/vendor/dragula.js"
+                          , mkElement "script" # set UI.src "/static/js/vendor/foundation.js"
+                          , mkElement "script" # set UI.src "/static/js/app.js" ]
+    where viewSession = const $ do
+            sessionWords <- liftIO $ do
                 conn <- connectSqlite3 databaseName
                 res <- (either (flip (:) [] . T.pack . show) id) <$> getWords conn
                 HDBC.disconnect conn
                 return res
             win <- askWindow
             void $ getBody win #+ [ UI.div #. "card-list dragula-container" 
-                                           #+ (makeWord . T.unpack <$> words) ]
+                                           #+ (makeCard . T.unpack <$> sessionWords) ]
             
-          makeWord :: String -> UI Element
-          makeWord word = do
+          makeCard :: String -> UI Element
+          makeCard word = do
                 card <- UI.div #. "card grow"
                                #+ [ UI.img #. "draggable" 
-                                           # set (attr "src") "static/ico/drag.svg"
+                                           # set UI.src "static/ico/drag.svg"
                                   , UI.a # set text word ]
-                on UI.click card $ const $ do
-                    runFunction $ ffi "resetCardsIndent()"
-                    element card #. "card selected grow"
+                on UI.click card $ const $ runFunction $ ffi "selectCard(%1)" card
 {-                    
                     translations <- liftIO $ do
                         tx1 <- googleTranslateWithT . T.pack $ word

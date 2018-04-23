@@ -16,13 +16,16 @@ var drake = dragula({
 });
 
 // disable text-selection
-function disableSelect(e) {
+function disableTextSelection(e) {
     return false;
 }
 document.onselectstart = new Function ()
-document.onmousedown = disableSelect
+document.onmousedown = disableTextSelection
 
-// is called from Haskell to remove indentation in cards
-function resetCardsIndent() {
-    $("div").removeClass("selected")
+// is called from Haskell
+function selectCard(e) {
+    sel = e.classList.contains("selected");
+    $("div").removeClass("selected");
+    if (!sel)
+         e.classList.add("selected");
 }
