@@ -11,13 +11,13 @@ import qualified Graphics.UI.Threepenny         as UI
 import           Graphics.UI.Threepenny.Core                                    hiding (get)
 import           Control.Monad.State
 
-type TopBarFn = ([UI Element] -> UI Element)
-type TopBarState = ( TopBarFn, [ (TopBarFn, [UI Element]) ] )
+type Setter = ([UI Element] -> UI Element)
+type MenuState = ( Setter, [ (Setter, [UI Element]) ] )
 
-newtype TopBar a = TBar (State TopBarState a) 
+newtype TopBar a = TBar (State MenuState a) 
                         deriving (Functor, Applicative, Monad)
                    
-newtype TopBarSticky a = TBarSticky (State TopBarState a) 
+newtype TopBarSticky a = TBarSticky (State MenuState a) 
                         deriving (Functor, Applicative, Monad)
 
 -- Typical usage: runMenu $ createTopBarMenu "Product" 
@@ -25,14 +25,14 @@ newtype TopBarSticky a = TBarSticky (State TopBarState a)
 --                                   >> menu "Menu2" >> menu "Menu3"  ...
 
 class (Monad m) => TirilMenu m where
-    tirilMainMenu :: String -> m (UI Element)
+    top :: String -> m (UI Element)
     menu :: String -> m (UI Element)
     subMenu :: String -> (() -> UI void) -> m (UI Element)
     runMenu :: m (UI Element) -> UI Element
 
--- Align monad with >>= as well
+-- TODO: Check the monad with >>= as well
 instance TirilMenu (TopBar) where
-    tirilMainMenu name = TBar $ do
+    top name = TBar $ do
         put (head name, [])
         return $ head name []
         where 
@@ -48,7 +48,7 @@ instance TirilMenu (TopBar) where
     runMenu (TBar m) = evalState m ((\x->undefined), []) -- initial state is never used
 
 instance TirilMenu (TopBarSticky) where
-    tirilMainMenu name = TBarSticky $ do
+    top name = TBarSticky $ do
         put (head name, [])
         return $ head name []
         where 
@@ -75,27 +75,28 @@ instance TirilMenu (TopBarSticky) where
     subMenu name handler = TBarSticky $ createDefaultTopBarSubMenu "menu vertical nested" name handler
     runMenu (TBarSticky m) = evalState m ((\x->undefined), []) -- initial state is never used
 
+{--- Constructors ---}
 createTopBarMenu :: String -> TopBar (UI Element)
-createTopBarMenu = tirilMainMenu 
+createTopBarMenu = top 
 
 createStickyMenu :: String -> TopBarSticky (UI Element)
-createStickyMenu = tirilMainMenu 
+createStickyMenu = top 
     
-
+{--- Utility functions  ---}
 utilLiElem className name items = UI.li #+ [UI.a # set (attr "href") ("#") # set text name, UI.ul #. className #+ items]
 
-utilApplyFunction :: [(TopBarFn, [UI Element])] -> [UI Element]
+utilApplyFunction :: [(Setter, [UI Element])] -> [UI Element]
 utilApplyFunction [] = []
 utilApplyFunction ((fn, ls):xs) = (fn ls):utilApplyFunction xs
     
-createDefaultTopBarMenu :: String -> String -> State TopBarState (UI Element)
+createDefaultTopBarMenu :: String -> String -> State MenuState (UI Element)
 createDefaultTopBarMenu className name = do
     (head, ls) <- get
     let new = ls ++ [(utilLiElem className name, [])]
     put (head, new)
     return . head $ (utilApplyFunction ls) ++ [(utilLiElem className name [])]
         
-createDefaultTopBarSubMenu :: String -> String -> (() -> UI void) -> State TopBarState (UI Element)
+createDefaultTopBarSubMenu :: String -> String -> (() -> UI void) -> State MenuState (UI Element)
 createDefaultTopBarSubMenu className name handler = do
     (head_, ls) <- get
     let (prev_, (lst_fn, lst_ls)) = case null ls of

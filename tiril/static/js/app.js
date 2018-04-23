@@ -1,38 +1,28 @@
 $(document).foundation()
-dragula([
-	document.getElementById('b1'),
-	document.getElementById('b2'),
-  document.getElementById('b3')
-])
 
-// Scrollable area
-//var element = document.getElementById("boards"); // Count Boards
-//var numberOfBoards = element.getElementsByClassName('board').length;
-//var boardsWidth = numberOfBoards*316 // Width of all Boards
-//console.log(boardsWidth);
-//element.style.width = boardsWidth+"px"; // set Width
-
+// default config for Dragula
 var drake = dragula({
   copy: false,
   copySortSource: true,
+  // to drag only "draggable" classes
   moves: function (el, container, handle) {
     return handle.classList.contains('draggable');
   },
+  // any dragula-container class can be dragged
   isContainer: function (el) {
     return el.classList.contains('dragula-container');
   },
   revertOnSpill: true
 });
 
-//function addDragula(name) {
-//    drake.containers.push(document.getElementById(name));
-//}
-
 // disable text-selection
-function disableselect(e) {return false;}
+function disableSelect(e) {
+    return false;
+}
 document.onselectstart = new Function ()
-document.onmousedown = disableselect
+document.onmousedown = disableSelect
 
-function resetWordsSelection(){
+// is called from Haskell to remove indentation in cards
+function resetCardsIndent() {
     $("div").removeClass("selected")
 }

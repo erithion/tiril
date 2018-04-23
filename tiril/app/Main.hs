@@ -16,14 +16,13 @@ import           Blaze.ByteString.Builder                   (copyByteString)
 import           Control.Monad                                                  hiding (when)
 import           Database.HDBC.Sqlite3                      (connectSqlite3)
 import qualified Database.HDBC                  as HDBC     (disconnect)
-import           Data.FileEmbed
+import           Data.FileEmbed                             (embedStringFile)
 import           Data.String
 import           System.Environment                         (getExecutablePath)
 import           System.FilePath                            (dropFileName, (</>))
 import qualified Graphics.UI.Threepenny         as UI
 import           Graphics.UI.Threepenny.Core                                    hiding (get)
 import           Control.Concurrent                          (forkIO)
-import           Control.Monad.State
 import           Data.IORef
 
 import           GoogleTranslate
@@ -62,14 +61,14 @@ main = do
                     , jsStatic = Just static
 --                    , jsLog = const (return ()) 
                     }
-        void $ forkIO $ startGUI config $ mainUi
+        void $ forkIO $ startGUI config $ uiSetup
         
         putStrLn $ "HTTP-server at http://localhost:" ++ show serverPort
-        run serverPort mainServer
+        run serverPort httpServer
     else return ()
  
-mainServer :: Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> IO ResponseReceived
-mainServer req respond = join $ respond <$>
+httpServer :: Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> IO ResponseReceived
+httpServer req respond = join $ respond <$>
     case pathInfo req of
         ("goo":[x]) -> do
             tx <- googleTranslateWithT . T.fromStrict $ x
@@ -84,11 +83,14 @@ mainServer req respond = join $ respond <$>
             HDBC.disconnect conn
             return $ either (index . show) (index . const "done") r
         _ -> return . index $ "Unknown command"
+    where index :: Show a => a -> Network.Wai.Response
+          index x = 
+            responseBuilder status200 [ ("Content-Type", "text/html; charset=UTF-8") ] $ 
+            mconcat $ map copyByteString [ "<p>", BU.fromString . US.ushow $ x, "</p>" ]
 
-type Color = String
-            
-mainUi :: Window -> UI ()
-mainUi win = do
+
+uiSetup :: Window -> UI ()
+uiSetup win = do
     return win # set UI.title "Tiril"
     UI.addStyleSheet win "foundation.css"
     -- Removing flash artifacts. Suggested by Foundation CSS
@@ -96,50 +98,41 @@ mainUi win = do
     element html #. "no-js"
 
     -- Including stuff from Foundation 6 + Dragula
-    getHead win #+ [mkElement "link" # set (attr "rel" ) "stylesheet"
-                                     # set (attr "type") "text/css"
-                                     # set (attr "href") ("/static/css/app.css")
-                   ,mkElement "link" # set (attr "rel" ) "stylesheet"
-                                     # set (attr "type") "text/css"
-                                     # set (attr "href") ("/static/css/dragula.css")]
+    getHead win #+ [ mkElement "link" # set (attr "rel" ) "stylesheet"
+                                      # set (attr "type") "text/css"
+                                      # set (attr "href") "/static/css/app.css"
+                   , mkElement "link" # set (attr "rel" ) "stylesheet"
+                                      # set (attr "type") "text/css"
+                                      # set (attr "href") "/static/css/dragula.css" ]
 
-    void $ getBody win #+ [runMenu $ createTopBarMenu "Tiril"
-                                        >> menu "First" >> subMenu "Session B1" (sessionHandler "b1" "board1") >> subMenu "Session B2" (sessionHandler "b2" "board2")
-                                        >> menu "Second" >> subMenu "Session B3" (sessionHandler "b3" "board3")]
+    void $ getBody win #+ [ runMenu $ createTopBarMenu "Tiril"
+                                        >> menu "Review" 
+                                            >> subMenu "Session" sessionHandler ]
                                         
     -- Including stuff from Foundation 6 + Dragula
-    void $ getBody win #+ [ mkElement "script" # set (attr "src") ("/static/js/vendor/what-input.js")
-                          , mkElement "script" # set (attr "src") ("/static/js/vendor/dragula.js")
-                          , mkElement "script" # set (attr "src") ("/static/js/vendor/foundation.js")
-                          , mkElement "script" # set (attr "src") ("/static/js/app.js")]
-    where sessionHandler cardsId containerId = const $ do
-            (vals :: [T.Text]) <- liftIO $ do
+    void $ getBody win #+ [ mkElement "script" # set (attr "src") "/static/js/vendor/what-input.js"
+                          , mkElement "script" # set (attr "src") "/static/js/vendor/dragula.js"
+                          , mkElement "script" # set (attr "src") "/static/js/vendor/foundation.js"
+                          , mkElement "script" # set (attr "src") "/static/js/app.js" ]
+    where sessionHandler = const $ do
+            words <- liftIO $ do
                 conn <- connectSqlite3 databaseName
                 res <- (either (flip (:) [] . T.pack . show) id) <$> getWords conn
                 HDBC.disconnect conn
                 return res
-            let spans = T.unpack <$> vals
             win <- askWindow
+            void $ getBody win #+ [ UI.div #. "card-list dragula-container" 
+                                           #+ (makeWord . T.unpack <$> words) ]
             
-            elDrop <- UI.div #. "cards container-width dragula-container"
-                             # set (attr "id") cardsId
-
-            let container elements = element elDrop #+ elements
-            
-            void $ getBody win #+ ((:[]) . container $ makeWord "green" <$> spans)
---            runFunction $ ffi "addDragula(%1)" (cardsId :: String)
-            
-          makeWord :: Color -> String -> UI Element
-          makeWord color word = do
-                a <- UI.a #. "cardtitle noselect"
-                          # set text word
-                elDrag <- UI.div #. "card word-font grow"
-                                 #+ [UI.img #. "draggable" 
-                                            # set (attr "src") "static/ico/drag.svg"
-                                    , element a]
-                on UI.click a $ const $ do
-                    runFunction $ ffi "resetWordsSelection()"
-                    element elDrag #. "card word-font selected grow"
+          makeWord :: String -> UI Element
+          makeWord word = do
+                card <- UI.div #. "card grow"
+                               #+ [ UI.img #. "draggable" 
+                                           # set (attr "src") "static/ico/drag.svg"
+                                  , UI.a # set text word ]
+                on UI.click card $ const $ do
+                    runFunction $ ffi "resetCardsIndent()"
+                    element card #. "card selected grow"
 {-                    
                     translations <- liftIO $ do
                         tx1 <- googleTranslateWithT . T.pack $ word
@@ -154,11 +147,4 @@ mainUi win = do
                     win <- askWindow
                     void $ getBody win #+ [element elem]-}
 
-                return elDrag
-
-            
-
-index :: Show a => a -> Network.Wai.Response
-index x = 
-    responseBuilder status200 [("Content-Type", "text/html; charset=UTF-8")] $ 
-        mconcat $ map copyByteString [ "<p>", BU.fromString . US.ushow $ x, "</p>" ]
+                return card
