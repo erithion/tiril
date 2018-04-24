@@ -31,6 +31,14 @@ defaultTir = Tir
     , targetIPA = Nothing
     }
 
+instance Translator Tir where
+    source = T.unpack . sourceText
+    target = (maybe "???" T.unpack) . targetText
+    lang = (maybe "???" T.unpack) . targetLang
+    verb = const "DND"
+    iam = const "Google Translate"
+
+    
 {-  Parsed pattern is                         
 [
    [

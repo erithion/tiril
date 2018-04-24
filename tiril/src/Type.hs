@@ -4,14 +4,15 @@ where
 
 import qualified Data.Text.Lazy as T
 
-data TranslationEngine = Google | Lexin
-    deriving (Show)
-
 data TPS = Verb | Adverb | Adjective | Conjunction | Preposition | Interjection | Noun | Pronoun 
     deriving (Show)
     
--- TBD    
 class Translator a where
+    source :: a -> String
+    target :: a -> String
+    lang :: a -> String
+    -- part of speech
+    verb :: a -> String
     -- whence this translation came
-    iam :: a -> TranslationEngine
+    iam :: a -> String
 

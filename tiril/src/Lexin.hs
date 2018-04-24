@@ -11,6 +11,7 @@ import qualified Text.XML.HXT.DOM.XmlNode       as XN
 import qualified Text.XML.HXT.DOM.QualifiedName as XN
 import qualified Data.Text.Lazy                 as T
 import           Data.Char
+import           Data.List
 
 data LexinWord = LexinWord
     { lexinWord :: T.Text
@@ -19,6 +20,13 @@ data LexinWord = LexinWord
     }
     deriving (Show)
 
+instance Translator LexinWord where
+    source = const "DND"
+    target = T.unpack . lexinWord
+    lang = T.unpack . lexinLang
+    verb = T.unpack . lexinType
+    iam = const "Lexin"
+    
 {- data-types could be 
       data-type="LEM" seems to be words - "lemma"; With LEM in the block "MOR", "DEF", "ALT" might be present
       data-type="MOR" seems to be "bøyning"
@@ -57,7 +65,10 @@ lexinTranslate x =
                                     ) >>. (:[])
         return xxs'
     where
-        isSeparator ar = (not . null $ (runLA (hasAttrValue "class" (=="sep")) $ ar)) || (null $ (runLA getAttrl $ ar))
+        isSeparator ar =  (not . null $ (runLA (hasAttrValue "class" (=="sep")) $ ar)) 
+                       || (null $ (runLA getAttrl $ ar))
+                       -- TODO: see if the checks above are necessary
+                       || (not . null $ (runLA (hasAttrValue "class" (isInfixOf "separator")) $ ar))
 
         groups :: [XmlTree] -> [[XmlTree]]                                                   
         groups ls = reverse $ reverse <$> (groups' . reverse $ ls) -- separator always goes first, so we reverse the list for groups' to work properly

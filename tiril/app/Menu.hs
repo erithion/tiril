@@ -70,7 +70,6 @@ instance TirilMenu (TopBarSticky) where
                                                          # set (attr "data-responsive-menu") "accordion medium-dropdown"
                                                          #+ ([UI.li #. "menu-text" 
                                                                     # set text name ] ++ items) ] ]]
-
     menu name = TBarSticky $ createDefaultTopBarMenu "menu vertical nested" name
     subMenu name handler = TBarSticky $ createDefaultTopBarSubMenu "menu vertical nested" name handler
     runMenu (TBarSticky m) = evalState m ((\x->undefined), []) -- initial state is never used

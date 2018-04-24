@@ -1,44 +1,122 @@
-.card-list {
-    float:left;
-    width:450px;
-    padding:4px;
+/************************************************************/
+/* A container below the menu */
+.tiril-main-window {
+    display: flex;
+/*    height: 100vh;*/
+    height: 90vh;
+/*    height:100%; causes left pane to scroll also */
 }
-
-.card {
-    font-size:2vw;
+/************************************************************/
+/* A list of words on the left of the window, like in the Session-menu */
+.tiril-word-list {
+    flex-grow: 1;
+    max-width: 40vw;
+    padding-left: 20px;
+    padding-top: 15px;
+    padding-right: 30px;
+}
+/************************************************************/
+/* A container for a single word in the list of words on the left */
+.tiril-word {
+    overflow: hidden;
+    font-size: 1.5vw;
     cursor: pointer;
-    float:left;
-    height:auto;
-    padding:10px;
-    margin:4px 0;
-    box-shadow:1px 1px 1px rgba(0,0,0,.2); 
-    /* to prevent overlapping while indenting on a card's selection */
-    width:calc(100% - 2em); 
-    display: inline-block; 
-    margin-left:0.5em;
-}
-
-.selected {
-    margin-left: 1.5em;
-}
-
-.grow { 
+    height: auto;
+    width: calc(100% - 2em);
+    padding: 10px;
+    border: 1px solid #e6e6e6;
+    border-style: none;
+    border-left-style: solid;
+    border-bottom-style: solid;
+    margin-left: 0.5em;
+    margin-bottom: 7px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    align-content: center;
+    /* grow part */
     transition: .2s ease; 
 }
 
-.grow:hover {
-    -webkit-transform: scale(1.15); 
-    -ms-transform: scale(1.15); 
-    transform: scale(1.15); 
-}
-
-/*div img {*/
-.draggable {
+.tiril-word img {
     /* Assuming the element is a picture */
     width: 30px;
     margin-right: 1em;
-    cursor:move; 
-    cursor:-webkit-grab; 
-    cursor:-moz-grab; 
-    cursor:grab;
+}
+
+.tiril-word:hover {
+    -webkit-transform: scale(1.05); 
+    -ms-transform: scale(1.05); 
+    transform: scale(1.05); 
+}
+/************************************************************/
+/* The whole pane on the right */
+.tiril-right-pane {
+    padding: 4px;   
+    padding: 0px 10px;
+    flex-grow: 5;
+    overflow: auto;
+    flex-direction: column;
+}
+/************************************************************/
+/* For a single block of translations on the right */
+.tiril-detail-container {
+    margin: 15px;   
+    overflow: auto;
+    flex-direction: column;
+}
+.tiril-detail-container header {
+    width: 100%;   
+    height: 20px;
+    background-color: #375e97; /*#31a9b8;*/
+}
+.tiril-detail-container div {
+    margin-left: 1.5em;
+}
+/************************************************************/
+/* A container for a single translation expression on the right */
+.tiril-translation-word {
+    overflow: hidden;
+    font-size: 1.5vw;
+    height: auto;
+    width: calc(100% - 2em);
+    padding: 10px;
+    border: 1px solid #e6e6e6;
+    border-style: none;
+    border-left-style: solid;
+    border-bottom-style: solid;
+    margin-left: 0.5em;
+    margin-bottom: 7px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    align-content: center;
+}
+
+.tiril-translation-word img {
+    width: 30px;
+    margin-right: 1em;
+}
+
+.tiril-translation-word div {
+    display: flex;
+    margin-left: 0px;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.tiril-translation-word sub {
+    font-size: 60%;
+    color: lightgray;
+    font-style: italic
+}
+/************************************************************/
+/* A selection marker */
+.selected {
+    margin-left: 1.5em;
+}
+/************************************************************/
+/* A marker for Dragula */
+.draggable {
+    cursor: move; 
 }

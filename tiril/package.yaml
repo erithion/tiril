@@ -39,6 +39,7 @@ dependencies:
 - threepenny-gui
 - filepath
 - mtl
+- extra
 
 library:
   source-dirs: src
