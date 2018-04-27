@@ -164,14 +164,14 @@ bootstrapMenu sessionHandler = do
 uiSetup :: Window -> UI ()
 uiSetup win = do
     return win # set UI.title "Tiril"
-    -- CSS: Bootstrap + Dragula + own
+    -- CSS: Bootstrap + Sortable + own
     void $ getHead win #+ [ UI.meta # set UI.name "viewport"
                                     # set UI.content "width=device-width, initial-scale=1, shrink-to-fit=no"
                           , UI.link # set UI.rel "stylesheet"
-                                    # set UI.href "/static/css/bootstrap.min.css" ]
-    UI.addStyleSheet win "dragula.min.css"
-    UI.addStyleSheet win "app.css"
-
+                                    # set UI.href "/static/bootstrap.min.css"
+                          , UI.link # set UI.rel "stylesheet"
+                                    # set UI.href "/static/app.css"
+                                    ]
     -- Adding menu
     mainMenu <- bootstrapMenu viewSession
 {--    mainMenu <- runMenu $ do 
@@ -184,11 +184,10 @@ uiSetup win = do
                 
     void $ getBody win #+ [element mainMenu, createMainWindow]
                                         
-    -- JS: Bootstrap (+ Popper) + Dragula + own
-    void $ getBody win #+ [ mkElement "script" # set UI.src "/static/js/vendor/popper.min.js"
-                          , mkElement "script" # set UI.src "/static/js/vendor/bootstrap.min.js"
-                          , mkElement "script" # set UI.src "/static/js/vendor/dragula.min.js"
-                          , mkElement "script" # set UI.src "/static/js/app.js" ]
+    -- JS: Bootstrap + Sortable + own
+    void $ getBody win #+ [ mkElement "script" # set UI.src "/static/bootstrap.min.js"
+                          , mkElement "script" # set UI.src "/static/jquery.fn.sortable.js"
+                          , mkElement "script" # set UI.src "/static/app.js" ]
     where createMainWindow :: UI Element
           createMainWindow = UI.div #. "tiril-main-window"
 
@@ -216,21 +215,23 @@ uiSetup win = do
                 HDBC.disconnect conn
                 return res
             clearMainWindow
-            void $ getMainWindow #+ [ UI.div #. "tiril-word-list dragula-container" 
+            void $ getMainWindow #+ [ UI.div #. "tiril-word-list scrollbar-style-1" # set (attr "style") "display: flex; flex-flow: column nowrap;"
                                              #+ (makeCard . T.unpack <$> sessionWords) ]
 
-          jsToggleCard :: Element -> JSFunction Int
-          jsToggleCard = ffi "uiToggleCard(%1)"
+          jsToggleCard :: Element -> UI Int
+          jsToggleCard = callFunction . ffi "uiToggleCard(%1)"
+          jsUpdateSortable :: UI ()
+          jsUpdateSortable = runFunction $ ffi "updateSortable()"
           
           makeCard :: String -> UI Element
           makeCard word = do
-                card <- UI.div #. "tiril-word"
-                               #+ [ UI.img #. "draggable" 
-                                           # set UI.src "static/ico/ic_reorder_black_24px.svg" --"static/ico/drag.svg"
-                                  , UI.a # set text word ]
+                card <- UI.div
+                               #+ [ UI.div #. "tiril-word rounded" # set text word
+                                  , UI.ul #. "list" ]
+                               
                 on UI.click card $ const $ do
                     deleteWindows "tiril-right-pane"
-                    isSelectedNow <- callFunction $ jsToggleCard card
+                    isSelectedNow <- jsToggleCard card
                     if isSelectedNow /= 0 then do
                         tr <- liftIO $ do
                             (lex :: [[LexinWord]]) <- lexinTranslate . T.pack $ word
@@ -243,18 +244,30 @@ uiSetup win = do
                                 putStrLn . T.unpack $ x
                             let (goo :: [Tir]) = either (const []) id gooRes
                             return (goo, lex)
-                        
-                        let (ts::[UI Element]) = uncurry (:) . (createWordPack *** ((<$>) createWordPack)) $ tr
-                        void $ getMainWindow #+ [UI.div #. "tiril-right-pane" 
-                                                        #+ ts]
+                        -- We need a unique index for the each block, 
+                        -- so the idea is to create a list of curry'ed functions first 
+                        -- so that we could zip them with a list of indices later. So neat! I love Haskell!
+                        let (fs::[(Int->[UI Element])]) = uncurry (:) . (createWordPack *** (<$>) createWordPack) $ tr
+                        let (ts::[UI Element]) = concat $ zipWith ($) fs [1..]
+                        void $ getMainWindow #+ [ UI.div #. "tiril-right-pane scrollbar-style-1" 
+                                                         #+ ts ]
+                        jsUpdateSortable
                     else return ()
                 return card
            
-          createWordPack :: Translator a => [a] -> UI Element
-          createWordPack ws = UI.div #. "tiril-detail-container"
-                                     #+ (:) (mkElement "header") (createWord <$> ws)
-          createWord :: Translator a => a -> UI Element
-          createWord w = UI.div #. "tiril-translation-word draggable" 
-                                #+ [ UI.img # set UI.src "static/ico/drag.svg"
-                                   , UI.div #+ [ UI.span # set text (target w) 
-                                               , UI.sub # set text (verb w ++ " | " ++ lang w ++ " | " ++ iam w) ] ]
+          createWordPack :: Translator a => [a] -> Int-> [UI Element]
+          createWordPack ws idx = [ mkElement "header" #. "title"
+                                  , UI.ul #. "tiril-detail-container" 
+                                          # set UI.id_ ("bar_" ++ show idx)
+                                          #+ (createWord idx <$> ws)
+                                  ]
+
+          createWord :: Translator a => Int -> a -> UI Element
+          createWord idx w = UI.li #. "tiril-translation-word rounded"
+                                   #+ [ UI.span # set text (target w) 
+                                                , mkElement "caps" #+
+                                                        [mkElement "cap" #. "rounded" # set text (verb w)
+                                                        ,mkElement "cap" #. "rounded" # set text (lang w)
+                                                        ,mkElement "cap" #. "rounded" # set text (iam w) ] 
+                                                , mkElement "i" #. "js-remove" # set (attr "data-parent-id") ("bar_" ++ show idx) # set text "✖"
+                                      ]

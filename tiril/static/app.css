@@ -1,0 +1,212 @@
+/************************************************************/
+html {
+	background-image: -webkit-linear-gradient(bottom, #F4E2C9 20%, #F4D7C9 100%);
+	background-image: -ms-linear-gradient(bottom, #F4E2C9 20%, #F4D7C9 100%);
+	background-image: linear-gradient(to bottom, #F4E2C9 20%, #F4D7C9 100%);
+}
+
+    html, body {
+        min-height: 100%;
+        font-size: 20px;
+        font-family: 'Roboto', sans-serif;
+    }
+/************************************************************/
+/* A container below the menu */
+.tiril-main-window {
+    display: flex;
+    height: 90vh;
+}
+/************************************************************/
+/* A list of words on the left of the window, like in the Session-menu */
+.tiril-word-list {
+    flex-grow: 1;
+    max-width: 20em;
+    padding-left: 20px;
+    padding-top: 15px;
+    width: 30%;
+    overflow: auto;
+}
+/************************************************************/
+/* A container for a single word in the list of words on the left */
+.tiril-word {
+    overflow: hidden;
+    font-size: 1.5vw;
+    cursor: pointer;
+    height: auto;
+    width: calc(50% - 2em);
+    padding: 10px;
+    
+    margin-left: 0.5em;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    align-content: center;
+    border: none;
+	outline: 0;
+}
+
+	.tiril-word:hover {
+		color: #fff;
+		background: #5F9EDF;
+    }
+/************************************************************/
+/* The whole pane on the right */
+.tiril-right-pane {
+    padding: 4px;   
+    padding: 0px 10px;
+    flex-grow: 5;
+    overflow: auto;
+    flex-direction: column;
+}
+/************************************************************/
+/* For a single block of translations on the right */
+.tiril-detail-container {
+    margin: 15px;   
+    overflow: auto;
+    flex-direction: column;
+    padding: 0px;
+}
+
+    .tiril-detail-container header {
+        width: 100%;   
+        height: 20px;
+        background-color: #375e97;
+    }
+    
+    .tiril-detail-container div {
+        margin-left: 1.5em;
+    }
+/************************************************************/
+/* A container for a single translation expression on the right */
+.tiril-translation-word {
+    font-size: 1.5vw;
+    height: auto;
+    width: calc(100% - 2em);
+    padding: 10px;
+    border: 1px solid #e6e6e6;
+    border-style: none;
+    border-left-style: solid;
+    border-bottom-style: solid;
+    margin-left: 0.5em;
+    margin-bottom: 7px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+     li.tiril-translation-word { cursor: move;	cursor: -webkit-grabbing; }
+
+    .tiril-translation-word span {
+        display: flex;
+        margin-left: 0px;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    
+    .tiril-translation-word caps {
+        margin: 0px;
+        padding: 0px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .tiril-translation-word cap {
+        margin: 1px;
+        font-size: 60%;
+        font-style: italic;
+        white-space: nowrap;
+        color: #fff;
+        background-color: #5F9EDF;
+    }
+/************************************************************/
+/* A selection marker */
+.selected {
+}
+
+    div.selected {
+        flex-flow: column nowrap;
+    }
+
+   .selected .droparea {
+        border: 2px dashed lightgrey;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        font: 21pt bold arial;
+        color: lightgrey;
+        width: 50%;
+        margin-left: 25px;
+    }
+    
+     ul.droparea::after{
+         content: "Drop here";
+     }
+/************************************************************/
+/* Scrollbar */
+    .scrollbar-style-1::-webkit-scrollbar-track {
+        border-radius: 10px;
+        background-color: #fff;
+    }
+    
+    .scrollbar-style-1::-webkit-scrollbar {
+        width: 6px;
+        background-color: #F5F5F5;
+    }
+
+    .scrollbar-style-1::-webkit-scrollbar-thumb {
+        background-color: silver;
+        border-radius: 10px;
+    }
+/************************************************************/
+.title {
+	color: #fff;
+	padding: 3px 10px;
+	background-color: #FF7373;
+	z-index: 1000;
+}
+/************************************************************/
+ul { list-style: none; }
+/************************************************************/
+.sortable-ghost { 
+    opacity: .6;
+	background-color: #F4E2C9;
+    color: grey;
+ }
+ 
+    .sortable-ghost cap {
+        color: grey;
+        background-color: #F4E2C9;
+    }
+    
+    .sortable-ghost i { opacity: 0; }
+    
+    .sortable-drag i { opacity: 0; }
+/************************************************************/
+i {	opacity: 0; }
+/************************************************************/
+    .list li {
+        font-size: 75%;
+    }
+
+    .list li:not(.sortable-chosen) cap {
+        color: lightgrey;
+        background-color: #fff;
+    }
+/************************************************************/
+.editable {}
+
+    .editable li {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+    
+    }
+
+	.editable li:hover i {
+        transition: opacity .2s;
+		cursor: pointer;
+		color: #c00;
+		font-style: normal;
+		opacity: 1;
+	}
+    
