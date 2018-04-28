@@ -121,14 +121,14 @@ html {
     }
 /************************************************************/
 /* A selection marker */
-.selected {
+.word-is-selected-now {
 }
 
-    div.selected {
+    div.word-is-selected-now {
         flex-flow: column nowrap;
     }
 
-   .selected .droparea {
+   .word-is-selected-now .show-drop-area {
         border: 2px dashed lightgrey;
         -webkit-border-radius: 5px;
         border-radius: 5px;
@@ -138,7 +138,7 @@ html {
         margin-left: 25px;
     }
     
-     ul.droparea::after{
+     ul.show-drop-area::after{
          content: "Drop here";
      }
 /************************************************************/
@@ -193,20 +193,20 @@ i {	opacity: 0; }
         background-color: #fff;
     }
 /************************************************************/
-.editable {}
+/* For editing a word in the left pane. In particular "i" rule enables the delete button */
+.word-is-editable-now {}
 
-    .editable li {
+    .word-is-editable-now li {
         display: flex;
         flex-flow: row nowrap;
         justify-content: space-between;
     
     }
 
-	.editable li:hover i {
+	.word-is-editable-now li:hover i {
         transition: opacity .2s;
 		cursor: pointer;
 		color: #c00;
 		font-style: normal;
 		opacity: 1;
 	}
-    
