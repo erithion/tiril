@@ -1,4 +1,5 @@
 cmake_minimum_required( VERSION 3.11.0 )
+include(FetchContent)
 # Variables the user may re-define from the outside: 
 #   BOOST_DIR             - the root folder of the Boost library
 #   TIRIL_BUILD_DIR             - controls the build output folder
@@ -16,10 +17,25 @@ endif()
 
 add_subdirectory    ( viril )
 
+# External projects Tiril depends on
+message( STATUS "Fetching Bootstrap ..." )
+FetchContent_Declare        ( bootstrap
+                              URL https://github.com/twbs/bootstrap/releases/download/v4.1.0/bootstrap-4.1.0-dist.zip )
+FetchContent_GetProperties  ( bootstrap )
+if( NOT bootstrap_POPULATED )
+    FetchContent_Populate   ( bootstrap )
+endif()
+# TODO: Add fetching Sortable
+
 execute_process     ( COMMAND stack setup WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril )
 add_custom_target   ( tiril ALL stack build WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril )
 
 install             ( CODE "execute_process (COMMAND stack install --verbosity error --local-bin-path ${TIRIL_BUILD_DIR}/server WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril)" )
 
-install             ( DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}/tiril/static   
-                      DESTINATION ${TIRIL_BUILD_DIR}/server )
+install             ( DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}/tiril/js/   
+                      DESTINATION ${TIRIL_BUILD_DIR}/server/static )
+                      
+install             ( DIRECTORY   ${bootstrap_SOURCE_DIR}/css/   
+                      DESTINATION ${TIRIL_BUILD_DIR}/server/static )
+install             ( DIRECTORY   ${bootstrap_SOURCE_DIR}/js/   
+                      DESTINATION ${TIRIL_BUILD_DIR}/server/static )
