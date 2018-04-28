@@ -186,7 +186,8 @@ uiSetup win = do
                                         
     -- JS: Bootstrap + Sortable + own
     void $ getBody win #+ [ mkElement "script" # set UI.src "/static/bootstrap.min.js"
-                          , mkElement "script" # set UI.src "/static/jquery.fn.sortable.js"
+--                          , mkElement "script" # set UI.src "/static/jquery.fn.sortable.js"
+                          , mkElement "script" # set UI.src "/static/sortable.js"
                           , mkElement "script" # set UI.src "/static/app.js" ]
     where createMainWindow :: UI Element
           createMainWindow = UI.div #. "tiril-main-window"

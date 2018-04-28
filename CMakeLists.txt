@@ -25,7 +25,15 @@ FetchContent_GetProperties  ( bootstrap )
 if( NOT bootstrap_POPULATED )
     FetchContent_Populate   ( bootstrap )
 endif()
-# TODO: Add fetching Sortable
+
+message( STATUS "Fetching Sortable ..." )
+FetchContent_Declare        ( sortable
+                              GIT_REPOSITORY https://github.com/RubaXa/Sortable
+                              GIT_TAG 1.4.0 )
+FetchContent_GetProperties  ( sortable )
+if( NOT sortable_POPULATED )
+    FetchContent_Populate   ( sortable )
+endif()
 
 execute_process     ( COMMAND stack setup WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril )
 add_custom_target   ( tiril ALL stack build WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril )
@@ -39,3 +47,8 @@ install             ( DIRECTORY   ${bootstrap_SOURCE_DIR}/css/
                       DESTINATION ${TIRIL_BUILD_DIR}/server/static )
 install             ( DIRECTORY   ${bootstrap_SOURCE_DIR}/js/   
                       DESTINATION ${TIRIL_BUILD_DIR}/server/static )
+
+install             ( FILES       ${sortable_SOURCE_DIR}/Sortable.js
+                      DESTINATION ${TIRIL_BUILD_DIR}/server/static )
+install             ( FILES       ${sortable_SOURCE_DIR}/Sortable.min.js
+                      DESTINATION ${TIRIL_BUILD_DIR}/server/static )                      
