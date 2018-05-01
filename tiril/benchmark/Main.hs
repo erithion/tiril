@@ -50,7 +50,7 @@ asyncTranslateApplicative = runConcurrently . uncurry (liftA2 (,)) . (Concurrent
             return $ either (const []) id res
             
 asyncTranslate :: String -> IO ([[LexinWord]], [Tir])
-asyncTranslate word = concurrently (lexinTranslate . T.pack $ word) (googleTranslate . T.pack $ word)
+asyncTranslate = uncurry concurrently . (lexinTranslate &&& googleTranslate) . T.pack
     where googleTranslate :: T.Text -> IO [Tir]
           googleTranslate word = do
             res <- googleTranslateWithT word
