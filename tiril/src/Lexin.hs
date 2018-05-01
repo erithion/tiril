@@ -12,6 +12,8 @@ import qualified Text.XML.HXT.DOM.QualifiedName as XN
 import qualified Data.Text.Lazy                 as T
 import           Data.Char
 import           Data.List
+import           System.CPUTime
+import           Text.Printf
 
 data LexinWord = LexinWord
     { lexinWord :: T.Text
@@ -40,7 +42,6 @@ instance Translator LexinWord where
 1. request words count first and everything on a single page up front
 2. think of a browser resending the request upon long time response
 3. REMOVE ALL BLOCKS WHICH DO NOT CONTAIN SEARCHED WORD
-4. consider the possibility of lazy match in groups implementation 
 5. consider long time query processing 
 6. implement other languages and directions 
 7. make error handling similar to google translate -}
@@ -48,11 +49,10 @@ lexinTranslate :: T.Text -> IO [[LexinWord]]
 lexinTranslate x =
     do
         let remote = "http://lexin.udir.no/?search=" ++ T.unpack x ++ "&dict=nbo-ru-maxi&ui-lang=NBO&startingfrom=&count=100"
-        let doc = readDocument [withHTTP [], withParseHTML yes, withWarnings no, withInputEncoding utf8] remote
-        putStrLn "In lex"
+        let doc = {-# SCC "Lexin_parser_read_http" #-} readDocument [withHTTP [], withParseHTML yes, withWarnings no, withInputEncoding utf8 ] remote
         (xxs' :: [[LexinWord]]) 
-            <-  runX $ doc >>> (deep ( hasName "table" >>> hasAttrValue "id" (=="tblHitsTable") /> hasName "tr" )) 
-                           >>. map (XN.mkElement (XN.mkName "translation block") []) . groups 
+            <- {-# SCC "Lexin_parser" #-} runX $ doc >>> (deep ( hasName "table" >>> hasAttrValue "id" (=="tblHitsTable") /> hasName "tr" )) 
+                           >>. map (XN.mkElement (XN.mkName "translation block") []) . groupBlocks 
                            >>> deep ( proc elem -> do 
                                         e <- (hasName "td" >>> hasAttr "data-type" >>> hasAttr "data-lang") -< elem
                                         e <- notContaining this (Text.XML.HXT.Core.getChildren >>> (hasAttrValue "class" (=="clsUtt") <+> hasAttrValue "class" (=="clsKat") ) ) -< e
@@ -65,19 +65,13 @@ lexinTranslate x =
                                     ) >>. (:[])
         return xxs'
     where
-        isSeparator ar =  (not . null $ (runLA (hasAttrValue "class" (=="sep")) $ ar)) 
-                       || (null $ (runLA getAttrl $ ar))
-                       -- TODO: see if the checks above are necessary
+        isSeparator ar =  (null $ (runLA getAttrl $ ar)) 
                        || (not . null $ (runLA (hasAttrValue "class" (isInfixOf "separator")) $ ar))
-
-        groups :: [XmlTree] -> [[XmlTree]]                                                   
-        groups ls = reverse $ reverse <$> (groups' . reverse $ ls) -- separator always goes first, so we reverse the list for groups' to work properly
-        groups' [] =  []
-        groups' ls = 
+                       
+        groupBlocks :: [XmlTree] -> [[XmlTree]]                                                   
+        groupBlocks [] = []
+        groupBlocks ls =
             let 
-                e@(f, s) = break isSeparator ls
-                (f', s') = 
-                    case s of 
-                        []        -> e
-                        (n:ls)    -> (f ++ [n], ls)
-            in f':(groups' s')
+                (sep, tail) = span isSeparator ls
+                (body, ts) = break isSeparator tail
+            in (sep ++ body):groupBlocks ts

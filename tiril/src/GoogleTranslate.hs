@@ -6,11 +6,13 @@ where
 import           Type
 import qualified Data.Text.Lazy                 as T
 import qualified Data.Text.Lazy.Encoding        as TE
-
 import           Text.ParserCombinators.Parsec          (oneOf, manyTill, anyChar, string, char, eof, ParseError)
 import           Text.Parsec.Prim                       (runParser, Parsec, (<|>), (<?>), many, skipMany, runP)
 import           Network.HTTP.Simple
 import qualified Control.Arrow                  as Ar 
+import           System.CPUTime
+import           Text.Printf
+
 
 data Tir = Tir
     { sourceText :: T.Text
@@ -70,11 +72,12 @@ googleTranslateWithT x =
         -- TODO: adjust properly to configure languages within the request; 
         req <- parseRequest $ ("https://translate.googleapis.com/translate_a/single?client=gtx&ie=UTF-8&oe=UTF-8&sl=no&tl=ru&dt=t&q=" ++ T.unpack x)
         response <- httpLBS req
-        putStrLn $ "In goo " ++ show (getResponseStatusCode response) ++ " " ++ show (getResponseHeader "Content-Type" response)
         let (k :: Either ParseError [Tir]) = runGoogleTParser . TE.decodeUtf8 . getResponseBody $ response
         -- arrow over Left to transform ParseError into T.Text
         return . Ar.left (T.pack . show) $ k
 
+        
+        
 {- TODO: Consider other types of translation requests, see below
 
 https://translate.googleapis.com/translate_a/single?client=gtx&ie=UTF-8&oe=UTF-8&sl=en&tl=ru&dt=t&q=hello

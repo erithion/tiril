@@ -2,10 +2,10 @@ module BootstrapMenu
 (evalMenu, navbar, search, link, newDropdown, dropdownDivider, dropdownItem)
 where
 
-import           Control.Monad                                                  (void)
-import           Control.Monad.State
-import qualified Graphics.UI.Threepenny         as UI
-import           Graphics.UI.Threepenny.Core                                    hiding (get)
+import           Control.Monad                              (void)
+import           Control.Monad.State        
+import qualified Graphics.UI.Threepenny         as UI       
+import           Graphics.UI.Threepenny.Core                hiding (get)
             
 data Navbar         = Bar [Menu]
                     | Search
@@ -58,9 +58,9 @@ dropdownDivider = do
     put . Container n $ new
     get
 
--- In spite the fact that elsewhere "UI void" would normally mean the function never returns (or just throws),
+-- In spite of the fact that elsewhere "UI void" would normally mean the function never returns (or just throws),
 -- in the case of Threepenny the function still must return.
--- It seems that the author uses this kind of syntax to claim that he still doesn't care of the function result.
+-- It seems that the author uses this kind of syntax to proclaim that he still doesn't care of the function result.
 -- We'll take advantage of that fact and just ignore the result to avoid type variables in ADTs above
 dropdownItem :: String -> (() -> UI any) -> State Container Container
 dropdownItem name handler = do
@@ -137,69 +137,3 @@ runDropdown (Item name handler) = do
     element a #. "dropdown-item"
         # set UI.href "#"
         # set text name
-                                
-{-  Old plain menu for future references
-bootstrapMenu sessionHandler = do
-    a <- UI.a    
-    on UI.click a sessionHandler
-    mkElement "nav" #. "navbar sticky-top navbar-expand-md navbar-light bg-light"
-                    #+ [ UI.a #. "navbar-brand"
-                              # set UI.href "#"
-                              # set text "Tiril"
-                       , UI.button #. "navbar-toggler"
-                                   # set UI.type_ "button"
-                                   # set (attr "data-toggle") "collapse"
-                                   # set (attr "data-target") "#navbarSupportedContent"
-                                   # set (attr "aria-controls") "navbarSupportedContent"
-                                   # set (attr "aria-expanded") "false"
-                                   # set (attr "aria-label") "Toggle navigation"
-                                   #+ [UI.span #. "navbar-toggler-icon"]
-                       , UI.div #. "collapse navbar-collapse"
-                                # set UI.id_ "navbarSupportedContent"
-                                #+ [ UI.ul #. "navbar-nav mr-auto"
-                                           #+ [ UI.li #. "nav-item active"    -- Single link
-                                                      #+ [ UI.a #. "nav-link"  
-                                                                # set UI.href "#"
-                                                                # set text "Some link"
-                                                         ]
-                                              , UI.li #. "nav-item dropdown"  -- Dropdown menu
-                                                      #+ [ UI.a #. "nav-link dropdown-toggle"
-                                                                # set UI.href "#"
-                                                                # set UI.id_ "navbarDropdown"
-                                                                # set (attr "role") "button"
-                                                                # set (attr "data-toggle") "dropdown"
-                                                                # set (attr "aria-haspopup") "true"
-                                                                # set (attr "aria-expanded") "false"
-                                                                # set text "Some dropdown"
-                                                         , UI.div #. "dropdown-menu"
-                                                                  # set (attr "aria-labelledby") "navbarDropdown"
-                                                                  #+ [ element a #. "dropdown-item"
-                                                                                 # set UI.href "#"
-                                                                                 # set text "Session"
-                                                                     , UI.a #. "dropdown-item"
-                                                                            # set UI.href "#"
-                                                                            # set text "Some another action"
-                                                                     , UI.div #. "dropdown-divider"
-                                                                     , UI.a #. "dropdown-item"
-                                                                            # set UI.href "#"
-                                                                            # set text "Some once another action"
-                                                                     ]
-                                                         ]
-                                              , UI.li #. "nav-item"  -- Disabled
-                                                      #+ [ UI.a #. "nav-link disabled"
-                                                                # set UI.href "#"
-                                                                # set text "Disabled" 
-                                                         ]
-                                              ]
-                                   , UI.form #. "form-inline my-2 my-lg-0" -- search
-                                             #+ [ UI.input #. "form-control mr-sm-2"
-                                                           # set UI.type_ "search"
-                                                           # set (attr "placeholder") "Search"
-                                                           # set (attr "aria-label") "Search"
-                                                , UI.button #. "btn btn-outline-success my-2 my-sm-0"
-                                                            # set UI.type_ "submit"
-                                                            # set text "Search"
-                                                ]
-                                   ]
-                       ]
--}

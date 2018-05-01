@@ -27,6 +27,7 @@ import qualified Graphics.UI.Threepenny.Core    as TP        (get)
 import           Control.Concurrent                          (forkIO)
 import           Data.Tuple.Extra                            ((***), (&&&))
 import           Data.Either
+import           Control.Concurrent.Async                    hiding(link)-- (concurrently, Concurrently, runConcurrently)
 
 import           Type
 import           GoogleTranslate
@@ -175,15 +176,22 @@ uiSetup win = do
                     isSelectedNow <- jsToggleCard card
                     if isSelectedNow /= 0 then do
                         tr <- liftIO $ do
-                            (lex :: [[LexinWord]]) <- lexinTranslate . T.pack $ word
-                            gooRes <- googleTranslateWithT . T.pack $ word
-                            -- TODO: Think of better ways to output the error
-                            M.when (isLeft gooRes) $ do
-                                -- We are not afraid of matching Left only,
-                                -- since we had the guard "when" before coming here
-                                let (Left x) = gooRes
-                                putStrLn . T.unpack $ x
-                            let (goo :: [Tir]) = either (const []) id gooRes
+                            let googleTranslate word = do
+                                    res <- googleTranslateWithT word
+                                    -- TODO: Think of better ways to output the error
+                                    M.when (isLeft res) $ do
+                                        -- We are not afraid of matching Left only,
+                                        -- since we had the guard "when" before coming here
+                                        let (Left x) = res
+                                        -- and we just reporting the error on the screen
+                                        putStrLn . T.unpack $ x
+                                    let (ret :: [Tir]) = either (const []) id res
+                                    return ret
+
+                            -- Run "stack bench" to see the results of async and sequential translation benchmarking
+                            (lex, goo) <- 
+                                uncurry concurrently . (lexinTranslate &&& googleTranslate) . T.pack $ word
+
                             return (goo, lex)
                         -- We need a unique index for the each block, 
                         -- so the idea is to create a list of curry'ed functions first 
@@ -195,7 +203,7 @@ uiSetup win = do
                         jsUpdateSortable
                     else return ()
                 return card
-           
+          
           createWordPack :: Translator a => [a] -> Int-> [UI Element]
           createWordPack ws idx = [ mkElement "header" #. "title"
                                   , UI.ul #. "tiril-detail-container" 

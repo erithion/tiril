@@ -1,6 +1,6 @@
 name:                tiril
 version:             0.1.0.0
-github:              "githubuser/tiril"
+github:              "erithion/tiril"
 license:             MIT
 author:              "Artyom Bondartsov"
 maintainer:          "erithion@gmail.com"
@@ -40,6 +40,7 @@ dependencies:
 - filepath
 - mtl
 - extra
+- async
 
 library:
   source-dirs: src
@@ -48,7 +49,12 @@ executables:
   tiril-exe:
     main:                Main.hs
     source-dirs:         app
-    ghc-options:
+    ghc-options: 
+#    - -auto-all 
+#    - -caf-all
+#    - -fforce-recomp
+#    - -O2
+
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
@@ -65,3 +71,17 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - tiril
+
+benchmarks:
+  tiril-benchmarks:
+    source-dirs: benchmark
+    main: Main.hs
+    dependencies:
+    - base
+    - criterion
+    - tiril
+    - deepseq
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
