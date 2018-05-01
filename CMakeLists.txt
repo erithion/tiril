@@ -4,6 +4,7 @@ include(FetchContent)
 #   BOOST_DIR             - the root folder of the Boost library
 #   TIRIL_BUILD_DIR             - controls the build output folder
 #   INSTALL_VLC           - if defined, Viril will be built into VLC and installed into the output folder along with it
+#   PROFILE               - if defined, Tiril is built with profiling information within
 
 if( NOT DEFINED BOOST_DIR )
     set     ( BOOST_DIR          C:/ms/boost_1_66_0 )
@@ -35,20 +36,25 @@ if( NOT sortable_POPULATED )
     FetchContent_Populate   ( sortable )
 endif()
 
-execute_process     ( COMMAND stack setup WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril )
-add_custom_target   ( tiril ALL stack build WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril )
+execute_process             ( COMMAND stack setup WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril )
+if (DEFINED PROFILE)
+    message                 ( STATUS "PROFILE flag is set to ${PROFILE}. Tiril will be built with profile information" )
+    add_custom_target       ( tiril ALL stack build --profile --ghc-options="-auto-all -caf-all -fforce-recomp -O2" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril )
+    install                 ( CODE "execute_process (COMMAND stack install --verbosity error --profile --ghc-options=\"-auto-all -caf-all -fforce-recomp -O2\" --local-bin-path ${TIRIL_BUILD_DIR}/server WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril)" )
+else()
+    add_custom_target       ( tiril ALL stack build WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril )
+    install                 ( CODE "execute_process (COMMAND stack install --verbosity error --local-bin-path ${TIRIL_BUILD_DIR}/server WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril)" )
+endif()
 
-install             ( CODE "execute_process (COMMAND stack install --verbosity error --local-bin-path ${TIRIL_BUILD_DIR}/server WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril)" )
-
-install             ( DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}/tiril/js/   
-                      DESTINATION ${TIRIL_BUILD_DIR}/server/static )
+install                     ( DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}/tiril/js/   
+                              DESTINATION ${TIRIL_BUILD_DIR}/server/static )
                       
-install             ( DIRECTORY   ${bootstrap_SOURCE_DIR}/css/   
-                      DESTINATION ${TIRIL_BUILD_DIR}/server/static )
-install             ( DIRECTORY   ${bootstrap_SOURCE_DIR}/js/   
-                      DESTINATION ${TIRIL_BUILD_DIR}/server/static )
+install                     ( DIRECTORY   ${bootstrap_SOURCE_DIR}/css/   
+                              DESTINATION ${TIRIL_BUILD_DIR}/server/static )
+install                     ( DIRECTORY   ${bootstrap_SOURCE_DIR}/js/   
+                              DESTINATION ${TIRIL_BUILD_DIR}/server/static )
 
-install             ( FILES       ${sortable_SOURCE_DIR}/Sortable.js
-                      DESTINATION ${TIRIL_BUILD_DIR}/server/static )
-install             ( FILES       ${sortable_SOURCE_DIR}/Sortable.min.js
-                      DESTINATION ${TIRIL_BUILD_DIR}/server/static )                      
+install                     ( FILES       ${sortable_SOURCE_DIR}/Sortable.js
+                              DESTINATION ${TIRIL_BUILD_DIR}/server/static )
+install                     ( FILES       ${sortable_SOURCE_DIR}/Sortable.min.js
+                              DESTINATION ${TIRIL_BUILD_DIR}/server/static )                      
