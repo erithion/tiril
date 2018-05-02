@@ -20,7 +20,7 @@ data LexinWord = LexinWord
     , lexinLang :: T.Text
     , lexinType :: T.Text
     }
-    deriving (Show)
+    deriving (Show, Eq)
 
 instance Translator LexinWord where
     source = const "DND"

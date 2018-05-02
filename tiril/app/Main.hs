@@ -81,7 +81,8 @@ httpServer req respond = join $ respond <$>
         ("lex":[x]) -> do
             tx <- lexinTranslate . T.fromStrict $ x
             -- TODO: Currently you take merely 2 sections. Think of a proper extension to give out all available data
-            return . index . take 2 $ tx
+--            return . index . take 2 $ tx
+            return . index $ tx
         ("add":[x]) -> do
             conn <- connectSqlite3 databaseName
             r <- addWord conn . T.fromStrict $ x

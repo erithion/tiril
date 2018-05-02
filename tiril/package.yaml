@@ -63,18 +63,20 @@ executables:
 
 tests:
   tiril-test:
-    main:                Spec.hs
-    source-dirs:         test
+    main:                Main.hs
+    source-dirs:         _test
     ghc-options:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+#    - -main-is ./_test/Spec.hs
     dependencies:
     - tiril
+    - hspec
 
 benchmarks:
   tiril-benchmarks:
-    source-dirs: benchmark
+    source-dirs: _bench
     main: Main.hs
     dependencies:
     - base
