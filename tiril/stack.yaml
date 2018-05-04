@@ -67,10 +67,10 @@ extra-deps:
 # arch: x86_64
 #
 # Extra directories used by stack for building
-extra-include-dirs: 
-- C:\dev\sqlite
-extra-lib-dirs: 
-- C:\dev\sqlite
+#extra-include-dirs: 
+#- C:\dev\sqlite
+#extra-lib-dirs: 
+#- C:\dev\sqlite
 #
 # Allow a newer minor version of GHC than the snapshot specifies
 # compiler-check: newer-minor

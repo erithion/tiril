@@ -58,10 +58,11 @@ dropdownDivider = do
     put . Container n $ new
     get
 
--- In spite of the fact that elsewhere "UI void" would normally mean the function never returns (or just throws),
+-- In spite that elsewhere "UI void" normally would mean that a function never returns (or just throws),
 -- in the case of Threepenny the function still must return.
--- It seems that the author uses this kind of syntax to proclaim that he still doesn't care of the function result.
--- We'll take advantage of that fact and just ignore the result to avoid type variables in ADTs above
+-- It seems that the author uses this kind of syntax to proclaim that he just doesn't care of the function's result.
+-- We'll take advantage of it and just ignore the result as well, 
+-- otherwise we would have to introduce an unused type variable throughout all the ADTs above, which is excessive
 dropdownItem :: String -> (() -> UI any) -> State Container Container
 dropdownItem name handler = do
     (Container n ls) <- get
