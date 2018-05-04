@@ -15,4 +15,10 @@ class Translator a where
     verb :: a -> String
     -- whence this translation came
     iam :: a -> String
+    
+    
+class NewWord a where
+    newWord :: a -> String
+    newLang :: a -> String
+    newAgent :: a -> String
 
