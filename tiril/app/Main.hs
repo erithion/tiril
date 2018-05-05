@@ -17,8 +17,6 @@ import           Control.Monad                                                  
 import qualified Control.Monad                  as M        (when)
 import           Database.HDBC.Sqlite3                      (connectSqlite3)
 import qualified Database.HDBC                  as HDBC     (disconnect, withWConn, ConnWrapper(..))
-import           Data.FileEmbed                             (embedStringFile)
-import           Data.String                                (IsString)
 import           System.Environment                         (getExecutablePath)
 import           System.FilePath                            (dropFileName, (</>))
 import qualified Graphics.UI.Threepenny         as UI
@@ -36,11 +34,10 @@ import           Session
 import           Db
 import           BootstrapMenu
 import           Windows
- 
-databaseName =  "tiril.db" 
 
-schema :: IsString a => a
-schema = $(embedStringFile "./app/schema.sql")
+import qualified Data.ByteString
+
+databaseName =  "tiril.db" 
 
 serverPort = 3000
 uiPort = 3001
@@ -50,28 +47,20 @@ main = do
     let dbPath = exeDir </> databaseName
     putStrLn $ "DB path " ++ dbPath
     startOk <- dbExists dbPath
-    startOk <- if not startOk then do
-                    res <- dbCreate dbPath schema
-                    case res of 
-                        Left v -> do 
-                            putStrLn . show $ v
-                            return False
-                        _ -> dbExists dbPath
-               else return True
-    if startOk then do
-        putStrLn $ "AppUI at http://localhost:" ++ show uiPort
-        let static = exeDir </> "static"
-        putStrLn $ "Static dir " ++ show static
-        let config = defaultConfig
-                    { jsPort   = Just uiPort
-                    , jsStatic = Just static
---                    , jsLog = const (return ()) 
-                    }
-        void $ forkIO $ startGUI config $ uiSetup
+    M.when (not startOk) $ initDb 
         
-        putStrLn $ "HTTP-server at http://localhost:" ++ show serverPort
-        run serverPort httpServer
-    else return ()
+    putStrLn $ "AppUI at http://localhost:" ++ show uiPort
+    let static = exeDir </> "static"
+    putStrLn $ "Static dir " ++ show static
+    let config = defaultConfig
+                { jsPort   = Just uiPort
+                , jsStatic = Just static
+--                , jsLog = const (return ()) 
+                }
+    void $ forkIO $ startGUI config $ uiSetup
+    
+    putStrLn $ "HTTP-server at http://localhost:" ++ show serverPort
+    run serverPort httpServer
  
 httpServer :: Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> IO ResponseReceived
 httpServer req respond = join $ respond <$>
@@ -97,7 +86,7 @@ httpServer req respond = join $ respond <$>
 uiSetup :: Window -> UI ()
 uiSetup win = do
     return win # set UI.title "Tiril"
-    -- CSS: Bootstrap + Sortable + own
+    -- CSS: Bootstrap + the rest
     getHead win 
         #+ [ UI.meta 
                 # set UI.name "viewport"
@@ -105,6 +94,9 @@ uiSetup win = do
            , UI.link 
                 # set UI.rel "stylesheet"
                 # set UI.href "/static/bootstrap.min.css"
+           , UI.link 
+                # set UI.rel "stylesheet"
+                # set UI.href "/static/perfect-scrollbar.css"
            , UI.link 
                 # set UI.rel "stylesheet"
                 # set UI.href "/static/app.css" ]
@@ -121,10 +113,11 @@ uiSetup win = do
 
     getBody win #+ [element mainMenu, createMainWindow]
                                         
-    -- JS: Bootstrap + Sortable + own
+    -- JS: Bootstrap + the rest
     getBody win 
         #+ [ mkElement "script" # set UI.src "/static/bootstrap.min.js"
            , mkElement "script" # set UI.src "/static/sortable.js"
+           , mkElement "script" # set UI.src "/static/perfect-scrollbar.min.js"
            , mkElement "script" # set UI.src "/static/app.js" ]
            
     return ()
@@ -134,13 +127,17 @@ uiSetup win = do
             clearMainWindow
             case sessionWords of
                 (Left error)    -> createMessageRed "Error" . show $ error
-                (Right words)   -> 
-                    getMainWindow 
+                (Right words)   -> do
+                    ui <- getMainWindow 
                         #+ [ UI.div 
-                            #. "tiril-word-list scrollbar-style-1" 
-                            # set (attr "style") "display: flex; flex-flow: column nowrap;"
+                            #. "tiril-left-pane relative"
                             #+ (makeCard <$> words) ]
+                    jsInitSimpleScrollbar ".tiril-left-pane"
+                    return ui
+                            
 
+          jsInitSimpleScrollbar :: String -> UI ()
+          jsInitSimpleScrollbar = runFunction . ffi "var ps = new PerfectScrollbar(%1)"
           jsToggleCard :: Element -> UI Int
           jsToggleCard = callFunction . ffi "uiToggleCard(%1)"
           jsUpdateSortable :: UI ()
@@ -149,7 +146,9 @@ uiSetup win = do
           makeCard :: NewWord w => w -> UI Element
           makeCard word = do
             card <- UI.div
-                    #+ [ UI.div #. "tiril-word rounded" # set text (newWord word)
+                    #+ [ UI.div #. "tiril-word rounded"
+                                #+ [ UI.span #. "m-1" # set text (newWord word)
+                                   , UI.span #. "badge badge-warning align-self-start" # set (attr "style") "font-size:50%;" # set text (newLang word) ]
                        , UI.ul #. "list" ]
                            
             on UI.click card $ const $ do
@@ -178,9 +177,10 @@ uiSetup win = do
                     -- so that we could zip them with a list of indices later. So neat! I love Haskell!
                     let (fs :: [(Int->[UI Element])]) = uncurry (:) . (createWordPack *** (<$>) createWordPack) $ tr
                     let (ts :: [UI Element]) = concat $ zipWith ($) fs [1..]
-                    void $ getMainWindow #+ [ UI.div #. "tiril-right-pane scrollbar-style-1" 
+                    void $ getMainWindow #+ [ UI.div #. "tiril-right-pane relative" 
                                                      #+ ts ]
                     jsUpdateSortable
+                    jsInitSimpleScrollbar ".tiril-right-pane"
                 else return ()
             return card
           
@@ -200,9 +200,9 @@ uiSetup win = do
                 #+ [ UI.span 
                         # set text (target w) 
                    , mkElement "caps" 
-                        #+  [ mkElement "cap" #. "rounded" # set text (verb w)
-                            , mkElement "cap" #. "rounded" # set text (lang w)
-                            , mkElement "cap" #. "rounded" # set text (iam w) ] 
+                        #+  [ mkElement "cap" #. "mr-1 mb-1 badge badge-dark" # set (attr "style") "font-size:50%;" # set text (verb w)
+                            , mkElement "cap" #. "mr-1 mb-1 badge badge-warning" # set (attr "style") "font-size:50%;" # set text (lang w)
+                            , mkElement "cap" #. "mr-1 mb-1 badge badge-info" # set (attr "style") "font-size:50%;" # set text (iam w) ] 
                    , mkElement "i" 
                         #. "js-remove" 
                         # set (attr "data-parent-id") ("bar_" ++ show idx) 

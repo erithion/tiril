@@ -24,8 +24,18 @@ html {
     padding-left: 20px;
     padding-top: 15px;
     width: 30%;
-    overflow: auto;
+/*    overflow: auto; */
+    overflow:hidden;
 }
+    .tiril-word-list:hover {
+/*        overflow:auto;*/
+    }
+    
+/************************************************************/
+.tiril-left-pane {
+    width: 25%;
+}
+    
 /************************************************************/
 /* A container for a single word in the list of words on the left */
 .tiril-word {
@@ -33,7 +43,7 @@ html {
     font-size: 1.5vw;
     cursor: pointer;
     height: auto;
-    width: calc(50% - 2em);
+    width: calc(100% - 2em);
     padding: 10px;
     
     margin-left: 0.5em;
@@ -111,14 +121,6 @@ html {
         justify-content: flex-end;
     }
 
-    .tiril-translation-word cap {
-        margin: 1px;
-        font-size: 60%;
-        font-style: italic;
-        white-space: nowrap;
-        color: #fff;
-        background-color: #5F9EDF;
-    }
 /************************************************************/
 /* A selection marker */
 .word-is-selected-now {
@@ -142,22 +144,6 @@ html {
          content: "Drop here";
      }
 /************************************************************/
-/* Scrollbar */
-    .scrollbar-style-1::-webkit-scrollbar-track {
-        border-radius: 10px;
-        background-color: #fff;
-    }
-    
-    .scrollbar-style-1::-webkit-scrollbar {
-        width: 6px;
-        background-color: #F5F5F5;
-    }
-
-    .scrollbar-style-1::-webkit-scrollbar-thumb {
-        background-color: silver;
-        border-radius: 10px;
-    }
-/************************************************************/
 .title {
 	color: #fff;
 	padding: 3px 10px;
@@ -173,11 +159,6 @@ ul { list-style: none; }
     color: grey;
  }
  
-    .sortable-ghost cap {
-        color: grey;
-        background-color: #F4E2C9;
-    }
-    
     .sortable-ghost i { opacity: 0; }
     
     .sortable-drag i { opacity: 0; }
@@ -188,10 +169,6 @@ i {	opacity: 0; }
         font-size: 75%;
     }
 
-    .list li:not(.sortable-chosen) cap {
-        color: lightgrey;
-        background-color: #fff;
-    }
 /************************************************************/
 /* For editing a word in the left pane. In particular "i" rule enables the delete button */
 .word-is-editable-now {}
@@ -210,3 +187,10 @@ i {	opacity: 0; }
 		font-style: normal;
 		opacity: 1;
 	}
+
+/************************************************************/
+/* Used with perfect-scrollbar */
+    
+.relative {
+    position: relative;
+}    

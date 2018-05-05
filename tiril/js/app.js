@@ -1,16 +1,12 @@
-var isLeftPaneSortingInitialized = false;
 function initializeLeftPaneSorting(){
-    if (!isLeftPaneSortingInitialized){
-        var arr = $(".tiril-word-list"),
-            len = arr.length;
+    var arr = $(".tiril-left-pane"),
+        len = arr.length;
     
-        for (i = 0; i < len; ++i) {
-            Sortable.create( arr[i], {
-                group: "different",
-                animation: 150
-            });
-        }
-        isLeftPaneSortingInitialized = true;
+    for (i = 0; i < len; ++i) {
+        Sortable.create( arr[i], {
+            group: "different",
+            animation: 150
+        });
     }
 }
 

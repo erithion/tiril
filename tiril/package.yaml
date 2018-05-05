@@ -35,7 +35,12 @@ dependencies:
 - hxt-http
 - HDBC
 - HDBC-sqlite3
-- file-embed
+
+- persistent
+- persistent-sqlite
+- persistent-template
+- esqueleto
+
 - threepenny-gui
 - filepath
 - mtl

@@ -60,6 +60,16 @@ if( NOT sortable_POPULATED )
     FetchContent_Populate       ( sortable )
 endif()
 
+####################################### Perfect-scrollbar
+message                         ( STATUS "Fetching perfect-scrollbar ..." )
+FetchContent_Declare            ( scrollbar
+                                  GIT_REPOSITORY https://github.com/utatti/perfect-scrollbar
+                                  GIT_TAG 1.3.0 )
+FetchContent_GetProperties      ( scrollbar )
+if( NOT scrollbar_POPULATED )
+    FetchContent_Populate       ( scrollbar )
+endif()
+
 #######################################
 
 execute_process             ( COMMAND stack setup WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tiril )
@@ -87,4 +97,9 @@ install                     ( DIRECTORY   ${bootstrap_SOURCE_DIR}/js/
 install                     ( FILES       ${sortable_SOURCE_DIR}/Sortable.js
                               DESTINATION ${TIRIL_BUILD_DIR}/server/static )
 install                     ( FILES       ${sortable_SOURCE_DIR}/Sortable.min.js
-                              DESTINATION ${TIRIL_BUILD_DIR}/server/static )                      
+                              DESTINATION ${TIRIL_BUILD_DIR}/server/static )
+                              
+install                     ( FILES       ${scrollbar_SOURCE_DIR}/dist/perfect-scrollbar.min.js
+                              DESTINATION ${TIRIL_BUILD_DIR}/server/static )
+install                     ( FILES       ${scrollbar_SOURCE_DIR}/css/perfect-scrollbar.css
+                              DESTINATION ${TIRIL_BUILD_DIR}/server/static )                                                    
