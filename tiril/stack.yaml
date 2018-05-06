@@ -44,7 +44,7 @@ packages:
 # Dependency packages to be pulled from upstream that are not in the resolver
 # (e.g., acme-missiles-0.3)
 extra-deps: 
-- HDBC-sqlite3-2.3.3.1
+#- HDBC-sqlite3-2.3.3.1
 
 #- google-translate-0.4.1
 

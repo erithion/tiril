@@ -15,10 +15,9 @@ import           Network.HTTP.Types                         (status200)
 import           Blaze.ByteString.Builder                   (copyByteString)
 import           Control.Monad                                                  hiding (when)
 import qualified Control.Monad                  as M        (when)
-import           Database.HDBC.Sqlite3                      (connectSqlite3)
-import qualified Database.HDBC                  as HDBC     (disconnect, withWConn, ConnWrapper(..))
 import           System.Environment                         (getExecutablePath)
 import           System.FilePath                            (dropFileName, (</>))
+import           System.Directory                           (doesFileExist)
 import qualified Graphics.UI.Threepenny         as UI
 import           Graphics.UI.Threepenny.Core                                    hiding (get)
 import qualified Graphics.UI.Threepenny.Core    as TP        (get)
@@ -35,8 +34,6 @@ import           Db
 import           BootstrapMenu
 import           Windows
 
-import qualified Data.ByteString
-
 databaseName =  "tiril.db" 
 
 serverPort = 3000
@@ -46,7 +43,7 @@ main = do
     exeDir <- dropFileName <$> getExecutablePath
     let dbPath = exeDir </> databaseName
     putStrLn $ "DB path " ++ dbPath
-    startOk <- dbExists dbPath
+    startOk <- doesFileExist dbPath
     M.when (not startOk) $ initDb 
         
     putStrLn $ "AppUI at http://localhost:" ++ show uiPort
@@ -73,10 +70,8 @@ httpServer req respond = join $ respond <$>
             -- TODO: Currently you're taking merely 2 sections. Think of a proper extension to give out all available data
             return . index . take 2 $ tx
         ("add":wd:lng:[]) -> do
-            conn <- connectSqlite3 databaseName
-            r <- addWord conn (T.fromStrict wd) (T.fromStrict lng)
-            HDBC.disconnect conn
-            return $ either (index . show) (index . const "done") r
+            addWord wd lng
+            return . index $ "done"
         _ -> return . index $ "Unknown command"
     where index :: Show a => a -> Network.Wai.Response
           index x = 
@@ -123,17 +118,13 @@ uiSetup win = do
     return ()
     where 
           viewSession = const $ do
-            sessionWords <- liftIO . join $ (\x-> HDBC.withWConn (HDBC.ConnWrapper x) getWords) <$> connectSqlite3 databaseName 
+            sessionWords <- liftIO $ getWords
             clearMainWindow
-            case sessionWords of
-                (Left error)    -> createMessageRed "Error" . show $ error
-                (Right words)   -> do
-                    ui <- getMainWindow 
+            getMainWindow 
                         #+ [ UI.div 
                             #. "tiril-left-pane relative"
-                            #+ (makeCard <$> words) ]
-                    jsInitSimpleScrollbar ".tiril-left-pane"
-                    return ui
+                            #+ (makeCard <$> sessionWords) ]
+            jsInitSimpleScrollbar ".tiril-left-pane"
                             
 
           jsInitSimpleScrollbar :: String -> UI ()

@@ -57,7 +57,7 @@ html {
 
 	.tiril-word:hover {
 		color: #fff;
-		background: #5F9EDF;
+		background: rgb(23, 162, 184); /*#5F9EDF;*/
     }
 /************************************************************/
 /* The whole pane on the right */

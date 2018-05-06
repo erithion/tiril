@@ -33,13 +33,13 @@ dependencies:
 - hxt 
 - unicode-show
 - hxt-http
-- HDBC
-- HDBC-sqlite3
 
+- directory
 - persistent
 - persistent-sqlite
 - persistent-template
 - esqueleto
+- transformers
 
 - threepenny-gui
 - filepath
