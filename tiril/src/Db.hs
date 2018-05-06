@@ -36,7 +36,7 @@ initDb = runSqlite "tiril.db" $ do
     google <- insert $ Translators GoogleTranslate "https://translate.google.com"
     lexin <- insert $ Translators Lexin "http://lexin.udir.no"
     -- TODO: temporary data for testing. Remove when unneeded
-    insert $ Words "no" "hello"
+    insert $ Words "no" "hallo"
     insert $ Words "no" "sjefen"
     insert $ Words "no" "mener"
     insert $ Words "no" "snakke"
@@ -45,9 +45,13 @@ initDb = runSqlite "tiril.db" $ do
     insert $ Words "no" "med"
     insert $ Words "en" "trust"
     insert $ Words "en" "utopia"
+    insert $ Words "en" "Detectorists"
+    insert $ Words "en" "Jessica Hyde"
     insert $ Words "ga" "an bhó"
     insert $ Words "ga" "an mhaidin"
     insert $ Words "ga" "ceart go leor"
     insert $ Words "ga" "bus / i mbus / sa bhus"
+    insert $ Words "ua" "привіт"
+    insert $ Words "ua" "Хай йому трясця"
     
     return ()

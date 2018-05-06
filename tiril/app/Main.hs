@@ -62,8 +62,8 @@ main = do
 httpServer :: Network.Wai.Request -> (Network.Wai.Response -> IO ResponseReceived) -> IO ResponseReceived
 httpServer req respond = join $ respond <$>
     case pathInfo req of
-        ("goo":[x]) -> do
-            tx <- googleTranslateWithT . T.fromStrict $ x
+        ("goo":from:to:w:xs) -> do
+            tx <- googleTranslateWithT (T.fromStrict from) (T.fromStrict to) (T.fromStrict w)
             return $ either index index tx
         ("lex":[x]) -> do
             tx <- lexinTranslate . T.fromStrict $ x
@@ -117,30 +117,29 @@ uiSetup win = do
            
     return ()
     where 
-          viewSession = const $ do
-            sessionWords <- liftIO $ getWords
-            clearMainWindow
-            getMainWindow 
-                        #+ [ UI.div 
-                            #. "tiril-left-pane relative"
-                            #+ (makeCard <$> sessionWords) ]
-            jsInitSimpleScrollbar ".tiril-left-pane"
-                            
-
           jsInitSimpleScrollbar :: String -> UI ()
           jsInitSimpleScrollbar = runFunction . ffi "var ps = new PerfectScrollbar(%1)"
           jsToggleCard :: Element -> UI Int
           jsToggleCard = callFunction . ffi "uiToggleCard(%1)"
           jsUpdateSortable :: UI ()
           jsUpdateSortable = runFunction $ ffi "updateSortable()"
+
+          viewSession = const $ do
+            sessionWords <- liftIO $ getWords
+            clearMainWindow
+            getMainWindow #+ [ UI.div #. "tiril-left-pane relative" #+ (makeCard <$> sessionWords) ]
+            jsInitSimpleScrollbar ".tiril-left-pane"
           
           makeCard :: NewWord w => w -> UI Element
           makeCard word = do
-            card <- UI.div
-                    #+ [ UI.div #. "tiril-word rounded"
-                                #+ [ UI.span #. "m-1" # set text (newWord word)
-                                   , UI.span #. "badge badge-warning align-self-start" # set (attr "style") "font-size:50%;" # set text (newLang word) ]
-                       , UI.ul #. "list" ]
+            card <- UI.div 
+                #+ [ UI.div 
+                        #. "tiril-word rounded"
+                        #+ [ UI.span #. "m-1" # set text (newWord word)
+                           , UI.span 
+                                #. "badge badge-warning align-self-start" 
+                                # set (attr "style") "font-size:50%;" # set text (newLang word) ]
+                    , UI.ul #. "list" ]
                            
             on UI.click card $ const $ do
                 deleteWindows "tiril-right-pane"
@@ -148,7 +147,7 @@ uiSetup win = do
                 if isSelectedNow /= 0 then do
                     tr <- liftIO $ do
                         let googleTranslate word = do
-                                res <- googleTranslateWithT word
+                                res <- googleTranslateWithT (T.pack . newLang $ word) (T.pack "ru") (T.pack . newWord $ word)
                                 -- TODO: Think of better ways to output the error
                                 M.when (isLeft res) $ do
                                     -- We are not afraid of matching Left only,
@@ -160,7 +159,7 @@ uiSetup win = do
                                     :: IO [Tir]
 
                         -- Run "stack bench" to see the results of async and sequential translation benchmarking
-                        (uncurry concurrently . (googleTranslate &&& lexinTranslate) . T.pack . newWord $ word) 
+                        (uncurry concurrently . (googleTranslate &&& lexinTranslate . T.pack . newWord) $ word) 
                             :: IO ([Tir], [[LexinWord]])
 
                     -- We need a unique index for the each block, 

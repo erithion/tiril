@@ -5,7 +5,7 @@ where
 
 import           Type
 import qualified Data.Text.Lazy                 as T
-import qualified Data.Text.Lazy.Encoding        as TE
+import qualified Data.Text.Lazy.Encoding        as T
 import           Text.ParserCombinators.Parsec          (oneOf, manyTill, anyChar, string, char, eof, ParseError)
 import           Text.Parsec.Prim                       (runParser, Parsec, (<|>), (<?>), many, skipMany, runP)
 import           Network.HTTP.Simple
@@ -66,13 +66,14 @@ parserT =
 runGoogleTParser :: T.Text -> Either ParseError [Tir]
 runGoogleTParser = runParser parserT () "Google Translate dt=t parser"
 
-googleTranslateWithT :: T.Text -> IO (Either T.Text [Tir])
-googleTranslateWithT x =
+googleTranslateWithT :: T.Text -> T.Text -> T.Text -> IO (Either T.Text [Tir])
+-- For some reason Ukrainian "ua" for Google is "uk"
+googleTranslateWithT ("ua") to x = googleTranslateWithT "uk" to x
+googleTranslateWithT from to x =
     do
-        -- TODO: adjust properly to configure languages within the request; 
-        req <- parseRequest $ ("https://translate.googleapis.com/translate_a/single?client=gtx&ie=UTF-8&oe=UTF-8&sl=no&tl=ru&dt=t&q=" ++ T.unpack x)
+        req <- parseRequest $ ("https://translate.googleapis.com/translate_a/single?client=gtx&ie=UTF-8&oe=UTF-8&sl=" ++ T.unpack from ++ "&tl=" ++ T.unpack to ++ "&dt=t&q=" ++ T.unpack x)
         response <- httpLBS req
-        let (k :: Either ParseError [Tir]) = runGoogleTParser . TE.decodeUtf8 . getResponseBody $ response
+        let (k :: Either ParseError [Tir]) = runGoogleTParser . T.decodeUtf8 . getResponseBody $ response
         -- arrow over Left to transform ParseError into T.Text
         return . Ar.left (T.pack . show) $ k
 
