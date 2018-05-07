@@ -102,10 +102,12 @@ html {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
+    
+    cursor: -webkit-grabbing;
 }
-     li.tiril-translation-word { cursor: move;	cursor: -webkit-grabbing; }
+/*     li.tiril-translation-word { cursor: move !important;	cursor: -webkit-grabbing !important; }*/
 
-    .tiril-translation-word span {
+    .tiril-translation-word word {
         display: flex;
         margin-left: 0px;
         justify-content: space-between;
@@ -193,4 +195,9 @@ i {	opacity: 0; }
     
 .relative {
     position: relative;
-}    
+}
+
+.disabled {
+    opacity: .3;
+    cursor: default;
+}

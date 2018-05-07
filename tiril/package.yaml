@@ -41,6 +41,8 @@ dependencies:
 - esqueleto
 - transformers
 
+- hashable 
+
 - threepenny-gui
 - filepath
 - mtl

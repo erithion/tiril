@@ -10,6 +10,14 @@ function initializeLeftPaneSorting(){
     }
 }
 
+var addTranslation = null;
+var deleteTranslation = null;
+
+function initApi(addTranslationFunction, deleteTranslationFunction) {
+    addTranslation = addTranslationFunction;
+    deleteTranslation = deleteTranslationFunction;
+}
+
 // returns whether the card has become selected according to UI logic.
 // also makes all??? required UI changes.
 // is called from Haskell.
@@ -67,7 +75,27 @@ function updateSortable(){
                 
                 evt.item.parentNode.removeChild(evt.item);
                 var id = $(evt.item).children("i").attr("data-parent-id");
-                $('#' + id).append(evt.item);
+
+                var obj = $(evt.item).attr('hash') + $(evt.item).attr('translator'),
+                    found = false;
+                $(".tiril-right-pane .tiril-translation-word").each(function(){
+                    if ($(this).attr('hash') + $(this).attr('translator') == obj){
+                        found = true;
+                        $(this).removeClass("disabled");
+                    }
+                });
+
+                if(!found)
+                    $('#' + id).append(evt.item);
+                
+                var wordElem = evt.from.parentNode.querySelectorAll("div > word");
+                var word = wordElem[0].textContent || wordElem[0].innerText
+
+//                console.log( word ); 
+//                console.log( evt.item.getAttribute("hash") ); 
+//                console.log( evt.item.getAttribute("translator") ); 
+//                console.log( parseInt(evt.item.getAttribute("hash"), 10));
+                deleteTranslation (word, parseInt(evt.item.getAttribute("hash"), 10), evt.item.getAttribute("translator"));
             },
             onAdd: function (/**Event*/evt) {
                 var itemEl = evt.item;  // dragged HTMLElement
@@ -76,10 +104,25 @@ function updateSortable(){
                 evt.oldIndex;  // element's old index within old parent
                 evt.newIndex;  // element's new index within new parent
                 if (evt.to.children.length != 0 )
-                    $(evt.to).removeClass("show-drop-area");    
+                    $(evt.to).removeClass("show-drop-area");
+
+                var wordElem = evt.to.parentNode.querySelectorAll("div > word");
+//                console.log( wordElem ); 
+                
+                var word = wordElem[0].textContent || wordElem[0].innerText
+                // adding to database
+                addTranslation( word
+                              , evt.item.getAttribute("translation")
+                              , evt.item.getAttribute("lang")
+                              , evt.item.getAttribute("verb")
+                              , evt.item.getAttribute("translator") 
+                              );
+//                console.log( evt.item ); 
+//                console.log( evt.from ); 
+//                console.log( evt.to ); 
             }
         });
-        wordToSortableMap[word] = s;
+//        wordToSortableMap[word] = s;
     }
     // Sortable for all words in the right pane
     var rightPanes = $("[class*='tiril-detail-container']"),
@@ -94,7 +137,21 @@ function updateSortable(){
                 put: false,
                 pull: true
             },
+            filter: ".disabled",
             animation: 150
         });
     }
+    
+    // disabling the same hashes and sources
+    var arr = [];
+    var left_elems = $(".tiril-left-pane .word-is-selected-now .list .tiril-translation-word").each(function(){
+        var obj = $(this).attr('hash') + $(this).attr('translator');
+        arr.push(obj);
+    });
+        
+    var right_elems = $(".tiril-right-pane .tiril-translation-word").each(function(){
+        var obj = $(this).attr('hash') + $(this).attr('translator');
+        if (arr.indexOf(obj) != -1)
+            $(this).addClass("disabled");
+    });
 }

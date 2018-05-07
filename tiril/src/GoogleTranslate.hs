@@ -38,7 +38,7 @@ instance Translator Tir where
     target = (maybe "???" T.unpack) . targetText
     lang = (maybe "???" T.unpack) . targetLang
     verb = const "DND"
-    iam = const "Google Translate"
+    iam = const "GoogleTranslate"
 
     
 {-  Parsed pattern is                         

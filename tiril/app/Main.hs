@@ -7,6 +7,7 @@
 module Main where
 
 import qualified Data.Text.Lazy                 as T
+import qualified Data.Text                      as TS
 import qualified Data.ByteString.UTF8           as BU
 import qualified Text.Show.Unicode              as US 
 import           Network.Wai
@@ -25,6 +26,7 @@ import           Control.Concurrent                          (forkIO)
 import           Data.Tuple.Extra                            ((***), (&&&))
 import           Data.Either
 import           Control.Concurrent.Async                                       hiding (link)
+import           Data.Hashable                               (hash)
 
 import           Type
 import           GoogleTranslate
@@ -123,6 +125,10 @@ uiSetup win = do
           jsToggleCard = callFunction . ffi "uiToggleCard(%1)"
           jsUpdateSortable :: UI ()
           jsUpdateSortable = runFunction $ ffi "updateSortable()"
+          jsInitApi = do
+            add <- ffiExport jsAddTranslation
+            delete <- ffiExport jsDeleteTranslation
+            runFunction $ ffi "initApi(%1, %2)" add delete
 
           viewSession = const $ do
             sessionWords <- liftIO $ getWords
@@ -132,15 +138,16 @@ uiSetup win = do
           
           makeCard :: NewWord w => w -> UI Element
           makeCard word = do
+            tr <- liftIO $ getTranslations . TS.pack . newWord $ word
             card <- UI.div 
                 #+ [ UI.div 
                         #. "tiril-word rounded"
-                        #+ [ UI.span #. "m-1" # set text (newWord word)
+                        #+ [ mkElement "word" #. "m-1" # set text (newWord word)
                            , UI.span 
                                 #. "badge badge-warning align-self-start" 
                                 # set (attr "style") "font-size:50%;" # set text (newLang word) ]
-                    , UI.ul #. "list" ]
-                           
+                    , UI.ul #. "list" #+ (createWord 1 {- always 1 for now -}<$> tr) ]
+                    
             on UI.click card $ const $ do
                 deleteWindows "tiril-right-pane"
                 isSelectedNow <- jsToggleCard card
@@ -169,6 +176,8 @@ uiSetup win = do
                     let (ts :: [UI Element]) = concat $ zipWith ($) fs [1..]
                     void $ getMainWindow #+ [ UI.div #. "tiril-right-pane relative" 
                                                      #+ ts ]
+                                                     
+                    jsInitApi
                     jsUpdateSortable
                     jsInitSimpleScrollbar ".tiril-right-pane"
                 else return ()
@@ -186,8 +195,14 @@ uiSetup win = do
           createWord :: Translator a => Int -> a -> UI Element
           createWord idx w = 
             UI.li 
+                -- TODO: rework needed; too much data attributes seems to slow down the output
                 #. "tiril-translation-word rounded"
-                #+ [ UI.span 
+                # set (attr "hash") (show . hash . target $ w)
+                # set (attr "translator") (iam w)
+                # set (attr "translation") (target w)
+                # set (attr "lang") (lang w)
+                # set (attr "verb") (verb w)
+                #+ [ mkElement "word" 
                         # set text (target w) 
                    , mkElement "caps" 
                         #+  [ mkElement "cap" #. "mr-1 mb-1 badge badge-dark" # set (attr "style") "font-size:50%;" # set text (verb w)
