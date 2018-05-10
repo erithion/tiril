@@ -1,0 +1,146 @@
+:root {
+  --hover-background-color: rgb(23, 162, 184);
+  --hover-text-color: white;
+  --caption-background-color: #FF7373;
+  --caption-text-color: #fff;
+  --close-btn-color: firebrick; 
+  --overall-background-color: #F4E2C9; 
+/*  --overall-background-color: white; */
+  --lem-badge-background-color: #343a40;
+  --lem-badge-text-color: #fff;
+
+  --lang-badge-background-color: #ffc107;
+  --lang-badge-text-color: #212529;
+
+  --dict-badge-background-color: var(--hover-background-color);
+  --dict-badge-text-color: var(--hover-text-color);
+  
+  --manually-moved-background-color: #C4EADA;
+  --manually-moved-text-color: black;
+}
+
+html {
+	background-color: var(--overall-background-color);
+}
+
+body, table, tr, td {
+	background-color: transparent;
+    border-collapse: separate;
+    border-spacing: 10px 10px;    
+
+}
+
+/*  temp. move out to common */
+body {
+    overflow: hidden;
+}
+/*  temp. move out to common */
+/* A container below the menu */
+
+.tiril-main-window {
+    display: flex;
+    height: 90vh;
+    position: relative;
+    overflow: auto;
+}
+
+translation-group-title {
+    color: var(--caption-text-color);
+    padding: 3px 10px;
+    display: inline-block;
+    position: relative;
+    background-color: var(--caption-background-color);
+    left:-10px;
+    bottom:-10px;
+    overflow:visible;
+}
+
+/************************************************************/
+/* A container for a single translation expression on the right */
+translation {
+    font-size: 1.5vw;
+    background-color: white;
+    cursor: -webkit-grabbing;
+    background-size: 0% 100%;
+}
+    
+    translation.row {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+    
+
+    translation:hover {
+        background-image:linear-gradient(to right, var(--hover-background-color), white 30%);
+        background-repeat:no-repeat;
+        background-size: 200% 100%; 
+        transition:background-size .7s, background-color .7s;
+        color: var(--hover-text-color);
+    }
+    
+
+    word {
+        width: 100%;
+    }
+
+    caps {
+        font-size: 50%;
+    }
+    
+    close { opacity: 0; font-size: 75%; }
+    close:hover { cursor: default; }
+    translation:hover close { opacity: 1; color: var(--close-btn-color); }
+    
+    lem {
+        background-color: var(--lem-badge-background-color);
+        color: var(--lem-badge-text-color);
+    }
+
+    lang {
+        background-color: var(--lang-badge-background-color);
+        color: var(--lang-badge-text-color);
+    }
+
+    dict {
+        background-color: var(--dict-badge-background-color);
+        color: var(--dict-badge-text-color);
+    }
+    
+    translation[manually-moved="true"] {
+        background-color: var(--manually-moved-background-color);
+        color: var(--manually-moved-text-color);
+    }
+    
+.sortable-ghost { 
+    opacity: .6;
+    color: grey;
+ }
+ 
+/* Redefine the color of the 'selectize'-tag */ 
+.selectize-control.multi .selectize-input [data-value] {
+    background-color: var(--hover-background-color);
+    background-image: none;
+}
+    .selectize-control.multi .selectize-input [data-value].active {
+        background-color: var(--hover-background-color);
+        background-image: none;
+    }
+
+divider {
+    display: flex;
+    width: 100%;
+}        
+divider::after {
+    content: " ";
+    background: linear-gradient(to right, var(--caption-background-color), var(--overall-background-color) 30%);
+    height: 3px;
+    position: relative;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: auto;
+    margin: .75em 2px 0 3px;
+    flex-grow: 1;
+    border-radius: 2px;
+}    

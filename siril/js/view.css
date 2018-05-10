@@ -1,0 +1,342 @@
+:root {
+  --overall-background-color: rgba(250, 224, 66, .2); 
+  
+  --right-pane-header-color: #FAE042;
+  
+  --left-pane-background-color: #fcfcfc;
+  
+  --word-background-color: #fff;
+  --word-text-color: black;
+  
+  --hover-text-color: #A77B0E;
+  --hover-background-color: #FAE042;
+}
+
+body {
+	background-color: var(--overall-background-color);
+}
+
+
+/************************************************************/
+/*html {
+	background-image: -webkit-linear-gradient(bottom, #F4E2C9 20%, #F4D7C9 100%);
+	background-image: -ms-linear-gradient(bottom, #F4E2C9 20%, #F4D7C9 100%);
+	background-image: linear-gradient(to bottom, #F4E2C9 20%, #F4D7C9 100%);
+}
+
+    html, body {
+        min-height: 100%;
+        font-size: 20px;
+        font-family: 'Roboto', sans-serif;
+   }*/
+/************************************************************/
+/* A container below the menu */
+.tiril-main-window {
+    display: flex;
+    height: 93%; /* 7% is the space for menu??? */
+    width: 100%;
+    position: fixed;
+    overflow: hidden;
+}
+/************************************************************/
+/* A list of words on the left of the window, like in the Session-menu */
+/*.tiril-word-list {
+    flex-grow: 1;
+    max-width: 20em;
+    padding-left: 20px;
+    padding-top: 15px;
+    width: 30%;*/
+/*    overflow: auto; */
+/*    overflow:hidden;
+}
+    .tiril-word-list:hover {*/
+/*        overflow:auto;*/
+/*    }*/
+    
+/************************************************************/
+.tiril-left-pane {
+    width: 30%;
+    margin: 3px;
+    background-color: var(--left-pane-background-color);
+}
+/************************************************************/
+/* The whole pane on the right */
+.tiril-right-pane {
+    padding-right: 10px;
+    margin: 3px;
+    flex-grow: 5;
+    overflow: auto;
+    flex-direction: column;
+}
+    
+/************************************************************/
+/* to align word's and subwords' ends */
+.tiril-left-pane > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;    
+}
+/* A container for a single word in the list of words on the left */
+.tiril-word {
+    margin: 10px;
+    overflow: hidden;
+    font-size: 1.5vw;
+    cursor: pointer;
+    height: auto;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    align-content: center;
+    border: none;
+	outline: 0;
+    padding: 3px 10px;
+
+/*    background-color: var(--left-pane-background-color);
+    color: var(--left-pane-text-color);*/
+}
+
+	.tiril-word:hover {
+/*		color: var(--hover-text-color);
+		background: var(--hover-background-color);*/
+
+    }
+/************************************************************/
+/* For a single block of translations on the right */
+.tiril-detail-container {
+    margin: 15px;   
+    overflow: auto;
+    flex-direction: column;
+    padding: 0px;
+}
+
+    .tiril-detail-container header {
+        width: 100%;   
+        height: 20px;
+        background-color: #375e97;
+    }
+    
+    .tiril-detail-container div {
+        margin-left: 1.5em;
+    }
+/************************************************************/
+/* A container for a single translation expression on the right */
+.tiril-translation-word {
+    font-size: 1.5vw;
+    height: auto;
+    width: calc(100% - 8px /* width of the perfect-scrollbar*/);
+    padding: 10px;
+    border-style: none;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    
+    cursor: -webkit-grabbing;
+
+    background-color: var(--word-background-color);
+    color: var(--word-text-color);
+
+}
+/*     li.tiril-translation-word { cursor: move !important;	cursor: -webkit-grabbing !important; }*/
+
+    /* when it is in the left-pane */
+    .word-is-editable-now > .tiril-translation-word {
+
+        background-color: transparent;
+    }
+
+    .tiril-translation-word word {
+        display: flex;
+        margin-left: 0px;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    
+    .tiril-translation-word caps {
+        margin: 0px;
+        padding: 0px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+/************************************************************/
+/* A selection marker */
+.word-is-selected-now {
+}
+
+    div.word-is-selected-now {
+        flex-flow: column nowrap;
+    }
+
+   .word-is-editable-now.show-drop-area {
+        border: 2px dashed lightgrey;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        font: 21pt bold arial;
+        color: lightgrey;
+        width: 50%;
+        margin-left: 25px;
+    }
+    
+     ul.show-drop-area::after{
+         content: "Drop here";
+     }
+/************************************************************/
+.title {
+	padding: 3px 10px;
+	background-color: var(--right-pane-header-color);
+	z-index: 1000;
+}
+/************************************************************/
+ul { list-style: none; }
+/************************************************************/
+/*.sortable-ghost { 
+    opacity: .6;
+	background-color: #F4E2C9;
+    color: grey;
+ }
+ 
+    .sortable-ghost i { opacity: 0; }
+    
+    .sortable-drag i { opacity: 0; }*/
+/************************************************************/
+i {	opacity: 0; }
+/************************************************************/
+    .list li {
+        font-size: 75%;
+    }
+
+/************************************************************/
+/* For editing a word in the left pane. In particular "i" rule enables the delete button */
+.word-is-editable-now {}
+
+    .word-is-editable-now li {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+    
+    }
+
+	.word-is-editable-now li:hover i {
+        transition: opacity .2s;
+		cursor: pointer;
+		color: #c00;
+		font-style: normal;
+		opacity: 1;
+	}
+
+/************************************************************/
+/* Used with perfect-scrollbar */
+    
+.relative {
+    position: relative;
+}
+
+.disabled {
+    opacity: .3;
+    cursor: default;
+}
+
+
+/*************************************************************/
+/* Underline From Left */
+.hvr-underline-from-left {
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: perspective(1px) translateZ(0);
+  transform: perspective(1px) translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  position: relative;
+  overflow: hidden;
+}
+.hvr-underline-from-left:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  right: 100%;
+  bottom: 0;
+  background: var(--hover-background-color);
+  height: 4px;
+  -webkit-transition-property: right;
+  transition-property: right;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+}
+.hvr-underline-from-left:hover:before, .hvr-underline-from-left:focus:before, .hvr-underline-from-left:active:before {
+  right: 0;
+}
+
+/*************************************************************/
+/* For please-wait */
+    /*
+ *  Usage:
+ *
+      <div class='sk-cube-grid'><div class='sk-cube sk-cube1'></div><div class='sk-cube sk-cube2'></div><div class='sk-cube sk-cube3'></div><div class='sk-cube sk-cube4'></div><div class='sk-cube sk-cube5'></div><div class='sk-cube sk-cube6'></div><div class='sk-cube sk-cube7'></div><div class='sk-cube sk-cube8'></div><div class='sk-cube sk-cube9'></div></div>
+ *
+ */
+.sk-cube-grid {
+  width: 40px;
+  height: 40px;
+  margin: 40px auto;
+  /*
+   * Spinner positions
+   * 1 2 3
+   * 4 5 6
+   * 7 8 9
+   */ }
+  .sk-cube-grid .sk-cube {
+    width: 33.33%;
+    height: 33.33%;
+/*    background-color: #333;*/
+	background-color: grey;
+    float: left;
+    -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+            animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out; }
+  .sk-cube-grid .sk-cube1 {
+    -webkit-animation-delay: 0.2s;
+            animation-delay: 0.2s; }
+  .sk-cube-grid .sk-cube2 {
+    -webkit-animation-delay: 0.3s;
+            animation-delay: 0.3s; }
+  .sk-cube-grid .sk-cube3 {
+    -webkit-animation-delay: 0.4s;
+            animation-delay: 0.4s; }
+  .sk-cube-grid .sk-cube4 {
+    -webkit-animation-delay: 0.1s;
+            animation-delay: 0.1s; }
+  .sk-cube-grid .sk-cube5 {
+    -webkit-animation-delay: 0.2s;
+            animation-delay: 0.2s; }
+  .sk-cube-grid .sk-cube6 {
+    -webkit-animation-delay: 0.3s;
+            animation-delay: 0.3s; }
+  .sk-cube-grid .sk-cube7 {
+    -webkit-animation-delay: 0.0s;
+            animation-delay: 0.0s; }
+  .sk-cube-grid .sk-cube8 {
+    -webkit-animation-delay: 0.1s;
+            animation-delay: 0.1s; }
+  .sk-cube-grid .sk-cube9 {
+    -webkit-animation-delay: 0.2s;
+            animation-delay: 0.2s; }
+
+@-webkit-keyframes sk-cubeGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+            transform: scale3D(1, 1, 1); }
+  35% {
+    -webkit-transform: scale3D(0, 0, 1);
+            transform: scale3D(0, 0, 1); } }
+
+@keyframes sk-cubeGridScaleDelay {
+  0%, 70%, 100% {
+    -webkit-transform: scale3D(1, 1, 1);
+            transform: scale3D(1, 1, 1); }
+  35% {
+    -webkit-transform: scale3D(0, 0, 1);
+            transform: scale3D(0, 0, 1); } }
+

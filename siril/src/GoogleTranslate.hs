@@ -35,9 +35,9 @@ defaultTir = Tir
 
 instance Translator Tir where
     source = T.unpack . sourceText
-    target = (maybe "???" T.unpack) . targetText
-    lang = (maybe "???" T.unpack) . targetLang
-    verb = const "DND"
+    target = (maybe "" T.unpack) . targetText
+    lang = (maybe "" T.unpack) . targetLang
+    verb = const ""
     iam = const "GoogleTranslate"
 
     
@@ -67,8 +67,6 @@ runGoogleTParser :: T.Text -> Either ParseError [Tir]
 runGoogleTParser = runParser parserT () "Google Translate dt=t parser"
 
 googleTranslateWithT :: T.Text -> T.Text -> T.Text -> IO (Either T.Text [Tir])
--- For some reason Ukrainian "ua" for Google is "uk"
-googleTranslateWithT ("ua") to x = googleTranslateWithT "uk" to x
 googleTranslateWithT from to x =
     do
         req <- parseRequest $ ("https://translate.googleapis.com/translate_a/single?client=gtx&ie=UTF-8&oe=UTF-8&sl=" ++ T.unpack from ++ "&tl=" ++ T.unpack to ++ "&dt=t&q=" ++ T.unpack x)

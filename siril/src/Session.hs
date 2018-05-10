@@ -51,3 +51,11 @@ getTranslations word = runSqlite "tiril.db" . asSqlBackendReader $ do
             where_ (wrd ^. WordsWord ==. val word &&. wrd ^. WordsId ==. tr ^. TranslationsWords_id &&. tr ^. TranslationsSrc_id ==. src ^. TranslatorsId)
             return (wrd, tr, src)
     return . map (\(x, y, z) -> (entityVal x, entityVal y, entityVal z)) $ ps
+    
+getExports :: IO [(Words, Translations, Translators)]
+getExports = runSqlite "tiril.db" . asSqlBackendReader $ do 
+    (ps::[(Entity Words, Entity Translations, Entity Translators)]) <- 
+            select $ from $ \(wrd, tr, src) -> do
+            where_ (wrd ^. WordsId ==. tr ^. TranslationsWords_id &&. tr ^. TranslationsSrc_id ==. src ^. TranslatorsId)
+            return (wrd, tr, src)
+    return . map (\(x, y, z) -> (entityVal x, entityVal y, entityVal z)) $ ps

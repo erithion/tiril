@@ -21,12 +21,12 @@ cabal.project.local
 doc/tiril.stg
 viril/bin
 viril/build
-tiril/.stack-work/
-tiril/tiril.cabal
-tiril/*~
-tiril/todo.txt
+siril/.stack-work/
+siril/tiril.cabal
+siril/*~
+siril/todo.txt
 viril/.work
 .old
 bin
 build
-tiril/.work
+siril/.work

@@ -22,3 +22,6 @@ class NewWord a where
     newLang :: a -> String
     newAgent :: a -> String
 
+type Delimiter = T.Text    
+class Export a where
+    export :: Delimiter -> a -> T.Text

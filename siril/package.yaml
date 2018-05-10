@@ -1,4 +1,4 @@
-name:                tiril
+name:                siril
 version:             0.1.0.0
 github:              "erithion/tiril"
 license:             MIT
@@ -43,6 +43,10 @@ dependencies:
 
 - hashable 
 
+- aeson
+- tinyfiledialogs
+- containers
+
 - threepenny-gui
 - filepath
 - mtl
@@ -53,7 +57,7 @@ library:
   source-dirs: src
 
 executables:
-  tiril-exe:
+  siril-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options: 
@@ -66,10 +70,10 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - tiril
+    - siril
 
 tests:
-  tiril-test:
+  siril-test:
     main:                Main.hs
     source-dirs:         _test
     ghc-options:
@@ -78,17 +82,17 @@ tests:
     - -with-rtsopts=-N
 #    - -main-is ./_test/Spec.hs
     dependencies:
-    - tiril
+    - siril
     - hspec
 
 benchmarks:
-  tiril-benchmarks:
+  siril-benchmarks:
     source-dirs: _bench
     main: Main.hs
     dependencies:
     - base
     - criterion
-    - tiril
+    - siril
     - deepseq
     ghc-options:
     - -rtsopts

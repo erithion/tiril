@@ -57,3 +57,38 @@ createMessageRed = makeMessageWindow "alert-danger"
 
 createMessageBlue :: String -> String -> UI Element
 createMessageBlue = makeMessageWindow "alert-primary"
+
+createModalWindow modId cap msg = do
+    UI.div #. "modal fade" 
+        # set UI.id_ modId
+        # set (attr "tabindex") "-1"
+        # set (attr "role") "dialog"
+        # set (attr "aria-labelledby") "exampleModalLabel" -- ???
+        # set (attr "aria-hidden") "true"
+        #+ [UI.div #. "modal-dialog modal-dialog-centered" # set (attr "role") "document"
+                #+ [UI.div #. "modal-content"
+                        #+ [ UI.div #. "modal-header"
+                                #+ [ UI.h5 #. "modal-title" # set UI.id_ "exampleModalLabel" # set text cap
+                                   , UI.button #. "close" 
+                                        # set UI.type_ "button" 
+                                        # set (attr "data-dismiss") "modal"
+                                        # set (attr "aria-label") "Close"
+                                        #+ [UI.span # set (attr "aria-hidden") "true" # set text "×"]
+                                   ]
+                           , UI.div #. "modal-body" # set text msg
+                           , UI.div #. "modal-footer" 
+                                #+ [ UI.button #. "btn btn-secondary" 
+                                        # set UI.type_ "button" 
+                                        # set (attr "data-dismiss") "modal"
+                                        # set text "Close"
+                                   ]
+                           ]
+                   ]
+           ]
+
+showModalWindow :: String -> UI ()           
+showModalWindow modId = runFunction . ffi "$(%1).modal('show')" $ ("#" ++ modId)
+
+showModal cap msg = do
+    getMainWindow #+ [ createModalWindow "modal" cap msg ]
+    showModalWindow "modal"

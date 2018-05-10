@@ -23,7 +23,7 @@ data LexinWord = LexinWord
     deriving (Show, Eq)
 
 instance Translator LexinWord where
-    source = const "DND"
+    source = const ""
     target = T.unpack . lexinWord
     lang = T.unpack . lexinLang
     verb = T.unpack . lexinType

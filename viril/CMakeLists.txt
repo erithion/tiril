@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.11.0)
 include(FetchContent)
+include(FindBoost)
 
 set    ( PROJECT_NAME                libviril_plugin )
 set    ( VIRIL_BUILD_DIR             ${TIRIL_BUILD_DIR}/vlc )
@@ -19,6 +20,11 @@ message( STATUS "CXX flags ${CMAKE_CXX_FLAGS}" )
 message( STATUS "Linker flags ${CMAKE_SHARED_LINKER_FLAGS}" )
 
 # External projects Viril depends on
+set                         ( Boost_USE_STATIC_LIBS       ON ) # only find static libs
+set                         ( Boost_USE_MULTITHREADED     ON )
+set                         ( Boost_USE_STATIC_RUNTIME    OFF )
+find_package                ( Boost 1.67.0 REQUIRED COMPONENTS filesystem )
+
 message( STATUS "Fetching libass ..." )
 FetchContent_Declare        ( libass
                               GIT_REPOSITORY https://github.com/libass/libass
@@ -58,7 +64,7 @@ add_definitions      ( -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE )
 add_definitions      ( -D_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING )
 
 include_directories  ( ${CMAKE_CURRENT_SOURCE_DIR}/
-                       ${BOOST_DIR}
+                       ${Boost_INCLUDE_DIRS}
                        ${EXTERNAL_LIBS_DIR}
                        ${libass_SOURCE_DIR}
                        ${vlc30_SOURCE_DIR}/sdk/include/vlc 
@@ -67,7 +73,7 @@ include_directories  ( ${CMAKE_CURRENT_SOURCE_DIR}/
                        ${utf8_cpp_SOURCE_DIR}/source )
                        
 link_directories     ( ${vlc30_SOURCE_DIR}/sdk/lib 
-                       ${BOOST_DIR}/lib32-msvc-14.1 )
+                       ${Boost_LIBRARY_DIR} )
 
 add_library          ( ${PROJECT_NAME} SHARED 
                        ${SRC_FILES} 
@@ -78,6 +84,7 @@ add_library          ( ${PROJECT_NAME} SHARED
 target_link_libraries( ${PROJECT_NAME} libvlc.lib )
 target_link_libraries( ${PROJECT_NAME} libvlccore.lib )
 target_link_libraries( ${PROJECT_NAME} Ws2_32.lib )
+target_link_libraries( ${PROJECT_NAME} ${Boost_LIBRARIES} )
 
 if( DEFINED INSTALL_VLC )
     message ( STATUS              "INSTALL_VLC is ${INSTALL_VLC}. Viril will be installed along with VLC" )

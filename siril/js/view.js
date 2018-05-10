@@ -1,5 +1,16 @@
+// tr - 'li'-object
+function utilTranslation_GetData(tr){
+    return { viewTarget : tr.getElementsByTagName("word")[0].innerHTML
+           , viewLang : tr.getElementsByTagName("lang")[0].innerHTML
+           , viewDict : tr.getElementsByTagName("dict")[0].innerHTML
+           , viewLem : tr.getElementsByTagName("lem")[0].innerHTML 
+           , viewHash : tr.getAttribute("hash")
+           };
+}
+
+
 function initializeLeftPaneSorting(){
-    var arr = $(".tiril-left-pane"),
+/*    var arr = $(".tiril-left-pane > div"),
         len = arr.length;
     
     for (i = 0; i < len; ++i) {
@@ -8,6 +19,20 @@ function initializeLeftPaneSorting(){
             animation: 150
         });
     }
+    */
+}
+
+function initCollapsible(id){
+    $('#' + id).collapsible({
+        accordion: true,
+        accordionUpSpeed: 400,
+        accordionDownSpeed: 400,
+        collapseSpeed: 400,
+        contentOpen: null,
+        arrowRclass: 'arrow-r',
+        arrowDclass: 'arrow-d',
+        animate: true
+    });
 }
 
 var addTranslation = null;
@@ -34,7 +59,9 @@ function uiToggleCard(e) {
     // Set the new state
     if (!isCurrentSelected) {
         $(e).addClass("word-is-selected-now");
-        var chi = $(e).children("ul");
+//        var chi = $(e).children("ul");
+        var chi = $(".accordion-active > ul");
+//        console.log(chi);
         chi.addClass("word-is-editable-now");
         if (chi[0].childElementCount == 0)
             chi.addClass("show-drop-area");
@@ -48,16 +75,11 @@ function uiToggleCard(e) {
 }
 
 var wordToSortableMap = {}
-function updateSortable(){
-    var it = $(".word-is-selected-now .tiril-word");
-    // WARNING: the object must exist. 
-    // The function heavily relies on a structure of the document
-    var word  = it[0].textContent || it[0].innerText;
-
+function updateSortable(word){
     // Checking if we have already created this object once
     if (!(word in wordToSortableMap)){
         // We assume there is only one such list
-        var chi = $(".word-is-selected-now > .list");
+        var chi = $(".accordion-active > .list");
         // Sortable for the left pane list
         var s = Sortable.create( chi[0], {
             group: {
@@ -88,14 +110,15 @@ function updateSortable(){
                 if(!found)
                     $('#' + id).append(evt.item);
                 
-                var wordElem = evt.from.parentNode.querySelectorAll("div > word");
+                var wordElem = $(".word-is-selected-now > word");
                 var word = wordElem[0].textContent || wordElem[0].innerText
 
 //                console.log( word ); 
 //                console.log( evt.item.getAttribute("hash") ); 
 //                console.log( evt.item.getAttribute("translator") ); 
 //                console.log( parseInt(evt.item.getAttribute("hash"), 10));
-                deleteTranslation (word, parseInt(evt.item.getAttribute("hash"), 10), evt.item.getAttribute("translator"));
+                var transl = utilTranslation_GetData( evt.item );
+                deleteTranslation (word, parseInt(transl.viewHash, 10), transl.viewDict);
             },
             onAdd: function (/**Event*/evt) {
                 var itemEl = evt.item;  // dragged HTMLElement
@@ -106,16 +129,17 @@ function updateSortable(){
                 if (evt.to.children.length != 0 )
                     $(evt.to).removeClass("show-drop-area");
 
-                var wordElem = evt.to.parentNode.querySelectorAll("div > word");
+                var wordElem = $(".word-is-selected-now > word");
 //                console.log( wordElem ); 
                 
                 var word = wordElem[0].textContent || wordElem[0].innerText
+                var transl = utilTranslation_GetData( evt.item );
                 // adding to database
                 addTranslation( word
-                              , evt.item.getAttribute("translation")
-                              , evt.item.getAttribute("lang")
-                              , evt.item.getAttribute("verb")
-                              , evt.item.getAttribute("translator") 
+                              , transl.viewTarget
+                              , transl.viewLang
+                              , transl.viewLem
+                              , transl.viewDict
                               );
 //                console.log( evt.item ); 
 //                console.log( evt.from ); 
@@ -144,7 +168,7 @@ function updateSortable(){
     
     // disabling the same hashes and sources
     var arr = [];
-    var left_elems = $(".tiril-left-pane .word-is-selected-now .list .tiril-translation-word").each(function(){
+    var left_elems = $(".word-is-editable-now > li").each(function(){
         var obj = $(this).attr('hash') + $(this).attr('translator');
         arr.push(obj);
     });
@@ -155,3 +179,18 @@ function updateSortable(){
             $(this).addClass("disabled");
     });
 }
+
+var loadingScreen = null;
+
+function startWaiting(){
+    loadingScreen = window.pleaseWait({
+        logo: "",
+        backgroundColor: 'rgb(192,192,192, 0.3)',
+        loadingHtml: "<div class='sk-cube-grid'><div class='sk-cube sk-cube1'></div><div class='sk-cube sk-cube2'></div><div class='sk-cube sk-cube3'></div><div class='sk-cube sk-cube4'></div><div class='sk-cube sk-cube5'></div><div class='sk-cube sk-cube6'></div><div class='sk-cube sk-cube7'></div><div class='sk-cube sk-cube8'></div><div class='sk-cube sk-cube9'></div></div>"
+    });
+}
+
+function endWaiting(){
+    loadingScreen.finish();
+}
+
