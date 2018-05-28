@@ -2,7 +2,7 @@
 Tiril is an open source software aiming to assist in a language learning process.
 
 While it still exists in a form of Proof-Of-Concept with lots of ideas still to be implemented, the following components have already been added
-* Siril server an with embedded UI. To date it operates merely dictionaries and handles just a few of them for now:
+* Siril server with an embedded UI. To date it operates merely dictionaries and handles just a few of them for now:
   * [x] [Google Translate](https://translate.google.com)
   * [x] [Lexin](http://lexin.udir.no)
 * Viril agent - a [VideoLAN](https://github.com/videolan) plugin to translate subtitles. Among supported formats are:
