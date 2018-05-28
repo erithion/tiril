@@ -20,6 +20,7 @@ typedef SSIZE_T ssize_t;
 #include <cstddef>
 // Let us hope for the best :)
 #pragma warning( disable : 4244 ) 
+#pragma warning( disable : 4200 ) 
 #include <vlc_common.h>
 //#include <vlc_objects.h>
 #include <vlc_plugin.h>
@@ -35,11 +36,14 @@ typedef SSIZE_T ssize_t;
 #include <vlc_fourcc.h>
 #include <vlc_modules.h>
 #include <vlc_dialog.h>
+#include <vlc_playlist.h>
+#include <vlc_input.h>
 //#include <vlc_extensions.h>
 //#include <include/vlc_spu.h>
 #include <libvlc.h>
 
 #pragma warning( default : 4244 ) 
+#pragma warning( default : 4200 ) 
 
 #include <libass/ass_types.h>
 
@@ -171,6 +175,9 @@ enum
 
 #define extension_Deactivate( mgr, ext ) \
         extension_Control( mgr, EXTENSION_DEACTIVATE, ext )
+
+#define extension_Trigger( mgr, ext ) \
+        extension_Control( mgr, EXTENSION_TRIGGER, ext )
 
 static inline int extension_Control( extensions_manager_t *p_mgr,
                                      int i_control, ... )

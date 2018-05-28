@@ -6,6 +6,7 @@
 #include <boost/ref.hpp>
 #include <boost/range/as_literal.hpp>
 #include <boost/algorithm/string/find.hpp>
+#include <boost/locale.hpp>
 
 #include "vlc_helper.h"
 #include "tiril.h"
@@ -13,7 +14,8 @@
 #include "iterators.h"
 #include "underscore_subrip.h"
 
-struct ui : public vlc_object_t { };
+
+struct ui : public intf_thread_t { };
 
 vlc_module_begin( )
     set_shortname( N_( "Viril" ) )
@@ -136,7 +138,7 @@ int onkey( vlc_object_t* flt, char const* action, vlc_value_t, vlc_value_t newva
         // In case it was active
         // Debug and see why deactivate-activate doesn't work as expected
 //        tiril::extension::deactivate( tiril::extension::manager( flt ), "viril.lua" );
-        auto word = *subrip_string_iterator( iter< subrip_bounds_iterator > );
+        auto    word = *subrip_string_iterator( iter< subrip_bounds_iterator > );
         tiril::extension::var_string( flt, "tiril_word", word );
         tiril::extension::activate( tiril::extension::manager( flt ), "viril.lua" );
     }
@@ -152,7 +154,16 @@ int onkey( vlc_object_t* flt, char const* action, vlc_value_t, vlc_value_t newva
                 // Setting up the real iterator if the user has pressed a key for the first time
                 iter< subrip_bounds_iterator > = subrip_bounds_iterator( subrip_buf( std::ref( subpic->updater.p_sys->region ) ), [] ( int a ) -> bool
             {
-                return std::isalpha( a , std::locale("") );
+                using namespace boost::locale;
+                static generator gen;
+                // Create locale generator 
+                static std::locale loc = gen( "en_US.UTF-8" ); 
+                // !!! UNPROVEN
+                // It seems that std::isalpha is not specialized for the types other than wchar_t/char, 
+                // for it returns false for valid unicode alpha characters. Our assumtion here is that any delimiter should occupy no more than 2 bytes.
+                // At first it might seem that ICU would have helped here, but its u_isalpha is for UChar32, 
+                // hence it checks 4 bytes tops whereas UTF-8 may occupy up to 6/8 bytes.
+                return std::isalpha( static_cast< wchar_t >( a ), loc );
             } );
             // Otherwise we just start moving the pointer
             else if ( newval.i_int == KEY_END ) ++iter< subrip_bounds_iterator >;
@@ -196,6 +207,8 @@ int tiril::module< decoder_t >::open( module< decoder_t >::base_type* decoder )
     // намагаючись розпарсити структуру libass-модуля кодом для парсингу subsdec-титрів.
     // Запит надходить сюди щоразу як змінюється кодек титрів.
     tiril::spu_codec::current( decoder, decoder->fmt_in.i_codec );
+    // Is used in Lua extension
+    tiril::spu_codec::var( decoder, "tiril_src_lng", decoder->fmt_in.psz_language ? decoder->fmt_in.psz_language : "" );
 
     // Vi gir den GENERIC koden tilbake for vi ikke har lyst til å ha blitt en ekte dekoder.
     // Slik har vi bare latt som at vi er en for å få nødvendig informasjon.

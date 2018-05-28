@@ -14,10 +14,6 @@ local options = {
   }
 }
 
-
-local input_table = {} -- General widget id reference
-local select_conf = {} -- Drop down widget / option table association
-
             --[[ VLC extension stuff ]]--
 
 function descriptor()
@@ -55,6 +51,8 @@ footer_page = [[ </BODY> </HTML>]]
 function google_get(data)
    return data:match([[%[Tir {sourceText = (.-), sourceLang = (.-), targetText = Just "(.-)",]])
 end
+
+local mainDialogWindow = nil
 
 function lexin_get(data)
   lem = {}
@@ -110,38 +108,47 @@ end
 -- add component function parameters : col, row, col_span, row_span ...; aligned on the QGridLayout
 function activate()
 
-  vlc.msg.dbg("[viril] Hi!")
-  if dlg == nil then
-	dlg = vlc.dialog( "Viril" )
-  end
+  vlc.msg.dbg("[viril] In activate()")
 
-  lib = vlc.object.libvlc()
-  v = vlc.var.get( lib, "tiril_word" )
-  if v ~= nil then 
-	text = string.format(header_page, v)
+  mainDialogWindow = vlc.dialog( "Viril" )
+  local lib = vlc.object.libvlc()
+  local srcWord = vlc.var.get( lib, "tiril_word" )
+  -- we'll take only first 2 chars of language abbr.
+  local langFrom = string.sub( vlc.var.get( lib, "tiril_src_lng" ), 1, 2)
+  if langFrom == nil then langFrom = "en"  else string.sub( langFrom, 1, 2 ) end
+  local langTo = vlc.var.get( lib, "tiril_tgt_lng" ) 
+  if langTo == nil then langTo = "en"  else string.sub( langTo, 1, 2 ) end
+
+  vlc.msg.dbg("[viril] tiril_word "..tostring(srcWord))
+  vlc.msg.dbg("[viril] tiril_src_lng "..tostring(langFrom))
+  vlc.msg.dbg("[viril] tiril_tgt_lng "..tostring(langTo))
+
+  local text = ""
+  if srcWord ~= nil then 
+	text = string.format(header_page, srcWord)
 	-- google
-    req = "http://localhost:3000/goo/" .. v
-    vlc.msg.dbg("[viril] Requesting " .. req)
-    r, status, resp = get(req)
+    local req = "http://localhost:3000/goo/" .. langFrom .."/" .. langTo .. "/" .. srcWord
+    vlc.msg.dbg("[viril] Requesting Google" .. req)
+    local r, status, resp = get(req)
 	if not r then 
 		   text = text .. string.format( error, "can't reach out to tiril" )
            vlc.msg.dbg("[viril] status "..tostring(status))
            vlc.msg.dbg("[viril] resp "..tostring(resp))
 	else 
-	  s, _, word = google_get( r )
+	  local s, _, word = google_get( r )
 	  text =  text .. string.format( tr, "Google Translate", word )
-      vlc.msg.dbg("[viril] Resp " .. r)
+      vlc.msg.dbg("[viril] resp " .. r)
     end
     -- lexin
-    req = "http://localhost:3000/lex/" .. v
-    vlc.msg.dbg("[viril] Requesting " .. req)
-    r, status, resp = get(req)
+    local req = "http://localhost:3000/lex/" .. langFrom .."/" .. langTo .. "/" .. srcWord
+    vlc.msg.dbg("[viril] Requesting Lexin" .. req)
+    local r, status, resp = get(req)
 	if not r then 
 		   text = text .. string.format( error, "can't reach out to tiril" )
            vlc.msg.dbg("[viril] status "..tostring(status))
            vlc.msg.dbg("[viril] resp "..tostring(resp))
 	else 
-	  lem, mor, def, eks, idi, sms, alt = lexin_get(r)
+	  local lem, mor, def, eks, idi, sms, alt = lexin_get(r)
 	  text =  text .. string.format( tr, "Lexin", "" )
 	  text = text..format_lex("Lemma", lem)
 	  text = text..format_lex("Morphology", mor)
@@ -161,31 +168,38 @@ function activate()
 
   -- It seems the more you indent at the beginning, the more QGridLayout will allow you to extend
   --                        col    row    col_span  row_span
-  htm =  dlg:add_html(text, 10,     1,      75,	      120)
-  btn = dlg:add_button("Add the word to Tiril", function() 
-		addWord(v) 
-		dlg:del_widget(btn)
+  htm =  mainDialogWindow:add_html(text, 10,     1,      75,	      120)
+  btn = mainDialogWindow:add_button("Add the word to Tiril", function() 
+		addWord(srcWord) 
+		mainDialogWindow:del_widget(btn)
 		btn = nil
 		end, 10, 121, 1, 1)
+  mainDialogWindow:add_label("Translate from", 11, 121, 1, 1)
+  fromTextCtrl = mainDialogWindow:add_text_input(langFrom, 12, 121, 1, 1); 
+  mainDialogWindow:add_label("to", 13, 121, 1, 1)
+  toTextCtrl = mainDialogWindow:add_text_input(langTo, 14, 121, 1, 1); 
 
-  dlg:show()
+  mainDialogWindow:show()
 end
 
 function close()
+  local lib = vlc.object.libvlc()
+  -- Saving the chosen languages for future
+  vlc.var.set( lib, "tiril_src_lng", fromTextCtrl:get_text() )
+  vlc.var.create( lib, "tiril_tgt_lng", toTextCtrl:get_text() )
+
+  vlc.msg.dbg("[viril] In close()")
   vlc.deactivate()
 end
 
 function deactivate()
 	-- Close & reset
-	if dlg ~= nil then
-       if htm ~= nil then dlg:del_widget(htm); htm = nil end
-       if btn ~= nil then dlg:del_widget(btn); btn = nil end
-
-	    dlg:delete()
-		dlg = nil
+	if mainDialogWindow ~= nil then
+	    mainDialogWindow:delete()
+		mainDialogWindow = nil
 	end
   
-    vlc.msg.dbg("[viril] Bye bye!")
+    vlc.msg.dbg("[viril] in  deactivate!")
 end
 
 userAgentHTTP = "Viril"

@@ -23,7 +23,7 @@ message( STATUS "Linker flags ${CMAKE_SHARED_LINKER_FLAGS}" )
 set                         ( Boost_USE_STATIC_LIBS       ON ) # only find static libs
 set                         ( Boost_USE_MULTITHREADED     ON )
 set                         ( Boost_USE_STATIC_RUNTIME    OFF )
-find_package                ( Boost 1.67.0 REQUIRED COMPONENTS filesystem )
+find_package                ( Boost 1.67.0 REQUIRED COMPONENTS filesystem locale)
 
 message( STATUS "Fetching libass ..." )
 FetchContent_Declare        ( libass

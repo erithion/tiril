@@ -38,6 +38,9 @@ namespace tiril
 
         static fourcc current( vlc_object_t* any );
         static void current( vlc_object_t* any, fourcc codec );
+
+        static std::string var( vlc_object_t* any, const std::string& name );
+        static void var( decoder_t* any, const std::string& name, const std::string& val );
     };
 
     struct subpic
@@ -61,9 +64,16 @@ namespace tiril
     // må vi jukse og late å være noe annet for å få denne informasjonen
     struct extension
     {
-        static void intf( vlc_object_t* save );
+        static void intf( intf_thread_t* save );
+        // Ikke prøv å tilkalle disse metodene før du ikke har kalt til 'intf'
+        // TODO: refactor it to bring this hidden requirement out to the type system
         static extensions_manager_t* manager( vlc_object_t* any );
-
+/*
+        // Could be useful in future
+        static input_thread_t* input( vlc_object_t* any );
+        // es == audio-es | spu-es 
+        static std::string getInputLang( vlc_object_t* any, const std::string& es );
+*/
         static bool var_string( vlc_object_t* any, const std::string& name, const std::string& val );
 
         // Runs one of the script from the VLC extensions folder. Case sensitive

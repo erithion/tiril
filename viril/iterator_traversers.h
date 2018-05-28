@@ -134,6 +134,8 @@ namespace tiril::iterators::traversers
         template < typename It >
         static std::vector< bounds > cache( It itBegin, It itEnd, const predicate& pred )
         {
+            // Note for future: If some UTF8 is traversed not as expected, it is not UTF-8-CPP to blame here.
+            // It is likely that std::isalpha predicate hasn't worked right due to some locale problems.
             std::vector< bounds > ret( 0 );
             utf8::iterator< It >  begin( itBegin, itBegin, itEnd );
             utf8::iterator< It >  end( itEnd, itBegin, itEnd );

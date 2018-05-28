@@ -62,10 +62,13 @@ httpServer req respond = join $ respond <$>
         ("goo":from:to:w:xs) -> do
             tx <- googleTranslateWithT (T.fromStrict from) (T.fromStrict to) (T.fromStrict w)
             return $ either index index tx
-        ("lex":[x]) -> do
+        ("lex":"no":"ru":[x]) -> do
             tx <- lexinTranslate . T.fromStrict $ x
             -- TODO: Currently you're taking merely 2 sections. Think of a proper extension to give out all available data
             return . index . take 2 $ tx
+        -- TODO: Add patterns for all languages Lexin supports
+        ("lex":_) -> do
+            return . index $ ""
         ("add":wd:lng:[]) -> do
             addWord wd lng
             return . index $ "done"

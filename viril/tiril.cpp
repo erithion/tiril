@@ -23,6 +23,24 @@ void tiril::spu_codec::current( vlc_object_t* any, spu_codec::fourcc codec )
     }
 }
 
+std::string tiril::spu_codec::var( vlc_object_t* any, const std::string& name )
+{
+    if ( auto res = var_GetString( any->obj.libvlc, name.c_str() ); res != 0 ) return res;
+    else return "";
+}
+
+void tiril::spu_codec::var( decoder_t* any, const std::string& name, const std::string& val )
+{
+    if ( std::string set = tiril::spu_codec::var( reinterpret_cast< vlc_object_t* >( any ), name ); set != val )
+    {
+        if ( set.empty() )
+            var_Create( any->obj.libvlc, name.c_str(), VLC_VAR_STRING );
+
+        var_SetString( any->obj.libvlc, name.c_str(), val.c_str() );
+    }
+}
+
+
 subpicture_t* tiril::subpic::current( )
 {
     return subpic_.load();
@@ -37,7 +55,7 @@ void tiril::subpic::redraw( subpicture_t* pic )
 {
     if ( pic != 0 )
     {
-        // Is féidir linn "update" mar sin
+        // Is féidir linn "update" a dhéanamh mar sin
         struct subpicture_private_t
         {
             video_format_t src;
@@ -83,7 +101,41 @@ extensions_manager_t* tiril::extension::manager( vlc_object_t* any )
     return 0;
 }
 
-void tiril::extension::intf( vlc_object_t* obj )
+/*
+input_thread_t* tiril::extension::input( vlc_object_t* any )
+{
+    auto            intf = reinterpret_cast< intf_thread_t* >( var_GetAddress( any->obj.libvlc, uiManagerVariableName ) );
+    playlist_t*     pl = pl_Get( intf );
+    input_thread_t* p_input = reinterpret_cast< input_thread_t* >( var_GetAddress( pl, "input-current" ) );
+    return p_input;
+}
+
+
+std::string tiril::extension::getInputLang( vlc_object_t* any, const std::string& es )
+{
+    auto inp = tiril::extension::input( any );
+    auto trackId = var_GetInteger( inp, es.c_str() );
+    vlc_value_t val_list, text_list;
+    int i_ret = var_Change( inp, es.c_str( ), VLC_VAR_GETCHOICES, &val_list, &text_list );
+
+    if ( i_ret != VLC_SUCCESS)
+        return "";
+
+    std::string ret = "";
+    if ( val_list.p_list->i_count > 0 )
+    {
+        for ( size_t i = 0; i != val_list.p_list->i_count; ++i )
+            if ( val_list.p_list->p_values[i].i_int == trackId )
+                ret = std::string( text_list.p_list->p_values[i].psz_string );
+    }
+
+    var_FreeList( &val_list, &text_list );
+
+    return ret;
+}
+*/
+
+void tiril::extension::intf( intf_thread_t* obj )
 {
     if ( var_GetInteger( obj->obj.libvlc, uiManagerVariableName ) == 0 )
         var_Create( obj->obj.libvlc, uiManagerVariableName, VLC_VAR_INTEGER );
