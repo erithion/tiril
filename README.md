@@ -13,7 +13,7 @@ While it still exists in a form of Proof-Of-Concept with lots of ideas still to 
 
 ## Enjoy watching a subtitled video with translation
 
-Below you can see a demonstration of how Tiril already strives to be helpful to you by having taught VLC media player to do something new in spite of having grown so small yet.
+Below you can see a demonstration of how Tiril already strives to be helpful to you by having taught VLC media player to do something new in spite of having grown so small yet - translate and save the words that are little-known for you in a single move.
 
 <details>
  <summary>Click to see the image</summary>
@@ -23,26 +23,30 @@ Below you can see a demonstration of how Tiril already strives to be helpful to 
 
 ## Learn from your favourite movies on Memrise
 
-It also helps you to gather the new words you have encountered so far and export them to your favourite learning tool
+Again, while in certain aspects Tiril still might seem "sketchy" yet, nonetheless it might already track, collect and keep the words you have encountered and would readily assist you in exporting them to your favourite learning tool any time you like. Below you can review how this process would look in the case of Memrise.
 
+This is how you would thoroughly go through the available online translations and save them along with your words.
 <details>
  <summary>Review the words</summary>
   
 ![alt text](https://github.com/erithion/tiril/raw/master/doc/tiril.view.gif "View demo")
 </details>
 
+
+This is how you would batch-export and format them at will after you have added all the translations and examples on the previous step you wanted.
 <details>
  <summary>Export to Memrise format</summary>
   
 ![alt text](https://github.com/erithion/tiril/raw/master/doc/tiril.export.memrise.gif "Memrise export demo")
 </details>
 
+
+And finally how you would import the whole set you have just exported to Memrise in a single shot.
 <details>
  <summary>Import on Memrise</summary>
   
 ![alt text](https://github.com/erithion/tiril/raw/master/doc/tiril.export.memrise.second.gif "Memrise import demo")
 </details>
-
 
 # Build
 The project has some dependencies, at times even unexpected ones, ~~like Electron JS for example~~. And while the currently available build scripts seek for making the build process as easy and effortless as possible by attempting to automatically find and download every single libary that the project depends on, yet there are some steps one is manually to perform prior to proceed with the build process.
