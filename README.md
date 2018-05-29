@@ -23,7 +23,7 @@ Below you can see a demonstration of how Tiril already strives to be helpful to 
 
 ## Learn from your favourite movies on Memrise
 
-It also helps you to collect the new words you've faced so far and export them to your favourite learning tool
+It also helps you to gather the new words you have encountered so far and export them to your favourite learning tool
 
 <details>
  <summary>Review the words</summary>
