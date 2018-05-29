@@ -49,7 +49,7 @@ And finally how you would import the whole set you have just exported to Memrise
 </details>
 
 # Build
-The project has some dependencies, at times even unexpected ones, ~~like Electron JS for example~~. And while the currently available build scripts seek for making the build process as easy and effortless as possible by attempting to automatically find and download every single libary that the project depends on, yet there are some steps one is manually to perform prior to proceed with the build process.
+The project has some dependencies, at times even unexpected ones, ~~like Electron JS for example~~. And while the currently available build scripts seek for making the build process as easy and effortless as possible by attempting to automatically find and download every single libary that the project depends on, yet there are some steps one is manually to perform prior to proceed with the build process itself.
 ## Windows prerequisites
 
 * [CMake](https://cmake.org/download/) (>=3.11.0)
@@ -65,6 +65,7 @@ The section is mainly for the author to keep track of the emerging needs/ideas
 
 * Siril server
   * [ ] Add Haskell Conduit HTTP streams to parse dictionaries on-demand and speed up UI page show ups
+  * [ ] Research: Consider FRP model of Threepenny GUI and evaluate if it would  reduce the amount of type-unsafe Javascript on UI-side.
   * Dictionaries
     * [ ] Gaeilge support: add [Teanglann](https://www.teanglann.ie/) parser
     * [ ] Norsk bokmål support: add [bøyningsformer](http://inger.uib.no/perl/search/search.cgi?appid=72&tabid=1106) parser
