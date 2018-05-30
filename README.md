@@ -1,9 +1,3 @@
-:toc: macro
-:toc-title:
-:toclevels: 99
-
-toc::[]
-
 # About Tiril
 Tiril is an open source software aiming to assist in a language learning process.
 
