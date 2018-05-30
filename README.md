@@ -23,7 +23,7 @@ Below you can see a demonstration of how Tiril already strives to be helpful to 
 
 ## Learn from your favourite movies on Memrise
 
-Again, while in certain aspects Tiril still might seem "sketchy" yet, nonetheless it might already track, collect and keep the words you have encountered and would readily assist you in exporting them to your favourite learning tool any time you like. Below you can review how this process would look in the case of Memrise.
+Again, while in certain aspects Tiril still might seem "sketchy", nonetheless it already might track, collect and keep the words for you that you have encountered and would readily assist you in exporting them in to your favourite learning tool any time you like. Below you can review how this process would look in the case of Memrise. Mind you though, its user interface and features will evolve and change.
 
 This is how you would thoroughly go through the available online translations and save them along with your words.
 <details>
