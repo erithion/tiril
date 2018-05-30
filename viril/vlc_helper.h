@@ -1,5 +1,21 @@
 ﻿#pragma once
 
+/*************************************************************************/
+/*                                                                       */
+/*                                                                       */
+/*                                                                       */
+/*                                                                       */
+/*                                                                       */
+/*                                                                       */
+/* THIS FILE SHOULD BE REMOVED AFTER VIRIL IS MOVED TO IN-TREE VLC BUILD */
+/*                                                                       */
+/*                                                                       */
+/*                                                                       */
+/*                                                                       */
+/*                                                                       */
+/*                                                                       */
+/*************************************************************************/
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -170,25 +186,19 @@ enum
     EXTENSION_META_CHANGED,   /**< arg1: extension_t*, arg2 (input_item_t*) */
 };
 
-#define extension_Activate( mgr, ext ) \
-        extension_Control( mgr, EXTENSION_ACTIVATE, ext )
-
-#define extension_Deactivate( mgr, ext ) \
-        extension_Control( mgr, EXTENSION_DEACTIVATE, ext )
-
-#define extension_Trigger( mgr, ext ) \
-        extension_Control( mgr, EXTENSION_TRIGGER, ext )
-
-static inline int extension_Control( extensions_manager_t *p_mgr,
-                                     int i_control, ... )
+template < int Control, typename ...Ts >
+static inline int extension_Control( extensions_manager_t *p_mgr, Ts ... )
 {
     va_list args;
-    va_start( args, i_control );
-    int i_ret = p_mgr->pf_control( p_mgr, i_control, args );
+    va_start( args, p_mgr );
+    int i_ret = p_mgr->pf_control( p_mgr, Control, args );
     va_end( args );
     return i_ret;
 }
+using extensionFunction = int(*) ( extensions_manager_t*, extension_t* );
 
+static inline extensionFunction extension_Activate = extension_Control< EXTENSION_ACTIVATE >;
+static inline extensionFunction extension_Deactivate = extension_Control< EXTENSION_DEACTIVATE >;
 
 // Розробники, нажаль, не залишили відкритих функцій виділення пам'яті.
 // Оскільки плагін і VLC обидва використовують різні CRT (першій - новий MSVC2017 UCRT, тоді як VLC - стару MSVCRT.DLL, на яку посилається MinGW при збірці),

@@ -59,6 +59,15 @@ if( NOT vlc30_POPULATED )
     FetchContent_Populate   ( vlc30 )
 endif()
 
+message( STATUS "Fetching dirent ..." )
+FetchContent_Declare        ( dirent
+                              GIT_REPOSITORY https://github.com/tronkko/dirent
+                              GIT_TAG 1.23.2 )
+FetchContent_GetProperties  ( dirent )
+if( NOT dirent_POPULATED )
+    FetchContent_Populate   ( dirent )
+endif()
+
 add_definitions      ( -D_CRT_NONSTDC_NO_DEPRECATE ) # warning C4996: 'strdup': The POSIX name for this item is deprecated. 
 add_definitions      ( -DBOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE )
 add_definitions      ( -D_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING )
@@ -70,6 +79,7 @@ include_directories  ( ${CMAKE_CURRENT_SOURCE_DIR}/
                        ${vlc30_SOURCE_DIR}/sdk/include/vlc 
                        ${vlc30_SOURCE_DIR}/sdk/include/vlc/plugins
                        ${vlc30_SOURCE_DIR}/sdk/include 
+                       ${dirent_SOURCE_DIR}/include
                        ${utf8_cpp_SOURCE_DIR}/source )
                        
 link_directories     ( ${vlc30_SOURCE_DIR}/sdk/lib 
