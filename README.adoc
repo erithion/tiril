@@ -1,4 +1,10 @@
-# Tiril
+:toc: macro
+:toc-title:
+:toclevels: 99
+
+toc::[]
+
+# About Tiril
 Tiril is an open source software aiming to assist in a language learning process.
 
 While it still exists in a form of Proof-Of-Concept with lots of ideas still to be implemented, the following components have already been added
@@ -49,14 +55,19 @@ And finally how you would import the whole set you have just exported to Memrise
 </details>
 
 # Build
+## Prerequisites
 The project has some dependencies, at times even unexpected ones, ~~like Electron JS for example~~. And while the currently available build scripts seek for making the build process as easy and effortless as possible by attempting to automatically find and download every single libary that the project depends on, yet there are some steps one is manually to perform prior to proceed with the build process itself.
-## Windows prerequisites
 
 * [CMake](https://cmake.org/download/) (>=3.11.0)
 * [Haskell Stack](https://docs.haskellstack.org/en/stable/README/) (>=1.6.3)
 * C++ compiler whith C++17 support. For an instance, [MSVC Community](https://www.visualstudio.com/free-developer-offers/) will do
 * [Boost library](https://www.boost.org/users/download/) (>=1.67)
 * ~~[Electron](https://electronjs.org)~~
+
+## Windows
+* Review *config.bat* and set the Boost path according to your environment. Tweak the other variables at will.  
+* Run *config.bat*
+* Run *build.bat*
 
 ## Linux
 

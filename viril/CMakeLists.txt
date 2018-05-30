@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 3.11.0)
-include(FetchContent)
-include(FindBoost)
+include( FetchContent )
+set    ( BOOST_ROOT                  ${VIRIL_BOOSTROOT} )
+include( FindBoost )
 
 set    ( PROJECT_NAME                libviril_plugin )
-set    ( VIRIL_BUILD_DIR             ${TIRIL_BUILD_DIR}/vlc )
+set    ( VIRIL_BUILD_DIR             ${TIRIL_BUILDDIR}/vlc )
 set    ( EXTERNAL_LIBS_DIR           ${CMAKE_CURRENT_SOURCE_DIR}/depends/ )
 set    ( CMAKE_CXX_FLAGS             "${CMAKE_CXX_FLAGS} /EHc /std:c++latest" )
 set    ( CMAKE_SHARED_LINKER_FLAGS   "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO" )
@@ -96,9 +97,9 @@ target_link_libraries( ${PROJECT_NAME} libvlccore.lib )
 target_link_libraries( ${PROJECT_NAME} Ws2_32.lib )
 target_link_libraries( ${PROJECT_NAME} ${Boost_LIBRARIES} )
 
-if( DEFINED INSTALL_VLC )
-    message ( STATUS              "INSTALL_VLC is ${INSTALL_VLC}. Viril will be installed along with VLC" )
-    set     ( VIRIL_BUILD_DIR     ${TIRIL_BUILD_DIR}/vlc30 )
+if( DEFINED VIRIL_WITHVLC )
+    message ( STATUS              "VIRIL_WITHVLC is ${VIRIL_WITHVLC}. Viril will be installed along with VLC" )
+    set     ( VIRIL_BUILD_DIR     ${TIRIL_BUILDDIR}/vlc30 )
     
     install ( DIRECTORY           ${vlc30_SOURCE_DIR}/  
               DESTINATION         ${VIRIL_BUILD_DIR} )
