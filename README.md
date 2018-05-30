@@ -1,7 +1,7 @@
 # About Tiril
 Tiril is an open source software aiming to assist in a language learning process.
 
-While it still exists in a form of Proof-Of-Concept with lots of ideas still to be implemented, the following components have already been added
+While it still exists in a form of Proof-Of-Concept with lots of ideas to be yet implemented, the following components have already been added
 * Siril server with an embedded UI. To date it operates merely dictionaries and handles just a few of them for now:
   * [x] [Google Translate](https://translate.google.com)
   * [x] [Lexin](http://lexin.udir.no)
@@ -13,7 +13,7 @@ While it still exists in a form of Proof-Of-Concept with lots of ideas still to 
 
 ## Enjoy watching a subtitled video with translation
 
-Below you can see a demonstration of how Tiril already strives to be helpful to you by having taught VLC media player to do something new in spite of having grown so small yet - translate and save the words that are little-known for you in a single move.
+Below you can see a demonstration of how Tiril already strives to be helpful by having taught VLC media player to do something new in spite of having grown so small yet. Translate and save the words that are little-known to you in one fell swoop.
 
 <details>
  <summary>Click to see the image</summary>
@@ -23,9 +23,9 @@ Below you can see a demonstration of how Tiril already strives to be helpful to 
 
 ## Learn from your favourite movies on Memrise
 
-Again, while in certain aspects Tiril still might seem "sketchy", nonetheless it already might track, collect and keep the words for you that you have encountered and would readily assist you in exporting them in to your favourite learning tool any time you like. Below you can review how this process would look in the case of Memrise. Mind you though, its user interface and features will evolve and change.
+Again, while Tiril still might seem "sketchy" and lacking certain features, nonetheless it already might track, collect and keep the words for you that you have encountered and would readily assist you in exporting them in to your favourite learning tool. Below you can review how this process would look in the case of Memrise. Mind you though, the user interface and features will evolve and change.
 
-This is how you would thoroughly go through the available online translations and save them along with your words.
+This is how you would work with available online translations and save them along with your words.
 <details>
  <summary>Review the words</summary>
   
@@ -33,7 +33,7 @@ This is how you would thoroughly go through the available online translations an
 </details>
 
 
-This is how you would batch-export and format them at will after you have added all the translations and examples on the previous step you wanted.
+This is how you would format and batch-export them after you added all the translations and examples you wanted.
 <details>
  <summary>Export to Memrise format</summary>
   
@@ -41,7 +41,7 @@ This is how you would batch-export and format them at will after you have added 
 </details>
 
 
-And finally how you would import the whole set you have just exported to Memrise in a single shot.
+And finally is how you would import the whole set to Memrise at one stroke.
 <details>
  <summary>Import on Memrise</summary>
   
@@ -59,7 +59,7 @@ The project has some dependencies, at times even unexpected ones, ~~like Electro
 * ~~[Electron](https://electronjs.org)~~
 
 ## Windows
-* Review *config.bat* and set the Boost path according to your environment. Tweak the other variables at will.  
+* Review *config.bat* and set the Boost path according to your environment. Tweak the other variables if needed.  
 * Run *config.bat*
 * Run *build.bat*
 
