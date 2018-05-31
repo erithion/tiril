@@ -50,7 +50,7 @@ And finally is how you would import the whole set to Memrise at one stroke.
 
 # Build
 ## Prerequisites
-The project has some dependencies, at times even unexpected ones, ~~like Electron JS for example~~. And while the currently available build scripts seek for making the build process as easy and effortless as possible by attempting to automatically find and download every single libary that the project depends on, yet there are some steps one is manually to perform prior to proceed with the build process itself.
+The project has some dependencies, at times even unexpected ones, ~~like Electron JS for example~~. And while the currently available build scripts seek for making the build process as easy and effortless as possible by attempting to automatically find and download every single libary that the project depends on, yet there are some steps one is manually to perform. Thus the following must be installed prior to proceed with the build process itself
 
 * [CMake](https://cmake.org/download/) (>=3.11.0)
 * [Haskell Stack](https://docs.haskellstack.org/en/stable/README/) (>=1.6.3)
