@@ -79,10 +79,10 @@ execute_process             ( COMMAND stack setup WORKING_DIRECTORY ${CMAKE_CURR
 if (DEFINED SIRIL_WITHPROFILE)
     message                 ( STATUS "SIRIL_WITHPROFILE flag is set to ${SIRIL_WITHPROFILE}. Siril will be built with profile information" )
     add_custom_target       ( siril ALL stack build --profile --ghc-options="-auto-all -caf-all -fforce-recomp -O2" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
-    install                 ( CODE "execute_process (COMMAND stack install --verbosity error --profile --ghc-options=\"-auto-all -caf-all -fforce-recomp -O2\" --local-bin-path ${TIRIL_BUILD_DIR}/siril WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})" )
+    install                 ( CODE "execute_process (COMMAND stack install --verbosity error --profile --ghc-options=\"-auto-all -caf-all -fforce-recomp -O2\" --local-bin-path ${SIRIL_BUILD_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})" )
 else()
     add_custom_target       ( siril ALL stack build WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
-    install                 ( CODE "execute_process (COMMAND stack install --verbosity error --local-bin-path ${TIRIL_BUILD_DIR}/siril WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})" )
+    install                 ( CODE "execute_process (COMMAND stack install --verbosity error --local-bin-path ${SIRIL_BUILD_DIR} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})" )
 endif()
 
 install                     ( DIRECTORY   ${CMAKE_CURRENT_SOURCE_DIR}/js/   

@@ -1,5 +1,4 @@
 cmake_minimum_required( VERSION 3.11.0 )
-include(FetchContent)
 # Variables the user may re-define from the outside: 
 #   SIRIL                   - if defined, turns on Siril build.
 #   VIRIL                   - if defined, turns on Viril build.
@@ -20,10 +19,15 @@ else()
     message                     ( STATUS            "SIRIL is undefined. All other options starting with SIRIL_ will be ignored" )
 endif()
 
-if( DEFINED SIRIL )
+if( DEFINED VIRIL )
     message                     ( STATUS            "VIRIL is set to ${VIRIL}. Starting Viril build..." )
     add_subdirectory            ( viril )
 else()
     message                     ( STATUS            "VIRIL is undefined. All other options starting with VIRIL_ will be ignored" )
 endif()
 
+# Resetting the cache so that any subsequent changes to toggle-like variables to take effect the next time
+unset                           ( VIRIL CACHE )
+unset                           ( SIRIL CACHE )
+unset                           ( VIRIL_WITHVLC CACHE )
+unset                           ( SIRIL_WITHPROFILE CACHE )
