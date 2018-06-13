@@ -89,5 +89,9 @@ The section is mainly for the author to keep track of the emerging needs/ideas
   * [ ] Mouse selection support
   * [ ] Add Options to control keyboard shortcuts etc
   * [ ] Siril no-connection screen logo
-* Opera agent
+* Web agent
+ * Opera
+ * Chrome
+ * Firefox
+ * Saving Duolingo forum's notes with tags and searching
 * Linux build  
