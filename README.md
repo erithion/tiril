@@ -90,8 +90,10 @@ The section is mainly for the author to keep track of the emerging needs/ideas
   * [ ] Add Options to control keyboard shortcuts etc
   * [ ] Siril no-connection screen logo
 * Web agent
-  * Opera
-  * Chrome
-  * Firefox
-  * Saving Duolingo forum's notes with tags and searching
+  * [ ] Opera
+  * [ ] Chrome
+  * [ ] Firefox
+  * [ ] Saving Duolingo forum's notes with tags and searching
+* Android agent (daemon)
+  * [ ] [SmartBook library](http://smart-book.net) requests: intercept and allow to choose between a local books storage and the default one
 * Linux build  
