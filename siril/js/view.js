@@ -193,4 +193,3 @@ function startWaiting(){
 function endWaiting(){
     loadingScreen.finish();
 }
-

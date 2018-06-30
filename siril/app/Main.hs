@@ -30,6 +30,7 @@ import           BootstrapMenu
 import           Windows
 import           ExportMemrise
 import           View
+import           BuildSmartbook
 
 databaseName =  "tiril.db" 
 
@@ -91,7 +92,14 @@ uiSetup win = do
            , UI.link 
                 # set UI.rel "stylesheet"
                 # set UI.href "/static/perfect-scrollbar.css"
-            ]
+           , UI.link 
+                # set UI.rel "stylesheet"
+                # set UI.href "/static/assets/alloy-editor-ocean-min.css"
+           -- As a static component AlloyEditor seems to have problems with its loading more than once, so it has been moved to global
+           , mkElement "script" # set UI.src "/static/alloy-editor-all.js"
+--           , mkElement "script" # set UI.src "/static/alloy-editor-all-min.js"
+           , mkElement "script" # set UI.src "/static/alloy.jsx.js"
+           ]
                 
     -- Adding menu
     (mainMenu :: Element) <- evalMenu $ do
@@ -103,7 +111,7 @@ uiSetup win = do
         dropdownDivider
         dropdownItem "Memrise" (const $ memriseExportWindow)
         newDropdown "Tools"
-        dropdownItem "Create a SmartBook ..." (const $ createMessageGreen "Create a SmartBook" "Soon. Be patient ...")
+        dropdownItem "Build a SmartBook" (const $ buildBook)
         search
 
     getBody win #+ [element mainMenu, createMainWindow]
@@ -113,5 +121,6 @@ uiSetup win = do
         #+ [ mkElement "script" # set UI.src "/static/bootstrap.min.js"
            , mkElement "script" # set UI.src "/static/sortable.js"
            , mkElement "script" # set UI.src "/static/perfect-scrollbar.min.js"
+           , mkElement "script" # set UI.src "/static/common.js"
            ]
     return ()

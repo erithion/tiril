@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.11.0 )
+cmake_minimum_required( VERSION 3.12.0 )
 # Variables the user may re-define from the outside: 
 #   SIRIL                   - if defined, turns on Siril build.
 #   VIRIL                   - if defined, turns on Viril build.

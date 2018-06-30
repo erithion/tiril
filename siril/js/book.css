@@ -1,0 +1,84 @@
+.tiril-main-window {
+    height: 93%; /* 7% is the space for menu??? */
+    width: 100%;
+    position: fixed;
+    overflow: hidden;
+    display: flex;
+    flex-flow: column;
+}
+
+  .my-edit-container {
+    flex-flow: row; 
+    display: flex; 
+    height: 90%; 
+    width: 100%; 
+    overflow: hidden; <!-- IMPORTANT for the correct layout of long texts -->
+  }
+  
+  .my-edit {
+    margin: 5px;
+    position: relative;  <!-- IMPORTANT for perfect-scrollbar -->
+    height: 100%; 
+    width: 50%;
+    margin-left: 40px;
+  }
+
+  
+  .my-meta-container {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    flex-flow: row;
+    height: 8%;
+  }
+  .my-meta {
+    margin-right: 15px;
+    margin-left: 40px;
+  }
+  
+
+  
+  .ae-ui .ae-arrow-box.ae-arrow-box-bottom:after, .ae-ui .ae-arrow-box.ae-arrow-box-left:after, .ae-ui .ae-arrow-box.ae-arrow-box-right:after, .ae-ui .ae-arrow-box.ae-arrow-box-top-left:after, .ae-ui .ae-arrow-box.ae-arrow-box-top-right:after, .ae-ui .ae-arrow-box.ae-arrow-box-top:after {
+    color: #055F63;
+}
+
+.ae-ui .ae-toolbar, .ae-ui [class^=ae-toolbar-] {
+    background-color: #055F63;
+    border-radius: 4px;
+    color: #fff;
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+}
+
+.ae-ui .ae-toolbar .ae-button:hover, .ae-ui .ae-toolbar .ae-toolbar-element:hover, .ae-ui [class^=ae-toolbar-] .ae-button:hover, .ae-ui [class^=ae-toolbar-] .ae-toolbar-element:hover {
+    color: #F1F1E6;
+}
+
+body {
+    overflow: hidden;  <!-- IMPORTANT for toolbar-add quick appearance -->
+}
+
+
+.my-btn-info:hover {
+    color: #F1F1E6;
+}
+.my-btn-info {
+    color: #fff;
+    background-color: #055F63;
+    border-color: #117a8b;
+line-height: 3px;
+}
+
+
+.form-control:focus{border-color: #055F63; box-shadow: none; -webkit-box-shadow: none;} 
+.has-error .form-control:focus{box-shadow: none; -webkit-box-shadow: none;}
+
+/* to disable blue shadow above + */
+div:focus, button:focus {
+    outline: none !important;
+}
+
+/* to make bootstrap placeholders disappear */
+input:focus::-webkit-input-placeholder { color:transparent; }
+input:focus:-moz-placeholder { color:transparent; } /* Firefox 18- */
+input:focus::-moz-placeholder { color:transparent; } /* Firefox 19+ */
+input:focus:-ms-input-placeholder { color:transparent; } /* oldIE ;) */

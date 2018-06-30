@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.11.0 )
+cmake_minimum_required( VERSION 3.12.0 )
 include(FetchContent)
 
 set                             ( SIRIL_BUILD_DIR             ${TIRIL_BUILDDIR}/siril )
@@ -74,7 +74,36 @@ if( NOT wait_POPULATED )
 endif()
 
 #######################################
+message                         ( STATUS "Fetching syncscroll ..." )
+FetchContent_Declare            ( syncscroll
+                                  GIT_REPOSITORY https://github.com/asvd/syncscroll
+                                  GIT_TAG v0.0.3 )
+FetchContent_GetProperties      ( syncscroll )
+if( NOT syncscroll_POPULATED )
+    FetchContent_Populate       ( syncscroll )
+endif()
 
+#######################################
+message                         ( STATUS "Fetching jquery-validation ..." )
+FetchContent_Declare            ( jvalidate
+                                  GIT_REPOSITORY https://github.com/jquery-validation/jquery-validation
+                                  GIT_TAG 1.17.0 )
+FetchContent_GetProperties      ( jvalidate )
+if( NOT jvalidate_POPULATED )
+    FetchContent_Populate       ( jvalidate )
+endif()
+
+#######################################
+message                         ( STATUS "Fetching alloy-editor ..." )
+FetchContent_Declare            ( alloy
+                                  GIT_REPOSITORY https://github.com/liferay/alloy-editor
+                                  GIT_TAG v1.5.10 )
+FetchContent_GetProperties      ( alloy )
+if( NOT alloy_POPULATED )
+    FetchContent_Populate       ( alloy )
+endif()
+
+#######################################
 execute_process             ( COMMAND stack setup WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 if (DEFINED SIRIL_WITHPROFILE)
     message                 ( STATUS "SIRIL_WITHPROFILE flag is set to ${SIRIL_WITHPROFILE}. Siril will be built with profile information" )
@@ -120,4 +149,27 @@ install                     ( FILES       ${wait_SOURCE_DIR}/build/please-wait.c
                               DESTINATION ${SIRIL_BUILD_DIR}/static )
 install                     ( FILES       ${wait_SOURCE_DIR}/build/please-wait.min.js
                               DESTINATION ${SIRIL_BUILD_DIR}/static )                                                                                  
+
+install                     ( FILES       ${syncscroll_SOURCE_DIR}/syncscroll.js
+                              DESTINATION ${SIRIL_BUILD_DIR}/static )
+
+install                     ( FILES       ${jvalidate_SOURCE_DIR}/dist/jquery.validate.min.js
+                              DESTINATION ${SIRIL_BUILD_DIR}/static/ )
+                              
+install                     ( FILES       ${alloy_SOURCE_DIR}/dist/alloy-editor/alloy-editor-all-min.js
+                              DESTINATION ${SIRIL_BUILD_DIR}/static/ )
+install                     ( FILES       ${alloy_SOURCE_DIR}/dist/alloy-editor/alloy-editor-all.js
+                              DESTINATION ${SIRIL_BUILD_DIR}/static/ )
+install                     ( FILES       ${alloy_SOURCE_DIR}/dist/alloy-editor/styles.js
+                              DESTINATION ${SIRIL_BUILD_DIR}/static/ )
+install                     ( FILES       ${alloy_SOURCE_DIR}/dist/alloy-editor/config.js
+                              DESTINATION ${SIRIL_BUILD_DIR}/static/ )
+install                     ( DIRECTORY   ${alloy_SOURCE_DIR}/dist/alloy-editor/assets   
+                              DESTINATION ${SIRIL_BUILD_DIR}/static )
+install                     ( DIRECTORY   ${alloy_SOURCE_DIR}/dist/alloy-editor/lang   
+                              DESTINATION ${SIRIL_BUILD_DIR}/static )
+install                     ( DIRECTORY   ${alloy_SOURCE_DIR}/dist/alloy-editor/plugins
+                              DESTINATION ${SIRIL_BUILD_DIR}/static )
+install                     ( DIRECTORY   ${alloy_SOURCE_DIR}/dist/alloy-editor/skins
+                              DESTINATION ${SIRIL_BUILD_DIR}/static )
                               

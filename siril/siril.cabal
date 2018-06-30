@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 9ce3e5bc3e19bf7372a9a5200625236d9035495c43dcce02128e579618efe435
+-- hash: 19e456eb7b710533ae98a74f2c9e279cf9e4e359edeec07705d99e6850715e61
 
 name:           siril
 version:        0.1.0.0
@@ -105,6 +105,7 @@ executable siril-exe
     , warp
   other-modules:
       BootstrapMenu
+      BuildSmartbook
       ExportMemrise
       View
       Windows

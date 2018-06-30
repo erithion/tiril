@@ -27,7 +27,9 @@ createMainWindow = UI.div #. "tiril-main-window"
 getMainWindow :: UI Element
 getMainWindow = head <$> getWindows "tiril-main-window"
 
-clearMainWindow = getMainWindow # set children []
+clearMainWindow = do 
+    runFunction $ ffi "uninit()"
+    getMainWindow # set children []
 
 {---------------------------------------------------------}
 

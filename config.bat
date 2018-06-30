@@ -17,4 +17,5 @@ cd build
 ::      To unset the flag simply delete it from the parameters.
 ::      Useful if you want to profile Haskell part of Tiril.
 
-cmake -DSIRIL=1 -DVIRIL=1 -DVIRIL_WITHVLC=1 -DVIRIL_BOOSTROOT=C:\ms\boost_1_67_0 ..
+::cmake -DSIRIL=1 -DVIRIL=1 -DVIRIL_WITHVLC=1 -DVIRIL_BOOSTROOT=C:\ms\boost_1_67_0 ..
+cmake -DSIRIL=1 -DVIRIL_WITHVLC=1 -DVIRIL_BOOSTROOT=C:\ms\boost_1_67_0 ..
