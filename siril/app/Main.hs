@@ -96,8 +96,8 @@ uiSetup win = do
                 # set UI.rel "stylesheet"
                 # set UI.href "/static/assets/alloy-editor-ocean-min.css"
            -- As a static component AlloyEditor seems to have problems with its loading more than once, so it has been moved to global
-           , mkElement "script" # set UI.src "/static/alloy-editor-all.js"
---           , mkElement "script" # set UI.src "/static/alloy-editor-all-min.js"
+--           , mkElement "script" # set UI.src "/static/alloy-editor-all.js"
+           , mkElement "script" # set UI.src "/static/alloy-editor-all-min.js"
            , mkElement "script" # set UI.src "/static/alloy.jsx.js"
            ]
                 
@@ -111,9 +111,24 @@ uiSetup win = do
         dropdownDivider
         dropdownItem "Memrise" (const $ memriseExportWindow)
         newDropdown "Tools"
-        dropdownItem "Build a SmartBook" (const $ buildBook)
+        dropdownNamedDivider "SmartBook"
+        dropdownItem "New" (const $ buildBook)
+        dropdownItem "De-/encrypt" (const $ createMessageBlue "SB" "Very soon")
         search
-
+{- uncomment after recording smartbook video        
+    (mainMenu :: Element) <- evalMenu $ do
+        navbar "Tiril"
+        newDropdown "Dictionaries"
+        dropdownItem "Latest words" viewSession
+        dropdownNamedDivider "Export to ..."
+        dropdownItem "Anki" (const $ createMessageBlue "Anki" "Not yet, but it's coming ...")
+        dropdownItem "Memrise" (const $ memriseExportWindow)
+        newDropdown "Tools"
+        dropdownNamedDivider "SmartBook"
+        dropdownItem "New" (const $ buildBook)
+        dropdownItem "De-/encrypt" (const $ createMessageBlue "SB" "Very soon")
+        search
+-}
     getBody win #+ [element mainMenu, createMainWindow]
 
     -- JS: Bootstrap + the rest

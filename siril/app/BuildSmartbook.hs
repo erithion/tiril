@@ -27,6 +27,16 @@ buildBook = do
                       # set UI.href "/static/book.css"
                    , mkElement "script" # set UI.src "/static/jquery.validate.min.js"
                    , mkElement "script" # set UI.src "/static/syncscroll.js"
+                   , UI.div #. "my-msg-container" #+ 
+                      [ dismissableAlert 
+                        "alert-warning"
+                        "Please be advised that this is unofficial!"
+                        "The books created this way might stop working at any moment \
+                        \with any upcoming update of the SmartBook application. Also \
+                        \this feature cannot serve as an excuse to avoid paying to the SmartBook creators. \
+                        \It is intended to create books for personal use only and/or as a last resort \
+                        \if you haven't found the book you were looking for among the ones on the official site."
+                      ]
                    , metaForm
                    , editors
                    , mkElement "script" # set UI.src "/static/book.js"

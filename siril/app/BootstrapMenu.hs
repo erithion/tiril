@@ -1,5 +1,5 @@
 module BootstrapMenu 
-(evalMenu, navbar, search, link, newDropdown, dropdownDivider, dropdownItem)
+(evalMenu, navbar, search, link, newDropdown, dropdownDivider, dropdownItem, dropdownNamedDivider)
 where
 
 import           Control.Monad                              (void)
@@ -12,6 +12,7 @@ data Navbar         = Bar [Menu]
 data Menu           = Link String String
                     | Dropdown String [DropdownItem] 
 data DropdownItem   = Divider
+                    | NamedDivider String
                     | Item String (() -> UI ())
 data Container      = Container String [Navbar]
 
@@ -58,6 +59,15 @@ dropdownDivider = do
     put . Container n $ new
     get
 
+dropdownNamedDivider :: String -> State Container Container
+-- navbar .. >>= newDropdown >>= dropdownNamedDivider >>= newDropdown ..
+dropdownNamedDivider cap = do
+    (Container n ls) <- get
+    let new = case ls of
+            ((Bar ((Dropdown dname ds):bs)):ls) -> (Bar $ (Dropdown dname $ NamedDivider cap:ds):bs):ls
+    put . Container n $ new
+    get
+    
 -- In spite that elsewhere "UI void" normally would mean that a function never returns (or just throws),
 -- in the case of Threepenny the function still must return.
 -- It seems that the author uses this kind of syntax to proclaim that he just doesn't care of the function's result.
@@ -132,6 +142,9 @@ runMenu (Dropdown name ls) =
 runDropdown Divider = 
     UI.div #. "dropdown-divider"
 
+runDropdown (NamedDivider s) = 
+    UI.h6 #. "dropdown-header" # set text s
+    
 runDropdown (Item name handler) = do
     a <- UI.a    
     on UI.click a handler    

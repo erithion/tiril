@@ -50,7 +50,17 @@ makeMessageWindow alertType cap msg = do
                      , UI.hr
                      , UI.p #. "mb-0" # set text msg ] ]
   getMainWindow #+ [ element win ]
-  
+
+dismissableAlert :: String -> String -> String -> UI Element
+dismissableAlert alertType strongText msg = UI.div  
+                  #. ("alert " ++ alertType ++ " alert-dismissible fade show")
+                  # set (attr "role") "alert"
+                  #+ [ UI.strong # set text (strongText ++ " ")
+                     , mkElement "regular" # set text msg
+                     , UI.button #. "close" # set UI.type_ "button" # set (attr "data-dismiss") "alert" # set (attr "aria-label") "close" 
+                        #+ [ UI.span # set (attr "aria-hidden") "true" # set text "✖" ]
+                     ]
+
 createMessageGreen :: String -> String -> UI Element
 createMessageGreen = makeMessageWindow "alert-success"
 
