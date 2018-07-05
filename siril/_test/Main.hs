@@ -8,6 +8,7 @@ import qualified Data.Text.Lazy                 as TL
 import qualified Data.Text.Lazy.Encoding        as TL
 import qualified Data.ByteString.Lazy           as BL
 import qualified Data.ByteString
+import qualified Data.Map                       as Mp
 
 import           Lexin
 import SmartBook.Crypto
@@ -91,7 +92,7 @@ lexinTests = do
          ,LexinWord {lexinWord = "say hello [to]", lexinLang = "B", lexinType = "DEF"}]]
          
 smartBookTests = do
-  describe "Smartbook.Crypto" $ do
+  describe "SmartBook.Crypto" $ do
     it "data == decrypt . encrypt $ data - padding needed" $
       (decrypt . TL.decodeUtf8 . BL.fromStrict. encrypt . TL.fromStrict $ "1234567890abcdef12") `shouldBe` Right "1234567890abcdef12"
 
@@ -101,21 +102,113 @@ smartBookTests = do
     it "data == decrypt . encrypt $ data - padding FAKE" $
       (decrypt . TL.decodeUtf8 . BL.fromStrict. encrypt . TL.fromStrict $ "1234567890abcde\3") `shouldBe` Right "1234567890abcde\3"
       
-  describe "Smartbook.sbBinary" $ do
+  describe "SmartBook.sbBinary" $ do
     let en = TL.decodeUtf8 . BL.fromStrict $ enData
     let no = TL.decodeUtf8 . BL.fromStrict $ noData
-    let sb = Right  $ sbData
-    let alloy = AlloyData { bookTitle = "Name"
-                          , bookAuthor = "Author"
-                          , encryptResult = False
-                          , bookLeft = en
-                          , bookRight = no }
+    let sb = Right sbData
+    let alloy = defaultAlloy "Name" "Author" en no
                           
     it "simple book creation - NO non-ascii letters check" $
-      (sbBinary "a9.sb" (encryptResult alloy) alloy) `shouldBe` sb
+      (sbBinary "a9.sb" False alloy) `shouldBe` sb
+      
+  describe "SmartBook.sbJSON" $ do
+    let en = "<h1>Chapter 1</h1> <h2>Sub chapter 1</h2> <p>something</p> <p>something2</p>  \
+            \ <h1>Chapter 2</h1> <h2>Sub chapter 2</h2> <p>something</p> <p>something2</p>"
+    let noLessChapters = "<h1>Chapter 1</h1> <h2>Sub chapter 1</h2> <p>something</p> <p>something2</p>"
+    let noMoreChapters = "<h1>Chapter 1</h1> <h2>Sub chapter 1</h2> <p>something</p> <p>something2</p>  \
+                        \ <h1>Chapter 2</h1> <h2>Sub chapter 2</h2> <p>something</p> <p>something2</p> \
+                        \ <h1>Chapter 3</h1> <h2>Sub chapter 3</h2> <p>something</p> <p>something2</p>"
+    let noLessPars = "<h1>Chapter 1</h1> <h2>Sub chapter 1</h2> <p>something</p>  \
+                    \ <h1>Chapter 2</h1> <h2>Sub chapter 2</h2> <p>something</p> <p>something2</p>"
+    let noMorePars = "<h1>Chapter 1</h1> <h2>Sub chapter 1</h2> <p>something</p> <p>something2</p> <p>something3</p>\
+                    \ <h1>Chapter 2</h1> <h2>Sub chapter 2</h2> <p>something</p> <p>something2</p>"
+    
+    
+    it "tested against 2 Chapters vs. 1 Chapter" $
+        (sbJSON "" $ defaultAlloy "" "" en noLessChapters) `shouldBe` 
+            (Right . SmartBook.Alloy.defaultBook "" "" ".sb" $
+                [ ChapterLeaf { chapterName = "Chapter 1"
+                              , chapterDescription = Just "Sub chapter 1"
+                              , paragraphs = [ Mp.fromList [("en", "something"), ("ru", "something")]
+                                             , Mp.fromList [("en", "something2"), ("ru", "something2")] ] }
+                , ChapterLeaf { chapterName = "Chapter 2"
+                              , chapterDescription = Just "Sub chapter 2"
+                              , paragraphs = [ Mp.fromList [("en", "something"), ("ru", "")]
+                                             , Mp.fromList [("en", "something2"), ("ru", "")] ] }
+                ])
+                
+    it "tested against 2 Chapters vs. 3 Chapter" $
+        (sbJSON "" $ defaultAlloy "" "" en noMoreChapters) `shouldBe` 
+            (Right . SmartBook.Alloy.defaultBook "" "" ".sb" $
+                [ ChapterLeaf { chapterName = "Chapter 1"
+                              , chapterDescription = Just "Sub chapter 1"
+                              , paragraphs = [ Mp.fromList [("en", "something"), ("ru", "something")]
+                                             , Mp.fromList [("en", "something2"), ("ru", "something2")] ] }
+                , ChapterLeaf { chapterName = "Chapter 2"
+                              , chapterDescription = Just "Sub chapter 2"
+                              , paragraphs = [ Mp.fromList [("en", "something"), ("ru", "something")]
+                                             , Mp.fromList [("en", "something2"), ("ru", "something2")] ] }
+                , ChapterLeaf { chapterName = ""
+                              , chapterDescription = Just ""
+                              , paragraphs = [ Mp.fromList [("en", ""), ("ru", "something")]
+                                             , Mp.fromList [("en", ""), ("ru", "something2")] ] }
+                ])
+
+    it "tested against 2 Paragraphs vs. 1 Paragraph" $
+        (sbJSON "" $ defaultAlloy "" "" en noLessPars) `shouldBe` 
+            (Right . SmartBook.Alloy.defaultBook "" "" ".sb" $
+                [ ChapterLeaf { chapterName = "Chapter 1"
+                              , chapterDescription = Just "Sub chapter 1"
+                              , paragraphs = [ Mp.fromList [("en", "something"), ("ru", "something")]
+                                             , Mp.fromList [("en", "something2"), ("ru", "")] ] }
+                , ChapterLeaf { chapterName = "Chapter 2"
+                              , chapterDescription = Just "Sub chapter 2"
+                              , paragraphs = [ Mp.fromList [("en", "something"), ("ru", "something")]
+                                             , Mp.fromList [("en", "something2"), ("ru", "something2")] ] }
+                ])
+                
+    it "tested against 2 Paragraphs vs. 3 Paragraph" $
+        (sbJSON "" $ defaultAlloy "" "" en noMorePars) `shouldBe` 
+            (Right . SmartBook.Alloy.defaultBook "" "" ".sb" $
+                [ ChapterLeaf { chapterName = "Chapter 1"
+                              , chapterDescription = Just "Sub chapter 1"
+                              , paragraphs = [ Mp.fromList [("en", "something"), ("ru", "something")]
+                                             , Mp.fromList [("en", "something2"), ("ru", "something2")] 
+                                             , Mp.fromList [("en", ""), ("ru", "something3")] ] }
+                , ChapterLeaf { chapterName = "Chapter 2"
+                              , chapterDescription = Just "Sub chapter 2"
+                              , paragraphs = [ Mp.fromList [("en", "something"), ("ru", "something")]
+                                             , Mp.fromList [("en", "something2"), ("ru", "something2")] ] }
+                ])
+
+  -- adding .sb is important because otherwise SmartBook simply turns on the Google Translation instead of ours
+  describe "SmartBook.sbJSON extension test" $ do
+
+    it "tested against empty filename" $
+        (sbJSON "" $ defaultAlloy "" "" "" "") `shouldBe` 
+            (Right . SmartBook.Alloy.defaultBook "" "" ".sb" $ [])
+
+    it "tested against no extension" $
+        (sbJSON "a" $ defaultAlloy "" "" "" "") `shouldBe` 
+            (Right . SmartBook.Alloy.defaultBook "" "" "a.sb" $ [])
+
+    it "tested against non-sb extension" $
+        (sbJSON "a.ext" $ defaultAlloy "" "" "" "") `shouldBe` 
+            (Right . SmartBook.Alloy.defaultBook "" "" "a.sb" $ [])
+
+    it "tested against two extensions" $
+        (sbJSON "a.ext.ext" $ defaultAlloy "" "" "" "") `shouldBe` 
+            (Right . SmartBook.Alloy.defaultBook "" "" "a.ext.sb" $ [])
+            
+  where defaultAlloy title author en no = 
+            AlloyBook { bookTitle = title
+                      , bookAuthor = author
+                      , bookLeft = en
+                      , bookRight = no }
+
       
 bookParserTests = do
-  describe "Smartbook.InputAlloyHtml parser" $ do
+  describe "SmartBook.AlloyParser" $ do
     let empty = "";
     let emptyParagraph = "<p></p>";
     let emptyParagraph2 = "<p><br></p>";

@@ -67,10 +67,10 @@ instance ToJSON Content where
 type Filename = Text
 class ToSmartBook a where
     sbBinary :: Filename -> Bool -> a -> Either String BS.ByteString
-    sbBinary file doEncryption input = let dat = Aeson.encodeToLazyText <$> (sbJson file input)
+    sbBinary file doEncryption input = let dat = Aeson.encodeToLazyText <$> (sbJSON file input)
                                        in if doEncryption  
                                           then encrypt <$> dat
                                           else BSL.toStrict . TexL.encodeUtf8 <$> dat    
     -- minimal def
-    sbJson :: Filename -> a -> Either String Book
+    sbJSON :: Filename -> a -> Either String Book
                                           

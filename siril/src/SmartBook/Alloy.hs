@@ -6,16 +6,17 @@ module SmartBook.Alloy
 where
 
 import           GHC.Generics
+import           Data.Aeson
+import           System.FilePath                            (takeFileName, replaceExtension)
+import           Data.Map                                   (singleton, union)
+import           Text.ParserCombinators.Parsec.Error        (messageString, errorMessages)
 import qualified Data.Text.Lazy                      as TL
 import qualified Data.Text.Lazy.Encoding             as TL
-import           System.FilePath                            (takeFileName)
-import           Data.Map                                   (singleton, union)
 import qualified Control.Arrow                       as Ar 
-import           Text.ParserCombinators.Parsec.Error        (messageString, errorMessages)
 
-import SmartBook.Sb
-import SmartBook.Crypto
-import SmartBook.AlloyParser
+import           SmartBook.Sb
+import           SmartBook.Crypto
+import           SmartBook.AlloyParser
 
 -- Default book config suitable for Alloy
 defaultBook bookName bookAuthor fileName chapters = Book
@@ -42,21 +43,23 @@ defaultBook bookName bookAuthor fileName chapters = Book
     , _chapters = chapters }
 
 
-data AlloyData = AlloyData
+data AlloyBook = AlloyBook
     { bookTitle :: Text
     , bookAuthor :: Text
-    , encryptResult :: Bool
     , bookLeft :: Text
     , bookRight :: Text
     } deriving (Generic, Show)
 
-instance ToSmartBook AlloyData where
-    sbJson file dat = Ar.left (show {- concat . map messageString $ errorMessages -}) $ do
+instance FromJSON AlloyBook
+    
+instance ToSmartBook AlloyBook where
+    sbJSON file dat = Ar.left (show {- concat . map messageString $ errorMessages -}) $ do
         let title = bookTitle dat
         let author = bookAuthor dat
         left <- runBookParser . bookLeft $ dat
         right <- runBookParser . bookRight $ dat
-        let name = TL.pack . takeFileName . TL.unpack $ file
+        -- If sb-extension is absent then SmartBook will not turn on our translation
+        let name = TL.pack . flip replaceExtension ".sb" . takeFileName . TL.unpack $ file
         let chapters = zipWithDefault 
                             zipChapters 
                             (chapter "en" <$> left)

@@ -75,9 +75,10 @@ $(document).ready(function () {
 
 
 function getData() {
-    return { bookTitle: document.getElementById('title').value
-           , bookAuthor: document.getElementById('author').value
-           , encryptResult: false
-           , bookLeft: document.getElementById("editor").innerHTML
-           , bookRight: document.getElementById("editor2").innerHTML };
+    return { jsEncryptResult : false
+           , jsBook : { bookTitle: document.getElementById('title').value
+                      , bookAuthor: document.getElementById('author').value
+                      , bookLeft: document.getElementById("editor").innerHTML
+                      , bookRight: document.getElementById("editor2").innerHTML }
+           };
 }

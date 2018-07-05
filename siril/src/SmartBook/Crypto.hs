@@ -8,8 +8,8 @@ module SmartBook.Crypto
 where
 
 import Crypto.Cipher.AES
-import Data.Tuple.Extra                     ( (&&&) )
-import Control.Applicative                  ( (<$>), (<*>), (<|>) )
+import Data.Tuple.Extra                                 ( (&&&) )
+import Control.Applicative                              ( (<$>), (<*>), (<|>) )
 import qualified Data.ByteString            as BS
 import qualified Data.ByteString.Lazy       as BSL
 import qualified Data.ByteString.Base64     as B64

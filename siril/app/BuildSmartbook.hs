@@ -1,37 +1,23 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE FlexibleInstances #-}
-
 
 module BuildSmartbook where
 
---import System.IO
-
+import           GHC.Generics
+import           System.IO
 import qualified Data.Text.Lazy                 as T
 import qualified Data.Text.Lazy.Encoding        as T
 import qualified Data.Text                      as TS
-import           Control.Monad                                                  hiding (when)
-import qualified Control.Monad                  as M        (when)
+import qualified Data.ByteString                as BS
+import           Data.Aeson                     as JS
+import qualified Graphics.UI.TinyFileDialogs    as Dlg
 import qualified Graphics.UI.Threepenny         as UI
 import           Graphics.UI.Threepenny.Core                                    hiding (get)
 import qualified Graphics.UI.Threepenny.Core    as TP        (get)
-import           Control.Concurrent                          (forkIO)
-import           Data.Tuple.Extra                            ((***), (&&&))
-import           Data.Either
-import           Control.Concurrent.Async                                       hiding (link)
-import           Data.Hashable                               (hash)
-
-import           Data.Aeson                     as JS
-import           GHC.Generics
-import qualified Graphics.UI.TinyFileDialogs    as Dlg
-import qualified Data.ByteString                as BS
-import qualified Data.ByteString.Lazy           as BSL
 import           GHC.IO.Encoding                             (utf8, setLocaleEncoding)
-import System.IO
-import           System.FilePath                            (takeFileName)
 import           Control.Monad.Trans.Either
-import           Control.Monad.Trans
+import           System.FilePath                            (replaceExtension)
 
 import           Type
 import           Windows
@@ -39,7 +25,12 @@ import           SmartBook.Sb
 import           SmartBook.Crypto
 import           SmartBook.Alloy
 
-instance FromJSON AlloyData
+data JSAlloy = JSAlloy
+    { jsEncryptResult :: Bool
+    , jsBook :: AlloyBook
+    } deriving (Generic, Show)
+
+instance FromJSON JSAlloy
 
 buildBook = do
   clearMainWindow
@@ -75,13 +66,13 @@ buildBook = do
         bodyElement = return . head =<< flip getElementsByTagName "body" =<< askWindow
         
         -- monad transformer with failure possibility
-        buildBookT :: Result AlloyData -> TS.Text -> EitherT String IO ()
+        buildBookT :: Result JSAlloy -> TS.Text -> EitherT String IO ()
         buildBookT jsdata file = do
-            (dat::AlloyData) <- case jsdata of
+            (dat::JSAlloy) <- case jsdata of
                     Success s -> EitherT . return . Right $ s -- equivalent to return s
                     Error e -> EitherT . return . Left $ e
-            sb <- hoistEither $ sbBinary (T.fromStrict file) (encryptResult dat) dat
-            let path = T.unpack . T.fromStrict $ file
+            sb <- hoistEither $ sbBinary (T.fromStrict file) (jsEncryptResult dat) (jsBook dat)
+            let path = flip replaceExtension ".sb" . T.unpack . T.fromStrict $ file
             liftIO $ do
                 setLocaleEncoding utf8
                 withBinaryFile path WriteMode $ \handle ->
@@ -97,7 +88,7 @@ buildBook = do
                 filename <- liftIO $ Dlg.saveFileDialog "Save SmartBook" "" ["*.sb"] "SmartBook"
                 case filename of
                     Just file -> do
-                        (jsdata :: Result AlloyData) <- fromJSON <$> jsGetData
+                        (jsdata :: Result JSAlloy) <- fromJSON <$> jsGetData
                         res <- liftIO . runEitherT $ buildBookT jsdata file
                         either (showModalWindow "smartbook_modal" . (++) "Error: ") 
                                (const $ showModalWindow "smartbook_modal" "The book has been created successfully!" ) res
