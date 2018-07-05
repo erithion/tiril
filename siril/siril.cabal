@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 19e456eb7b710533ae98a74f2c9e279cf9e4e359edeec07705d99e6850715e61
+-- hash: 60f77c373d7ec898aaa2a80e0da8488916ae9ee6b5cff5e6139c9ff1357e4f49
 
 name:           siril
 version:        0.1.0.0
@@ -32,10 +32,13 @@ library
       aeson
     , async
     , base >=4.7 && <5
+    , base64-bytestring
     , blaze-builder
     , bytestring
+    , cipher-aes
     , containers
     , directory
+    , either
     , esqueleto
     , extra
     , filepath
@@ -63,6 +66,10 @@ library
       GoogleTranslate
       Lexin
       Session
+      SmartBook.Alloy
+      SmartBook.AlloyParser
+      SmartBook.Crypto
+      SmartBook.Sb
       Type
   other-modules:
       Paths_siril
@@ -77,10 +84,13 @@ executable siril-exe
       aeson
     , async
     , base >=4.7 && <5
+    , base64-bytestring
     , blaze-builder
     , bytestring
+    , cipher-aes
     , containers
     , directory
+    , either
     , esqueleto
     , extra
     , filepath
@@ -122,12 +132,16 @@ test-suite siril-test
       aeson
     , async
     , base >=4.7 && <5
+    , base64-bytestring
     , blaze-builder
     , bytestring
+    , cipher-aes
     , containers
     , directory
+    , either
     , esqueleto
     , extra
+    , file-embed
     , filepath
     , hashable
     , hspec
@@ -163,12 +177,15 @@ benchmark siril-benchmarks
       aeson
     , async
     , base
+    , base64-bytestring
     , blaze-builder
     , bytestring
+    , cipher-aes
     , containers
     , criterion
     , deepseq
     , directory
+    , either
     , esqueleto
     , extra
     , filepath

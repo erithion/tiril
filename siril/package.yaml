@@ -52,6 +52,11 @@ dependencies:
 - mtl
 - extra
 - async
+- either
+
+- cipher-aes
+- base64-bytestring
+
 
 library:
   source-dirs: src
@@ -84,6 +89,7 @@ tests:
     dependencies:
     - siril
     - hspec
+    - file-embed
 
 benchmarks:
   siril-benchmarks:

@@ -78,15 +78,15 @@ memriseExportWindow = do
     on UI.click exportButton $ const $ do
         (dataset :: Result [Dataset]) <- fromJSON <$> jsGetDataFromTable "export"
         case dataset of 
-            Error   err -> showModal "Memrise export" ("JSON error: " ++ err)
+            Error   err -> showModal "Memrise" ("JSON error: " ++ err)
             Success dat -> do
                 res <- liftIO $ do
-                    filename <- Dlg.saveFileDialog "Save export file ..." "" ["*.htx"] "Tiril export"
+                    filename <- Dlg.saveFileDialog "Save export file" "" ["*.htx"] "Tiril export"
                     flip (maybe $ return False) filename $ \name -> do
                         setLocaleEncoding utf8
                         TS.writeFile (TS.unpack name) (T.toStrict . T.unlines . map (export "\t") $ dat)
                         return True
-                void . M.when res $ showModal "Memrise export" "Exporting has been completed sucessfully!"
+                void . M.when res $ showModal "Memrise" "Exporting has been completed successfully!"
 -- TODO: style and add this delimiter toggle
 --    input <- UI.div #. "toggle toggle-modern ml-5"
     getMainWindow #+ 

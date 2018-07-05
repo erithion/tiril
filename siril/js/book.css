@@ -1,3 +1,4 @@
+
 .tiril-main-window {
     height: 93%; /* 7% is the space for menu??? */
     width: 100%;
@@ -80,6 +81,8 @@ line-height: 3px;
 .has-error .form-control:focus{box-shadow: none; -webkit-box-shadow: none;}
 
 /* to disable blue shadow above + */
+
+
 div:focus, button:focus {
     outline: none !important;
 }

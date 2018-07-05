@@ -1,15 +1,41 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell #-}
 module Main where
 
 import           Test.Hspec
-import qualified Data.Text.Lazy                 as T
+import           Data.FileEmbed
+import qualified Data.Text.Lazy                 as TL
+import qualified Data.Text.Lazy.Encoding        as TL
+import qualified Data.ByteString.Lazy           as BL
+import qualified Data.ByteString
+
 import           Lexin
+import SmartBook.Crypto
+import SmartBook.Sb
+import SmartBook.Alloy
+import SmartBook.AlloyParser
+
+
+
+enData :: Data.ByteString.ByteString
+enData = $(embedStringFile  "_test/bkEn.txt")
+
+noData :: Data.ByteString.ByteString
+noData = $(embedStringFile  "_test/bkNo.txt")
+
+sbData :: Data.ByteString.ByteString
+sbData = $(embedStringFile  "_test/bkSb.txt")
 
 main :: IO ()
 main = hspec $ do
+  lexinTests
+  smartBookTests
+  bookParserTests
+
+lexinTests = do
   describe "Lexin translate" $ do
     it "returns the expected output for the word \"hello\"" $
-      (lexinTranslate . T.fromStrict $ "hello") `shouldReturn` 
+      (lexinTranslate . TL.fromStrict $ "hello") `shouldReturn` 
         [[LexinWord {lexinWord = "hallo", lexinLang = "N", lexinType = "LEM"}
          ,LexinWord {lexinWord = "hallo, hello", lexinLang = "B", lexinType = "LEM"}
          ,LexinWord {lexinWord = "алло!", lexinLang = "RU", lexinType = "LEM"}
@@ -63,4 +89,72 @@ main = hspec $ do
          ,LexinWord {lexinWord = "greet", lexinLang = "B", lexinType = "LEM"}
          ,LexinWord {lexinWord = "здороваться", lexinLang = "RU", lexinType = "LEM"}
          ,LexinWord {lexinWord = "say hello [to]", lexinLang = "B", lexinType = "DEF"}]]
+         
+smartBookTests = do
+  describe "Smartbook.Crypto" $ do
+    it "data == decrypt . encrypt $ data - padding needed" $
+      (decrypt . TL.decodeUtf8 . BL.fromStrict. encrypt . TL.fromStrict $ "1234567890abcdef12") `shouldBe` Right "1234567890abcdef12"
 
+    it "data == decrypt . encrypt $ data - padding NOT needed" $
+      (decrypt . TL.decodeUtf8 . BL.fromStrict. encrypt . TL.fromStrict $ "1234567890abcdef") `shouldBe` Right "1234567890abcdef"
+
+    it "data == decrypt . encrypt $ data - padding FAKE" $
+      (decrypt . TL.decodeUtf8 . BL.fromStrict. encrypt . TL.fromStrict $ "1234567890abcde\3") `shouldBe` Right "1234567890abcde\3"
+      
+  describe "Smartbook.sbBinary" $ do
+    let en = TL.decodeUtf8 . BL.fromStrict $ enData
+    let no = TL.decodeUtf8 . BL.fromStrict $ noData
+    let sb = Right  $ sbData
+    let alloy = AlloyData { bookTitle = "Name"
+                          , bookAuthor = "Author"
+                          , encryptResult = False
+                          , bookLeft = en
+                          , bookRight = no }
+                          
+    it "simple book creation - NO non-ascii letters check" $
+      (sbBinary "a9.sb" (encryptResult alloy) alloy) `shouldBe` sb
+      
+bookParserTests = do
+  describe "Smartbook.InputAlloyHtml parser" $ do
+    let empty = "";
+    let emptyParagraph = "<p></p>";
+    let emptyParagraph2 = "<p><br></p>";
+    let chapterTitleOnly = "<h1></h1>";
+    let chapterTitleOnly2 = "<h1><br></h1>";
+    let chapterFullEmpty = "<h1></h1> <h2></h2>";
+    let fullEmpty = "<h1></h1> <h2></h2> <p></p>";
+    let fullNonEmpty = "<h1></h1> <h2></h2> <p>something</p>";
+    let fullMultipleParagraphs = " <h1></h1> <h2></h2> <p>something</p> <p>something2</p>";
+    let fullMultipleChapters = "<h1>1</h1> <h2>11</h2> <p>something</p> <p>something2</p>  \
+                                 \ <h1>2</h1> <h2>22</h2> <p>something</p> <p>something2</p>";
+    it "tested against empty input" $
+      (runBookParser emptyParagraph) `shouldBe` 
+            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = [""] } ] )
+    it "tested against an sole empty paragraph" $
+      (runBookParser emptyParagraph) `shouldBe` 
+            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = [""] } ] )
+    it "tested against <br> within a sole paragraph" $
+      (runBookParser emptyParagraph2) `shouldBe` 
+            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = ["<br>"] } ] )
+    it "tested against a sole empty chapter title" $
+      (runBookParser chapterTitleOnly) `shouldBe` 
+            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = [] } ] )
+    it "tested against a sole chapter title with <br> within" $
+      (runBookParser chapterTitleOnly2) `shouldBe` 
+            (Right $ [ Chp { chpTitle = "<br>", chpDesc = "", chpParagraphs = [] } ] )
+    it "tested against a sole empty chapters title and description" $
+      (runBookParser chapterFullEmpty) `shouldBe` 
+            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = [] } ] )
+    it "tested against a full but empty chapter" $
+      (runBookParser fullEmpty) `shouldBe` 
+            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = [""] } ] )
+    it "tested against a full non empty chapter" $
+      (runBookParser fullNonEmpty) `shouldBe` 
+            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = ["something"] } ] )
+    it "tested against a full chapter with multiple paragraphs" $
+      (runBookParser fullMultipleParagraphs) `shouldBe` 
+            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = ["something", "something2"] } ] )
+    it "tested against multiple chapters with multiple paragraphs" $
+      (runBookParser fullMultipleChapters) `shouldBe` 
+            (Right $ [ Chp { chpTitle = "1", chpDesc = "11", chpParagraphs = ["something", "something2"] }
+                     , Chp { chpTitle = "2", chpDesc = "22", chpParagraphs = ["something", "something2"] } ] )

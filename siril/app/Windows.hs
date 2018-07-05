@@ -98,9 +98,9 @@ createModalWindow modId cap msg = do
                    ]
            ]
 
-showModalWindow :: String -> UI ()           
-showModalWindow modId = runFunction . ffi "$(%1).modal('show')" $ ("#" ++ modId)
+showModalWindow :: String -> String -> UI ()           
+showModalWindow modId msg = runFunction $ ffi "$(%2).text(%3); $(%1).modal('show')" ("#" ++ modId) ("#" ++ modId ++ " .modal-body") msg
 
 showModal cap msg = do
     getMainWindow #+ [ createModalWindow "modal" cap msg ]
-    showModalWindow "modal"
+    showModalWindow "modal" msg
