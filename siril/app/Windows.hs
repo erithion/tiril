@@ -7,6 +7,7 @@
 module Windows 
 where
 
+import           Data.Maybe
 import qualified Data.Text.Lazy                 as T
 import qualified Data.ByteString.UTF8           as BU
 import qualified Text.Show.Unicode              as US 
@@ -20,6 +21,10 @@ import qualified Graphics.UI.Threepenny.Core    as TP        (get)
 import           Data.Tuple.Extra                            ((***), (&&&))
 import           Data.Either
 import           Control.Concurrent.Async                                       hiding (link)
+
+-- threepenny crashes upon searching for non-existing element
+deleteElements :: String -> UI ()
+deleteElements selector = callFunction (ffi "$(%1).remove()" selector)
 
 getBodyElement :: UI Element
 getBodyElement = return . head =<< flip getElementsByTagName "body" =<< askWindow
@@ -75,6 +80,8 @@ createMessageBlue = makeMessageWindow "alert-primary"
 
 -- remove msg
 createModalWindow modId cap msg = do
+    -- deleting previous if exists
+    deleteElements $ "#" ++ modId
     UI.div #. "modal fade" 
         # set UI.id_ modId
         # set (attr "tabindex") "-1"
@@ -113,6 +120,8 @@ showModal cap msg = do
 
 -- leave msg
 createOkCancelModal modId cap msg = do
+    -- deleting previous if exists
+    deleteElements $ "#" ++ modId
     UI.div #. "modal fade" 
         # set UI.id_ modId
         # set (attr "tabindex") "-1"

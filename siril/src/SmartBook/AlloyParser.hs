@@ -12,7 +12,7 @@ import           Text.ParserCombinators.Parsec          (oneOf, manyTill, anyCha
 import           Text.Parsec.Prim                       (runParser, Parsec, (<?>), (<|>), many, skipMany, try, runP)
 import           Text.Parsec.Combinator                 (many1, notFollowedBy)
 
-import           SmartBook.Sb
+import           SmartBook.Type
 
 data Chp = Chp 
     { chpTitle :: Text

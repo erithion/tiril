@@ -2,15 +2,17 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE DeriveGeneric #-}
 
-module BuildSmartbook where
+module SmartbookUI where
 
 import           System.IO
 import           GHC.Generics
 import           Control.Monad.Trans.Either
+import           Control.Monad.Trans.Maybe
 import           Data.Maybe
 import           Data.Aeson                     as JS
 import qualified Data.Text.Lazy                 as T
 import qualified Data.Text.Lazy.Encoding        as T
+import qualified Data.Text.Lazy.IO              as T
 import qualified Data.Text                      as TS
 import qualified Data.ByteString                as BS
 import qualified Graphics.UI.TinyFileDialogs    as Dlg
@@ -20,10 +22,11 @@ import           Graphics.UI.Threepenny.Core                                    
 import           GHC.IO.Encoding                             (utf8, setLocaleEncoding)
 import           System.FilePath                             (replaceExtension)
 import           Control.Monad                               (when)
+import           Data.Either.Extra                           (isRight, fromRight')
 
 import           Type
 import           Windows
-import           SmartBook.Sb
+import           SmartBook.Type
 import           SmartBook.Crypto
 import           SmartBook.Alloy
 
@@ -36,35 +39,33 @@ instance FromJSON JSAlloy
 
 buildBook = do
   clearMainWindow
-  -- Modals behave better if suffer little influence from surrounding elements
+  -- Modal might not play nicely unless it is a direct child of <body>
   -- https://stackoverflow.com/questions/27411179/bootstrap-3-modal-not-working-correctly-when-placed-inside-a-fixed-parent
   getBodyElement
       #+ [ createModalWindow "smartbookStatusModal" "SmartBook" ""
-         , createOkCancelModal "smartbookEncryptModal" "SmartBook" "The book will be saved in plain JSON, \
-                                                       \you won't be able to use it in the SmartBook application. \
-                                                       \In order to do so you will have to encrypt it manually. \
-                                                       \Would you like to uncheck the option anyway?"]
+         , createOkCancelModal "smartbookEncryptModal" "SmartBook" 
+                "The book will be saved in plain JSON, \
+                \so you won't be able to use it in the SmartBook application \
+                \unless you encrypt it afterwards. \
+                \Would you like to uncheck the option anyway?" ]
 
-  getMainWindow #+ [ 
-                     UI.link 
-                      # set UI.rel "stylesheet"
-                      # set UI.href "/static/book.css"
-                   , mkElement "script" # set UI.src "/static/jquery.validate.min.js"
-                   , mkElement "script" # set UI.src "/static/syncscroll.js"
-                   , UI.div #. "my-msg-container" #+ 
-                      [ dismissableAlert 
-                        "alert-warning"
-                        "Please be advised that it is unofficial!"
-                        "Books created this way might stop working any moment \
-                        \with any upcoming update of the SmartBook application. Also \
-                        \the feature cannot serve as an excuse to avoid paying for the SmartBook application itself. \
-                        \It is intended to create the books for personal use only and/or as a last resort \
-                        \if you haven't found a book you were looking for among the ones on the official site."
-                      ]
-                   , metaForm
-                   , editors
-                   , mkElement "script" # set UI.src "/static/book.js"
-                   ]
+  getMainWindow #+ 
+    [ UI.link
+        # set UI.rel "stylesheet"
+        # set UI.href "/static/book.css"
+    , mkElement "script" # set UI.src "/static/jquery.validate.min.js"
+    , mkElement "script" # set UI.src "/static/syncscroll.js"
+    , UI.div #. "my-msg-container" #+ 
+        [ dismissableAlert "alert-warning" "Please be advised that it is unofficial!"
+            "Books created this way might stop working any moment \
+            \with any upcoming update of the SmartBook application. Also \
+            \the feature cannot serve as an excuse to avoid paying for the SmartBook application itself. \
+            \It is intended to create books for personal use only and/or as a last resort \
+            \if you haven't found a book you were looking for among the ones on the official site."
+        ]
+    , metaForm
+    , editors
+    , mkElement "script" # set UI.src "/static/book.js" ]
   where jsGetData :: UI JS.Value
         jsGetData = callFunction $ ffi "getData()"
 
@@ -131,11 +132,63 @@ buildBook = do
                 #+  [ UI.div #. "form-control my-edit syncscroll"
                         # set UI.id_ "editor"
                         # set (attr "name") "myElements"
-                        # set (attr "data-placeholder") "A book in your mother tongue"
+                        # set (attr "data-placeholder") "Book"
                         # set (attr "aria-label") "With textarea"
                     , UI.div #. "form-control my-edit syncscroll"
                         # set UI.id_ "editor2"
                         # set (attr "name") "myElements"
-                        # set (attr "data-placeholder") "A book in a foreign language"
+                        # set (attr "data-placeholder") "Translation"
                         # set (attr "aria-label") "With textarea"
                     ]   
+                    
+encryptBook = do
+  getBodyElement
+      #+ [ createModalWindow "smartbookEncryptStatusModal" "SmartBook - Encrypt" ""]                    
+  result <- liftIO $ do
+    res <- runMaybeT filesT
+    case res of 
+        Just (fileIn, fileOut)  -> do
+            let (fileIn, fileOut) = fromJust res
+            setLocaleEncoding utf8
+            input <- T.readFile . T.unpack . T.fromStrict $ fileIn
+            let enc = encrypt input
+            let path = flip replaceExtension ".sb" . T.unpack . T.fromStrict $ fileOut
+            withBinaryFile path WriteMode $ \handle ->
+                                 BS.hPutStr handle enc
+            return . Just $ "Operation completed successfully!"
+        _ -> return Nothing
+  when (isJust result) $ do
+      showModalWindow "smartbookEncryptStatusModal" (fromJust result)
+  where filesT :: MaybeT IO (TS.Text, TS.Text)
+        filesT = do
+            (fileIn::[TS.Text]) <- MaybeT . liftIO $ Dlg.openFileDialog "Encryption - choose a file to encrypt" "" ["*.*"] "Any file" False
+            (fileOut::TS.Text) <- MaybeT . liftIO $ Dlg.saveFileDialog "Encryption - choose a file to save to" "" ["*.sb"] "SmartBook"
+            return (head fileIn, fileOut)
+
+decryptBook = do
+  getBodyElement
+      #+ [ createModalWindow "smartbookDecryptStatusModal" "SmartBook - Decrypt" ""]                    
+  result <- liftIO $ do
+    res <- runMaybeT filesT
+    case res of 
+        Just (fileIn, fileOut)  -> do
+            let (fileIn, fileOut) = fromJust res
+            setLocaleEncoding utf8
+            input <- T.readFile . T.unpack . T.fromStrict $ fileIn
+            let path = T.unpack . T.fromStrict $ fileOut
+            let enc = decrypt input
+            when (isRight enc) $ do
+                withBinaryFile path WriteMode $ \handle ->
+                                 -- fromRight' is partial, so don't remove the guard
+                                 BS.hPutStr handle (fromRight' enc)
+            return $ either ( Just . (++) "Error: " ) 
+                            ( const $ Just "Operation completed successfully!" ) enc
+        _ -> return Nothing
+  when (isJust result) $ do
+      showModalWindow "smartbookDecryptStatusModal" (fromJust result)
+  where filesT :: MaybeT IO (TS.Text, TS.Text)
+        filesT = do
+            (fileIn::[TS.Text]) <- MaybeT . liftIO $ Dlg.openFileDialog "Decryption - choose a file to decrypt" "" ["*.sb"] "SmartBook" False
+            (fileOut::TS.Text) <- MaybeT . liftIO $ Dlg.saveFileDialog "Decryption - chose a file to save to" "" ["*.*"] "Any file"
+            return (head fileIn, fileOut)
+            

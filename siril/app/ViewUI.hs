@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module View where
+module ViewUI where
 
 import qualified Data.Text.Lazy                 as T
 import qualified Data.Text                      as TS

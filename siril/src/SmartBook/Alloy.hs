@@ -14,7 +14,7 @@ import qualified Data.Text.Lazy                      as TL
 import qualified Data.Text.Lazy.Encoding             as TL
 import qualified Control.Arrow                       as Ar 
 
-import           SmartBook.Sb
+import           SmartBook.Type
 import           SmartBook.Crypto
 import           SmartBook.AlloyParser
 

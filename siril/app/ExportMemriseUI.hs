@@ -2,7 +2,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module ExportMemrise 
+module ExportMemriseUI 
 (memriseExportWindow)
 where
 

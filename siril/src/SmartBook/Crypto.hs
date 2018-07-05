@@ -3,8 +3,7 @@
 
 module SmartBook.Crypto
 ( encrypt
-, decrypt
-)
+, decrypt )
 where
 
 import Crypto.Cipher.AES

@@ -26,6 +26,7 @@ viril/build
 siril/.stack-work/
 siril/tiril.cabal
 siril/*~
+siril/siril.cabal
 siril/todo.txt
 viril/.work
 .old

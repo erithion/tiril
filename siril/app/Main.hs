@@ -28,9 +28,9 @@ import           Session
 import           Db
 import           BootstrapMenu
 import           Windows
-import           ExportMemrise
-import           View
-import           BuildSmartbook
+import           ExportMemriseUI
+import           ViewUI
+import           SmartbookUI
 
 databaseName =  "tiril.db" 
 
@@ -113,8 +113,8 @@ uiSetup win = do
         newDropdown "Tools"
         dropdownNamedDivider "SmartBook"
         dropdownItem "New" (const $ buildBook)
-        dropdownItem "Encrypt ..." (const $ createMessageBlue "SB" "Very soon")
-        dropdownItem "Decrypt ..." (const $ createMessageBlue "SB" "Very soon")
+        dropdownItem "Encrypt ..." (const encryptBook)
+        dropdownItem "Decrypt ..." (const decryptBook)
         search
 {- uncomment after recording smartbook video        
     (mainMenu :: Element) <- evalMenu $ do

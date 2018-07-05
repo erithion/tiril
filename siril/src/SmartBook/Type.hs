@@ -2,7 +2,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module SmartBook.Sb
+module SmartBook.Type
 where
 
 import GHC.Generics

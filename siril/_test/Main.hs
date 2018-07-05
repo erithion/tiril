@@ -12,7 +12,7 @@ import qualified Data.Map                       as Mp
 
 import           Lexin
 import SmartBook.Crypto
-import SmartBook.Sb
+import SmartBook.Type
 import SmartBook.Alloy
 import SmartBook.AlloyParser
 
