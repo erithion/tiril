@@ -1,3 +1,19 @@
+  $("#encryptId").change(function () {     
+    if (!$(this).prop('checked')) {  
+         $('#smartbookEncryptModal').modal();
+    } 
+});
+
+$('#smartbookEncryptModal .modal-footer button').on('click', function(event) {
+  var $button = $(event.target);
+
+  $(this).closest('.modal').one('hidden.bs.modal', function() {
+    if ( $button[0].id == "cancel"){
+        $('#encryptId').prop('checked', true).change();
+    }
+  });
+});
+
 //AlloyEditor.loadLanguageResources();
 
 var editor1 = AlloyEditor.editable('editor', {
@@ -65,9 +81,9 @@ $(document).ready(function () {
 
     $('#ccSelectForm input').on('keyup blur', function () { // fires on every keyup & blur
         if ($('#ccSelectForm').valid()) {                   // checks form for validity
-            $('button.btn').prop('disabled', false);        // enables button
+            $('#save').prop('disabled', false);        // enables button
         } else {
-            $('button.btn').prop('disabled', 'disabled');   // disables button
+            $('#save').prop('disabled', 'disabled');   // disables button
         }
     });
 
@@ -75,7 +91,7 @@ $(document).ready(function () {
 
 
 function getData() {
-    return { jsEncryptResult : false
+    return { jsEncryptResult : $('#encryptId').prop('checked')
            , jsBook : { bookTitle: document.getElementById('title').value
                       , bookAuthor: document.getElementById('author').value
                       , bookLeft: document.getElementById("editor").innerHTML

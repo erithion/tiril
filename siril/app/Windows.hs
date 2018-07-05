@@ -21,6 +21,9 @@ import           Data.Tuple.Extra                            ((***), (&&&))
 import           Data.Either
 import           Control.Concurrent.Async                                       hiding (link)
 
+getBodyElement :: UI Element
+getBodyElement = return . head =<< flip getElementsByTagName "body" =<< askWindow
+
 createMainWindow = UI.div #. "tiril-main-window"
 
 -- The window must exist already
@@ -60,7 +63,7 @@ dismissableAlert alertType strongText msg = UI.div
                      , UI.button #. "close" # set UI.type_ "button" # set (attr "data-dismiss") "alert" # set (attr "aria-label") "close" 
                         #+ [ UI.span # set (attr "aria-hidden") "true" # set text "✖" ]
                      ]
-
+-- see if you need this really
 createMessageGreen :: String -> String -> UI Element
 createMessageGreen = makeMessageWindow "alert-success"
 
@@ -70,6 +73,7 @@ createMessageRed = makeMessageWindow "alert-danger"
 createMessageBlue :: String -> String -> UI Element
 createMessageBlue = makeMessageWindow "alert-primary"
 
+-- remove msg
 createModalWindow modId cap msg = do
     UI.div #. "modal fade" 
         # set UI.id_ modId
@@ -99,8 +103,45 @@ createModalWindow modId cap msg = do
            ]
 
 showModalWindow :: String -> String -> UI ()           
+showModalWindow modId "" = runFunction $ ffi "$(%1).modal('show')" ("#" ++ modId)
 showModalWindow modId msg = runFunction $ ffi "$(%2).text(%3); $(%1).modal('show')" ("#" ++ modId) ("#" ++ modId ++ " .modal-body") msg
 
+-- delete this
 showModal cap msg = do
     getMainWindow #+ [ createModalWindow "modal" cap msg ]
     showModalWindow "modal" msg
+
+-- leave msg
+createOkCancelModal modId cap msg = do
+    UI.div #. "modal fade" 
+        # set UI.id_ modId
+        # set (attr "tabindex") "-1"
+        # set (attr "role") "dialog"
+        # set (attr "aria-labelledby") "exampleModalLabel" -- ???
+        # set (attr "aria-hidden") "true"
+        #+ [UI.div #. "modal-dialog modal-dialog-centered" # set (attr "role") "document"
+                #+ [UI.div #. "modal-content"
+                        #+ [ UI.div #. "modal-header"
+                                #+ [ UI.h5 #. "modal-title" # set text cap
+                                   , UI.button #. "close" 
+                                        # set UI.type_ "button" 
+                                        # set (attr "data-dismiss") "modal"
+                                        # set (attr "aria-label") "Close"
+                                        #+ [UI.span # set (attr "aria-hidden") "true" # set text "×"]
+                                   ]
+                           , UI.div #. "modal-body" # set text msg
+                           , UI.div #. "modal-footer" 
+                                #+ [ UI.button #. "btn btn-secondary" 
+                                        # set UI.id_ "cancel" 
+                                        # set UI.type_ "button" 
+                                        # set (attr "data-dismiss") "modal"
+                                        # set text "Cancel"
+                                   , UI.button #. "btn btn-secondary" 
+                                        # set UI.id_ "ok" 
+                                        # set UI.type_ "button" 
+                                        # set (attr "data-dismiss") "modal"
+                                        # set text "Ok"
+                                   ]
+                           ]
+                   ]
+           ]    

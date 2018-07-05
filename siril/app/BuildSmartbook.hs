@@ -4,20 +4,22 @@
 
 module BuildSmartbook where
 
-import           GHC.Generics
 import           System.IO
+import           GHC.Generics
+import           Control.Monad.Trans.Either
+import           Data.Maybe
+import           Data.Aeson                     as JS
 import qualified Data.Text.Lazy                 as T
 import qualified Data.Text.Lazy.Encoding        as T
 import qualified Data.Text                      as TS
 import qualified Data.ByteString                as BS
-import           Data.Aeson                     as JS
 import qualified Graphics.UI.TinyFileDialogs    as Dlg
 import qualified Graphics.UI.Threepenny         as UI
-import           Graphics.UI.Threepenny.Core                                    hiding (get)
 import qualified Graphics.UI.Threepenny.Core    as TP        (get)
+import           Graphics.UI.Threepenny.Core                                    hiding (get)
 import           GHC.IO.Encoding                             (utf8, setLocaleEncoding)
-import           Control.Monad.Trans.Either
-import           System.FilePath                            (replaceExtension)
+import           System.FilePath                             (replaceExtension)
+import           Control.Monad                               (when)
 
 import           Type
 import           Windows
@@ -36,8 +38,12 @@ buildBook = do
   clearMainWindow
   -- Modals behave better if suffer little influence from surrounding elements
   -- https://stackoverflow.com/questions/27411179/bootstrap-3-modal-not-working-correctly-when-placed-inside-a-fixed-parent
-  bodyElement
-      #+ [ createModalWindow "smartbook_modal" "SmartBook" "" ]
+  getBodyElement
+      #+ [ createModalWindow "smartbookStatusModal" "SmartBook" ""
+         , createOkCancelModal "smartbookEncryptModal" "SmartBook" "The book will be saved in plain JSON, \
+                                                       \you won't be able to use it in the SmartBook application. \
+                                                       \In order to do so you will have to encrypt it manually. \
+                                                       \Would you like to uncheck the option anyway?"]
 
   getMainWindow #+ [ 
                      UI.link 
@@ -62,9 +68,6 @@ buildBook = do
   where jsGetData :: UI JS.Value
         jsGetData = callFunction $ ffi "getData()"
 
-        bodyElement :: UI Element
-        bodyElement = return . head =<< flip getElementsByTagName "body" =<< askWindow
-        
         -- monad transformer with failure possibility
         buildBookT :: Result JSAlloy -> TS.Text -> EitherT String IO ()
         buildBookT jsdata file = do
@@ -81,18 +84,17 @@ buildBook = do
         metaForm = do  
             btn <- UI.button #. "my-meta btn my-btn-info btn-lg align-top"
                         # set UI.type_ "button"
+                        # set UI.id_ "save"
                         # set text "Save"
                         # set (attr "disabled") ""
                         
             on UI.click btn $ const $ do
                 filename <- liftIO $ Dlg.saveFileDialog "Save SmartBook" "" ["*.sb"] "SmartBook"
-                case filename of
-                    Just file -> do
-                        (jsdata :: Result JSAlloy) <- fromJSON <$> jsGetData
-                        res <- liftIO . runEitherT $ buildBookT jsdata file
-                        either (showModalWindow "smartbook_modal" . (++) "Error: ") 
-                               (const $ showModalWindow "smartbook_modal" "The book has been created successfully!" ) res
-                    _ -> return ()
+                when (isJust filename) $ do
+                    (jsdata :: Result JSAlloy) <- fromJSON <$> jsGetData
+                    res <- liftIO . runEitherT $ buildBookT jsdata (fromJust filename)
+                    either (showModalWindow "smartbookStatusModal" . (++) "Error: ") 
+                           (const $ showModalWindow "smartbookStatusModal" "The book has been created successfully!" ) res
                         
             UI.form #. "my-meta-container"
                 # set UI.id_ "ccSelectForm"
@@ -110,6 +112,17 @@ buildBook = do
                         # set (attr "placeholder") "Author"
                         # set (attr "aria-label") "Author"
                         # set (attr "aria-describedby") "basic-addon1"
+                    , UI.div #. "col-auto my-1"
+                        #+ [ UI.div #. "custom-control custom-checkbox mr-sm-2"
+                                #+ [ UI.input #. "custom-control-input"
+                                        # set UI.type_ "checkbox"
+                                        # set UI.id_ "encryptId"
+                                        # set (attr "checked") "checked"
+                                   , UI.label #. "custom-control-label"
+                                        # set (attr "for") "encryptId"
+                                        # set UI.text "Encrypt"
+                                   ]
+                           ]
                     , element btn
                     ]
                     

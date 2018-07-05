@@ -113,7 +113,8 @@ uiSetup win = do
         newDropdown "Tools"
         dropdownNamedDivider "SmartBook"
         dropdownItem "New" (const $ buildBook)
-        dropdownItem "De-/encrypt" (const $ createMessageBlue "SB" "Very soon")
+        dropdownItem "Encrypt ..." (const $ createMessageBlue "SB" "Very soon")
+        dropdownItem "Decrypt ..." (const $ createMessageBlue "SB" "Very soon")
         search
 {- uncomment after recording smartbook video        
     (mainMenu :: Element) <- evalMenu $ do

@@ -92,3 +92,15 @@ input:focus::-webkit-input-placeholder { color:transparent; }
 input:focus:-moz-placeholder { color:transparent; } /* Firefox 18- */
 input:focus::-moz-placeholder { color:transparent; } /* Firefox 19+ */
 input:focus:-ms-input-placeholder { color:transparent; } /* oldIE ;) */
+
+/* checkbox */
+.custom-checkbox .custom-control-input:checked~.custom-control-label::before {
+    background-color: #055F63;
+    box-shadow: none; -webkit-box-shadow: none;
+}
+
+.custom-control-input:checked~.custom-control-label::before {
+    color: #fff;
+    background-color: #055F63;
+    box-shadow: none; -webkit-box-shadow: none;
+}
