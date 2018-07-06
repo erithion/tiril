@@ -9,6 +9,8 @@ import qualified Data.Text.Lazy.Encoding        as TL
 import qualified Data.ByteString.Lazy           as BL
 import qualified Data.ByteString
 import qualified Data.Map                       as Mp
+import qualified Control.Arrow                  as Ar
+import           Data.Either.Extra                            (fromLeft) 
 
 import           Lexin
 import SmartBook.Crypto
@@ -31,6 +33,7 @@ main :: IO ()
 main = hspec $ do
   lexinTests
   smartBookTests
+  bookParserEmptyTests
   bookParserTests
 
 lexinTests = do
@@ -181,6 +184,21 @@ smartBookTests = do
                                              , Mp.fromList [("en", "something2"), ("ru", "something2")] ] }
                 ])
 
+    let unalignedBookEn = "<h1>Chapter 1</h1><p>Mr. Sherlock Holmes</p><p>sometjkjdfgd.</p><p>\"Well, Watson, what do you make of it?\"</p><h1>Chapter 2</h1><p>some text</p>"
+    let unalignedBookNo = "<p><br></p><p><br></p><p><br></p><p><br></p><h1>Kapittel 1</h1><p>Sjerlok Holms</p><p>sometjkjdfgd.</p><p>\"Brå, Vatson\"</p><p><br></p><p><br></p><p><br></p><p><br></p><h1>Kapittel 2</h1><p>noe text</p>"
+    it "tested against 'unaligned' books" $
+        (sbJSON "" $ defaultAlloy "" "" unalignedBookEn unalignedBookNo) `shouldBe` 
+            (Right . SmartBook.Alloy.defaultBook "" "" ".sb" $
+                [ ChapterLeaf { chapterName = "Chapter 1"
+                              , chapterDescription = Just ""
+                              , paragraphs = [ Mp.fromList [("en", "Mr. Sherlock Holmes"), ("ru", "Sjerlok Holms")]
+                                             , Mp.fromList [("en", "sometjkjdfgd."), ("ru", "sometjkjdfgd.")] 
+                                             , Mp.fromList [("en", "\"Well, Watson, what do you make of it?\""), ("ru", "\"Brå, Vatson\"")] ] }
+                , ChapterLeaf { chapterName = "Chapter 2"
+                              , chapterDescription = Just ""
+                              , paragraphs = [ Mp.fromList [("en", "some text"), ("ru", "noe text")] ] }
+                ])
+    
   -- adding .sb is important because otherwise SmartBook simply turns on the Google Translation instead of ours
   describe "SmartBook.sbJSON extension test" $ do
 
@@ -207,47 +225,90 @@ smartBookTests = do
                       , bookRight = no }
 
       
+bookParserEmptyTests = do
+  describe "SmartBook.AlloyParser various empty input" $ do
+    let empty = ""
+    it "no input" $
+      (runBookParser empty) `shouldBe` 
+            (Right $ [ ] )
+            
+    let emptyParagraph = "<p></p>"
+    it emptyParagraph $
+      (runBookParser . TL.pack $ emptyParagraph) `shouldBe` 
+            (Right $ [ ] )
+            
+    let emptyParagraph2 = "<p>   <br></p>"
+    it emptyParagraph2 $
+      (runBookParser . TL.pack $ emptyParagraph2) `shouldBe` 
+            (Right $ [ ] )
+            
+    let emptyParagraph3 = "<h1></h1><p>   <br></p>"
+    it emptyParagraph3 $
+      (runBookParser . TL.pack $ emptyParagraph3) `shouldBe` 
+            (Right $ [ ] )
+            
+    let chapterTitleOnly = "<h1></h1>"
+    it chapterTitleOnly $
+      (runBookParser . TL.pack $ chapterTitleOnly) `shouldBe` 
+            (Right $ [ ] )
+            
+    let chapterTitleOnly2 = "<h1><br></h1>"
+    it chapterTitleOnly2 $
+      (runBookParser . TL.pack $ chapterTitleOnly2) `shouldBe` 
+            (Right $ [ ] )
+            
+    let chapterFullEmpty = "<h1></h1> <h2></h2>"
+    it chapterFullEmpty $
+      (runBookParser . TL.pack $ chapterFullEmpty) `shouldBe` 
+            (Right $ [ ] )
+            
+    let fullEmpty = "<h1></h1> <h2></h2> <p></p>"
+    it fullEmpty $
+      (runBookParser . TL.pack $ fullEmpty) `shouldBe` 
+            (Right $ [ ] )
+
+    let str1 = "<h1></h1> <p><br></p> <h2></h2> <p></p>"
+    it str1 $
+      (runBookParser . TL.pack $ str1) `shouldBe` 
+            (Right $ [ ] )
+            
+    let lotsOfEmpty = "\n\n\n\n<br> <br> <br> \n\n\n<br> <br><p></p>";
+    it "multiple <br> with newline in-between" $
+      (runBookParser . TL.pack $ lotsOfEmpty) `shouldBe` 
+            (Right $ [ ] )
+            
 bookParserTests = do
-  describe "SmartBook.AlloyParser" $ do
-    let empty = "";
-    let emptyParagraph = "<p></p>";
-    let emptyParagraph2 = "<p><br></p>";
-    let chapterTitleOnly = "<h1></h1>";
-    let chapterTitleOnly2 = "<h1><br></h1>";
-    let chapterFullEmpty = "<h1></h1> <h2></h2>";
-    let fullEmpty = "<h1></h1> <h2></h2> <p></p>";
-    let fullNonEmpty = "<h1></h1> <h2></h2> <p>something</p>";
-    let fullMultipleParagraphs = " <h1></h1> <h2></h2> <p>something</p> <p>something2</p>";
-    let fullMultipleChapters = "<h1>1</h1> <h2>11</h2> <p>something</p> <p>something2</p>  \
-                                 \ <h1>2</h1> <h2>22</h2> <p>something</p> <p>something2</p>";
-    it "tested against empty input" $
-      (runBookParser emptyParagraph) `shouldBe` 
-            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = [""] } ] )
-    it "tested against an sole empty paragraph" $
-      (runBookParser emptyParagraph) `shouldBe` 
-            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = [""] } ] )
-    it "tested against <br> within a sole paragraph" $
-      (runBookParser emptyParagraph2) `shouldBe` 
-            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = ["<br>"] } ] )
-    it "tested against a sole empty chapter title" $
-      (runBookParser chapterTitleOnly) `shouldBe` 
-            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = [] } ] )
-    it "tested against a sole chapter title with <br> within" $
-      (runBookParser chapterTitleOnly2) `shouldBe` 
-            (Right $ [ Chp { chpTitle = "<br>", chpDesc = "", chpParagraphs = [] } ] )
-    it "tested against a sole empty chapters title and description" $
-      (runBookParser chapterFullEmpty) `shouldBe` 
-            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = [] } ] )
-    it "tested against a full but empty chapter" $
-      (runBookParser fullEmpty) `shouldBe` 
-            (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = [""] } ] )
+  describe "SmartBook.AlloyParser various non-empty input" $ do
+    let fullNonEmpty = "<h1></h1> <h2></h2> <p>something</p>"
     it "tested against a full non empty chapter" $
       (runBookParser fullNonEmpty) `shouldBe` 
             (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = ["something"] } ] )
+            
+    let fullMultipleParagraphs = " <h1></h1> <h2></h2> <p>something</p> <p>something2</p>"
     it "tested against a full chapter with multiple paragraphs" $
       (runBookParser fullMultipleParagraphs) `shouldBe` 
             (Right $ [ Chp { chpTitle = "", chpDesc = "", chpParagraphs = ["something", "something2"] } ] )
+            
+    let fullMultipleChapters = "<h1>1</h1> <h2>11</h2> <p>something</p> <p>something2</p>  \
+                                 \ <h1>2</h1> <h2>22</h2> <p>something</p> <p>something2</p>"
     it "tested against multiple chapters with multiple paragraphs" $
       (runBookParser fullMultipleChapters) `shouldBe` 
             (Right $ [ Chp { chpTitle = "1", chpDesc = "11", chpParagraphs = ["something", "something2"] }
                      , Chp { chpTitle = "2", chpDesc = "22", chpParagraphs = ["something", "something2"] } ] )
+                     
+    let divsInTheEnd = "<h1>1</h1><h2>1.1</h2><p>p</p><div></div>"
+    it "must fail against DIV in the end" $
+      (show . runBookParser $ divsInTheEnd) `shouldContain` 
+            ("failed to parse in 'tag' at \"<div></div>\"")
+
+    let unalignedBookNo = "<p><br></p><p><br></p><p><br></p><p><br></p><h1>Kapittel 1</h1><p>Sjerlok Holms</p><p>sometjkjdfgd.</p><p>\"Brå, Vatson\"</p><p><br></p><p><br></p><p><br></p><p><br></p><h1>Kapittel 2</h1><p>noe text</p>"
+    it "book with a lot of newlines and <br>" $
+      (runBookParser unalignedBookNo) `shouldBe` 
+            (Right $ [ Chp { chpTitle = "Kapittel 1", chpDesc = "", chpParagraphs = ["Sjerlok Holms", "sometjkjdfgd.", "\"Brå, Vatson\""] }
+                     , Chp { chpTitle = "Kapittel 2", chpDesc = "", chpParagraphs = ["noe text"] } ] )
+
+    let str2 = "<h1></h1> <p><br>nonempty</p> <h2></h2> <p></p>"
+    it str2 $
+      (show $ runBookParser . TL.pack $ str2) `shouldContain` 
+            ("failed to parse in 'tag' at \"<h2></h2> <p></p>\"")
+                     

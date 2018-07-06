@@ -91,10 +91,26 @@ $(document).ready(function () {
 
 
 function getData() {
-    return { jsEncryptResult : $('#encryptId').prop('checked')
+    // making sure scrollbar's divs won't end up in innerHTML content
+    p1.destroy();
+    p2.destroy();
+    var data =
+           { jsEncryptResult : $('#encryptId').prop('checked')
            , jsBook : { bookTitle: document.getElementById('title').value
                       , bookAuthor: document.getElementById('author').value
                       , bookLeft: document.getElementById("editor").innerHTML
                       , bookRight: document.getElementById("editor2").innerHTML }
            };
+    // recreate
+    p1= new PerfectScrollbar( "#editor", 
+                                        { wheelSpeed: 2
+                                        , wheelPropagation: true
+                                        , minScrollbarLength: 20 
+                                        } );
+    p2= new PerfectScrollbar( "#editor2", 
+                                        { wheelSpeed: 2
+                                        , wheelPropagation: true
+                                        , minScrollbarLength: 20 
+                                        } );
+    return data;
 }
