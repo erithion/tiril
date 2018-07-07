@@ -1,4 +1,4 @@
-  $("#encryptId").change(function () {     
+$("#encryptId").change(function () {     
     if (!$(this).prop('checked')) {  
          $('#smartbookEncryptModal').modal();
     } 
@@ -16,10 +16,11 @@ $('#smartbookEncryptModal .modal-footer button').on('click', function(event) {
 
 //AlloyEditor.loadLanguageResources();
 
-var editor1 = AlloyEditor.editable('editor', {
+var leftEditor = AlloyEditor.editable('leftEditor', {
+    extraPlugins: AlloyEditor.Core.ATTRS.extraPlugins.value + ',find',
     toolbars : {
         add: {
-            buttons: ['txt']
+            buttons: AlloyEditor.getButtons(['txt', 'find']),
         },
         styles: {
             selections: 
@@ -34,10 +35,11 @@ var editor1 = AlloyEditor.editable('editor', {
     }
 });
 
-var editor2 = AlloyEditor.editable('editor2', {
+var rightEditor = AlloyEditor.editable('rightEditor', {
+    extraPlugins: AlloyEditor.Core.ATTRS.extraPlugins.value + ',find',
     toolbars : {
         add: {
-            buttons: ['txt']
+            buttons: AlloyEditor.getButtons(['txt', 'find']),
         },
         styles: {
             selections: 
@@ -53,17 +55,23 @@ var editor2 = AlloyEditor.editable('editor2', {
     
 });
 
-var p1= new PerfectScrollbar( "#editor", 
+var psLeft,
+    psRight = null;
+
+function createPerfectScrollbars() {
+    psLeft = new PerfectScrollbar( "#leftEditor", 
                                         { wheelSpeed: 2
                                         , wheelPropagation: true
                                         , minScrollbarLength: 20 
                                         } );
-var p2= new PerfectScrollbar( "#editor2", 
+    psRight = new PerfectScrollbar( "#rightEditor", 
                                         { wheelSpeed: 2
                                         , wheelPropagation: true
                                         , minScrollbarLength: 20 
                                         } );
+}
 syncscroll.reset();
+createPerfectScrollbars();
 
 $(document).ready(function () {
 
@@ -92,25 +100,16 @@ $(document).ready(function () {
 
 function getData() {
     // making sure scrollbar's divs won't end up in innerHTML content
-    p1.destroy();
-    p2.destroy();
+    psLeft.destroy();
+    psRight.destroy();
     var data =
            { jsEncryptResult : $('#encryptId').prop('checked')
            , jsBook : { bookTitle: document.getElementById('title').value
                       , bookAuthor: document.getElementById('author').value
-                      , bookLeft: document.getElementById("editor").innerHTML
-                      , bookRight: document.getElementById("editor2").innerHTML }
+                      , bookLeft: document.getElementById("leftEditor").innerHTML
+                      , bookRight: document.getElementById("rightEditor").innerHTML }
            };
     // recreate
-    p1= new PerfectScrollbar( "#editor", 
-                                        { wheelSpeed: 2
-                                        , wheelPropagation: true
-                                        , minScrollbarLength: 20 
-                                        } );
-    p2= new PerfectScrollbar( "#editor2", 
-                                        { wheelSpeed: 2
-                                        , wheelPropagation: true
-                                        , minScrollbarLength: 20 
-                                        } );
+    createPerfectScrollbars();
     return data;
 }

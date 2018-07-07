@@ -42,8 +42,8 @@ buildBook = do
   -- Modal might not play nicely unless it is a direct child of <body>
   -- https://stackoverflow.com/questions/27411179/bootstrap-3-modal-not-working-correctly-when-placed-inside-a-fixed-parent
   getBodyElement
-      #+ [ createModalWindow "smartbookStatusModal" "SmartBook" ""
-         , createOkCancelModal "smartbookEncryptModal" "SmartBook" 
+      #+ [ modalBtnClose "smartbookStatusModal" "SmartBook" Nothing
+         , modalBtnOkCancel "smartbookEncryptModal" "SmartBook" . Just $
                 "The book will be saved in plain JSON, \
                 \so you won't be able to use it in the SmartBook application \
                 \unless you encrypt it afterwards. \
@@ -94,8 +94,8 @@ buildBook = do
                 when (isJust filename) $ do
                     (jsdata :: Result JSAlloy) <- fromJSON <$> jsGetData
                     res <- liftIO . runEitherT $ buildBookT jsdata (fromJust filename)
-                    either (showModalWindow "smartbookStatusModal" . (++) "Error: ") 
-                           (const $ showModalWindow "smartbookStatusModal" "The book has been created successfully!" ) res
+                    either (showModalWindow "smartbookStatusModal" . Just . (++) "Error: ") 
+                           (const $ showModalWindow "smartbookStatusModal" . Just $ "The book was created successfully!" ) res
                         
             UI.form #. "my-meta-container"
                 # set UI.id_ "ccSelectForm"
@@ -130,20 +130,22 @@ buildBook = do
         editors = 
             UI.div #. "my-edit-container"
                 #+  [ UI.div #. "form-control my-edit syncscroll"
-                        # set UI.id_ "editor"
+                        # set UI.id_ "leftEditor"
                         # set (attr "name") "myElements"
                         # set (attr "data-placeholder") "Book"
                         # set (attr "aria-label") "With textarea"
+                        # set (attr "title") "Load your book"
                     , UI.div #. "form-control my-edit syncscroll"
-                        # set UI.id_ "editor2"
+                        # set UI.id_ "rightEditor"
                         # set (attr "name") "myElements"
                         # set (attr "data-placeholder") "Translation"
                         # set (attr "aria-label") "With textarea"
+                        # set (attr "title") "Load your translation"
                     ]   
                     
 encryptBook = do
   getBodyElement
-      #+ [ createModalWindow "smartbookEncryptStatusModal" "SmartBook - Encrypt" ""]                    
+      #+ [ modalBtnClose "smartbookEncryptStatusModal" "SmartBook - Encrypt" Nothing]                    
   result <- liftIO $ do
     res <- runMaybeT filesT
     case res of 
@@ -158,7 +160,7 @@ encryptBook = do
             return . Just $ "Operation completed successfully!"
         _ -> return Nothing
   when (isJust result) $ do
-      showModalWindow "smartbookEncryptStatusModal" (fromJust result)
+      showModalWindow "smartbookEncryptStatusModal" result
   where filesT :: MaybeT IO (TS.Text, TS.Text)
         filesT = do
             (fileIn::[TS.Text]) <- MaybeT . liftIO $ Dlg.openFileDialog "Encryption - choose a file to encrypt" "" ["*.*"] "Any file" False
@@ -167,7 +169,7 @@ encryptBook = do
 
 decryptBook = do
   getBodyElement
-      #+ [ createModalWindow "smartbookDecryptStatusModal" "SmartBook - Decrypt" ""]                    
+      #+ [ modalBtnClose "smartbookDecryptStatusModal" "SmartBook - Decrypt" Nothing]                    
   result <- liftIO $ do
     res <- runMaybeT filesT
     case res of 
@@ -185,7 +187,7 @@ decryptBook = do
                             ( const $ Just "Operation completed successfully!" ) enc
         _ -> return Nothing
   when (isJust result) $ do
-      showModalWindow "smartbookDecryptStatusModal" (fromJust result)
+      showModalWindow "smartbookDecryptStatusModal" result
   where filesT :: MaybeT IO (TS.Text, TS.Text)
         filesT = do
             (fileIn::[TS.Text]) <- MaybeT . liftIO $ Dlg.openFileDialog "Decryption - choose a file to decrypt" "" ["*.sb"] "SmartBook" False

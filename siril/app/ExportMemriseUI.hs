@@ -60,6 +60,9 @@ jsGetDataFromTable = callFunction . ffi "finalCollect(%1)"
 
 memriseExportWindow = do
     clearMainWindow
+    getBodyElement
+      #+ [ modalBtnClose "exportMemriseModal" "Memrise" Nothing ]
+    
     exports <- liftIO getExports
     -- Transforming to the Map for the sake of merging the same source words into single groups; and back to the List
     let groups = Map.assocs . Map.fromListWith (++) $ map ( source &&& (:[]) ) exports
@@ -78,7 +81,7 @@ memriseExportWindow = do
     on UI.click exportButton $ const $ do
         (dataset :: Result [Dataset]) <- fromJSON <$> jsGetDataFromTable "export"
         case dataset of 
-            Error   err -> showModal "Memrise" ("JSON error: " ++ err)
+            Error   err -> showModalWindow "exportMemriseModal" . Just $ "JSON error: " ++ err
             Success dat -> do
                 res <- liftIO $ do
                     filename <- Dlg.saveFileDialog "Save export file" "" ["*.htx"] "Tiril export"
@@ -86,7 +89,7 @@ memriseExportWindow = do
                         setLocaleEncoding utf8
                         TS.writeFile (TS.unpack name) (T.toStrict . T.unlines . map (export "\t") $ dat)
                         return True
-                void . M.when res $ showModal "Memrise" "Exporting has been completed successfully!"
+                void . M.when res $ showModalWindow "exportMemriseModal" . Just $ "Exporting completed successfully!"
 -- TODO: style and add this delimiter toggle
 --    input <- UI.div #. "toggle toggle-modern ml-5"
     getMainWindow #+ 

@@ -58,7 +58,13 @@
 }
 
 .ae-ui .ae-toolbar .ae-button:hover, .ae-ui .ae-toolbar .ae-toolbar-element:hover, .ae-ui [class^=ae-toolbar-] .ae-button:hover, .ae-ui [class^=ae-toolbar-] .ae-toolbar-element:hover {
-    color: #F1F1E6;
+/*    color: #F1F1E6;*/
+    color: white;
+}
+
+.ae-button:hover {
+/*    color: #F1F1E6;*/
+    color: white;
 }
 
 body {
@@ -67,7 +73,8 @@ body {
 
 
 .my-btn-info:hover {
-    color: #F1F1E6;
+/*    color: #F1F1E6;*/
+    color: white;
 }
 .my-btn-info {
     color: #fff;
@@ -103,4 +110,159 @@ input:focus:-ms-input-placeholder { color:transparent; } /* oldIE ;) */
     color: #fff;
     background-color: #055F63;
     box-shadow: none; -webkit-box-shadow: none;
+}
+
+/* overriding find and replace form */
+.cke_dialog_title {
+    background: #055F63;
+    color: white;
+    text-shadow: inherit;
+    box-shadow: none;
+    border-bottom: none;
+}
+
+.cke_reset_all, .cke_reset_all *, .cke_reset_all a, .cke_reset_all textarea {
+    font: inherit; 
+}
+
+.cke_dialog_body {
+    background: gainsboro;
+    border: 1px solid #055F63;
+    border-bottom-color: unset;
+}
+
+a.cke_dialog_close_button {
+    background-image: none;
+    opacity: 1;
+}
+.cke_dialog_close_button:hover {
+/*    color: #F1F1E6;*/
+    color: white;
+}
+.cke_dialog_footer_buttons a.cke_dialog_ui_button span {
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.cke_dialog_close_button span {
+    display: inline;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+.cke_dialog_body .cke_label {
+    display: inline;
+}
+
+.cke_dialog_footer {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: none;
+    background-image: none;
+}
+a.cke_dialog_ui_button span {
+    text-shadow: none;
+}
+a.cke_dialog_ui_button:hover {
+    border-color: inherit;
+    background: #055F63;
+/*    color: #F1F1E6;*/
+    color: white;
+}
+a.cke_dialog_ui_button {
+    border: none;
+    color: white;
+    box-shadow: unset;
+    background: #055F63;
+    background-image: none;
+    filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0,startColorstr='#ffffff',endColorstr='#e4e4e4');
+    border-radius: .3rem;
+}
+span.cke_dialog_ui_button {
+    cursor: pointer;
+    color: inherit;
+}
+
+.ae-ui .ae-button-bridge [class*=" ae-icon-"]:hover, .ae-ui .ae-button-bridge [class*=ae-icon-]:hover {
+    -webkit-filter: brightness(0) invert(100%);
+    filter: brightness(0) invert(100%);
+}
+
+input.cke_dialog_ui_input_text, input.cke_dialog_ui_input_password, textarea.cke_dialog_ui_input_textarea {
+    box-shadow: none;
+}
+input.cke_dialog_ui_input_text:focus, input.cke_dialog_ui_input_password:focus, textarea.cke_dialog_ui_input_textarea:focus, select.cke_dialog_ui_input_select:focus {
+    border-color: #055F63;    
+}
+
+/* custom checkboxes for find plugin */
+.cke_dialog_ui_checkbox > label::after {
+    position: absolute;
+    top: .25rem;
+    left: 0;
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    content: "";
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 50% 50%;
+    border-radius: .25rem;
+}
+
+.cke_dialog_ui_checkbox > label::before {
+    position: absolute;
+    top: .25rem;
+    left: 0;
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    pointer-events: none;
+    content: "";
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: #dee2e6;
+    border-radius: .25rem;
+}
+.cke_dialog_ui_checkbox .cke_dialog_ui_checkbox_input:checked~label::before {
+    background-color: #055F63;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+/*  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E");*/
+}
+.cke_dialog_ui_checkbox .cke_dialog_ui_checkbox_input:checked~label::after {
+    background-color: #055F63;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E");
+}
+
+.cke_dialog_ui_checkbox_input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+}
+
+.cke_dialog_ui_checkbox {
+    position: relative;
+    display: block;
+    min-height: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+/********** align find form buttons ***************/
+.cke_dialog_contents_body {
+    padding: 10px;
+}
+.cke_dialog_footer_buttons {
+    margin: 10px;
+    margin-top: 0px;
+}
+
+.cke_dialog_ui_hbox_last {
+    width: 6em !important;
+    text-align: right!important
 }

@@ -22,10 +22,6 @@ import           Data.Tuple.Extra                            ((***), (&&&))
 import           Data.Either
 import           Control.Concurrent.Async                                       hiding (link)
 
--- threepenny crashes upon searching for non-existing element
-deleteElements :: String -> UI ()
-deleteElements selector = callFunction (ffi "$(%1).remove()" selector)
-
 getBodyElement :: UI Element
 getBodyElement = return . head =<< flip getElementsByTagName "body" =<< askWindow
 
@@ -36,7 +32,6 @@ getMainWindow :: UI Element
 getMainWindow = head <$> getWindows "tiril-main-window"
 
 clearMainWindow = do 
-    runFunction $ ffi "uninit()"
     getMainWindow # set children []
 
 {---------------------------------------------------------}
@@ -47,18 +42,6 @@ getWindows className = flip getElementsByClassName className =<< askWindow
 deleteWindows :: String -> UI ()
 deleteWindows className = void . sequence =<< map delete <$> getWindows className
           
-makeMessageWindow :: String -> String -> String -> UI Element
-makeMessageWindow alertType cap msg = do
-  clearMainWindow
-  win <- UI.div #. "container d-flex align-items-center justify-content-center"
-          #+ [ UI.div  
-                  #. ("alert " ++ alertType ++ " alert-dismissible fade show")
-                  #+ [ UI.h4 #. "alert-heading" # set text cap
-                     , UI.a #. "close" # set UI.href "#" # set (attr "data-dismiss") "alert" # set (attr "aria-label") "close" # set text "✖"
-                     , UI.hr
-                     , UI.p #. "mb-0" # set text msg ] ]
-  getMainWindow #+ [ element win ]
-
 dismissableAlert :: String -> String -> String -> UI Element
 dismissableAlert alertType strongText msg = UI.div  
                   #. ("alert " ++ alertType ++ " alert-dismissible fade show")
@@ -68,60 +51,23 @@ dismissableAlert alertType strongText msg = UI.div
                      , UI.button #. "close" # set UI.type_ "button" # set (attr "data-dismiss") "alert" # set (attr "aria-label") "close" 
                         #+ [ UI.span # set (attr "aria-hidden") "true" # set text "✖" ]
                      ]
--- see if you need this really
-createMessageGreen :: String -> String -> UI Element
-createMessageGreen = makeMessageWindow "alert-success"
+                     
+showModalWindow :: String -> Maybe String -> UI ()           
+showModalWindow modId Nothing = runFunction $ ffi "$(%1).modal('show')" ("#" ++ modId)
+showModalWindow modId (Just msg) = runFunction $ ffi "$(%2).text(%3); $(%1).modal('show')" ("#" ++ modId) ("#" ++ modId ++ " .modal-body") msg
 
-createMessageRed :: String -> String -> UI Element
-createMessageRed = makeMessageWindow "alert-danger"
+-- Modal window constructors
+modalBtnClose = modalWindowTemplate [("close", "Close")]
+modalBtnOkCancel = modalWindowTemplate [("cancel", "Cancel"), ("ok", "Ok")]
 
-createMessageBlue :: String -> String -> UI Element
-createMessageBlue = makeMessageWindow "alert-primary"
+type ButtonId = String
+type ButtonName = String
+type ModalId = String
 
--- remove msg
-createModalWindow modId cap msg = do
+modalWindowTemplate :: [(ButtonId, ButtonName)] -> ModalId -> String -> Maybe String -> UI Element
+modalWindowTemplate buttons modId cap msg = do
     -- deleting previous if exists
-    deleteElements $ "#" ++ modId
-    UI.div #. "modal fade" 
-        # set UI.id_ modId
-        # set (attr "tabindex") "-1"
-        # set (attr "role") "dialog"
-        # set (attr "aria-labelledby") "exampleModalLabel" -- ???
-        # set (attr "aria-hidden") "true"
-        #+ [UI.div #. "modal-dialog modal-dialog-centered" # set (attr "role") "document"
-                #+ [UI.div #. "modal-content"
-                        #+ [ UI.div #. "modal-header"
-                                #+ [ UI.h5 #. "modal-title" # set UI.id_ "exampleModalLabel" # set text cap
-                                   , UI.button #. "close" 
-                                        # set UI.type_ "button" 
-                                        # set (attr "data-dismiss") "modal"
-                                        # set (attr "aria-label") "Close"
-                                        #+ [UI.span # set (attr "aria-hidden") "true" # set text "×"]
-                                   ]
-                           , UI.div #. "modal-body" # set text msg
-                           , UI.div #. "modal-footer" 
-                                #+ [ UI.button #. "btn btn-secondary" 
-                                        # set UI.type_ "button" 
-                                        # set (attr "data-dismiss") "modal"
-                                        # set text "Close"
-                                   ]
-                           ]
-                   ]
-           ]
-
-showModalWindow :: String -> String -> UI ()           
-showModalWindow modId "" = runFunction $ ffi "$(%1).modal('show')" ("#" ++ modId)
-showModalWindow modId msg = runFunction $ ffi "$(%2).text(%3); $(%1).modal('show')" ("#" ++ modId) ("#" ++ modId ++ " .modal-body") msg
-
--- delete this
-showModal cap msg = do
-    getMainWindow #+ [ createModalWindow "modal" cap msg ]
-    showModalWindow "modal" msg
-
--- leave msg
-createOkCancelModal modId cap msg = do
-    -- deleting previous if exists
-    deleteElements $ "#" ++ modId
+    deleteDOMElements $ "#" ++ modId
     UI.div #. "modal fade" 
         # set UI.id_ modId
         # set (attr "tabindex") "-1"
@@ -138,19 +84,18 @@ createOkCancelModal modId cap msg = do
                                         # set (attr "aria-label") "Close"
                                         #+ [UI.span # set (attr "aria-hidden") "true" # set text "×"]
                                    ]
-                           , UI.div #. "modal-body" # set text msg
+                           , UI.div #. "modal-body" # set text (fromMaybe "" msg)
                            , UI.div #. "modal-footer" 
-                                #+ [ UI.button #. "btn btn-secondary" 
-                                        # set UI.id_ "cancel" 
-                                        # set UI.type_ "button" 
-                                        # set (attr "data-dismiss") "modal"
-                                        # set text "Cancel"
-                                   , UI.button #. "btn btn-secondary" 
-                                        # set UI.id_ "ok" 
-                                        # set UI.type_ "button" 
-                                        # set (attr "data-dismiss") "modal"
-                                        # set text "Ok"
-                                   ]
+                                #+ (createButton <$> buttons)
                            ]
                    ]
            ]    
+    where createButton (btnId, btnName) = 
+            UI.button #. "btn btn-secondary" 
+                      # set UI.id_ btnId
+                      # set UI.type_ "button" 
+                      # set (attr "data-dismiss") "modal"
+                      # set text btnName
+          -- threepenny crashes upon searching for non-existing element
+          deleteDOMElements :: String -> UI ()
+          deleteDOMElements selector = callFunction (ffi "$(%1).remove()" selector)          

@@ -100,6 +100,8 @@ uiSetup win = do
            , mkElement "script" # set UI.src "/static/alloy-editor-all-min.js"
            , mkElement "script" # set UI.src "/static/alloy.jsx.js"
            ]
+    getBodyElement
+      #+ [ modalBtnClose "mainAnkiErrorModal" "Anki" (Just "Not yet, but it's coming ...") ]
                 
     -- Adding menu
     (mainMenu :: Element) <- evalMenu $ do
@@ -107,7 +109,7 @@ uiSetup win = do
         newDropdown "Words"
         dropdownItem "Latest" viewSession
         newDropdown "Export"
-        dropdownItem "Anki" (const $ createMessageBlue "Anki" "Not yet, but it's coming ...")
+        dropdownItem "Anki" (const $ showModalWindow "mainAnkiErrorModal" Nothing)
         dropdownDivider
         dropdownItem "Memrise" (const $ memriseExportWindow)
         newDropdown "Tools"
@@ -137,6 +139,5 @@ uiSetup win = do
         #+ [ mkElement "script" # set UI.src "/static/bootstrap.min.js"
            , mkElement "script" # set UI.src "/static/sortable.js"
            , mkElement "script" # set UI.src "/static/perfect-scrollbar.min.js"
-           , mkElement "script" # set UI.src "/static/common.js"
            ]
     return ()

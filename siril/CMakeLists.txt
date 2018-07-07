@@ -97,10 +97,19 @@ endif()
 message                         ( STATUS "Fetching alloy-editor ..." )
 FetchContent_Declare            ( alloy
                                   GIT_REPOSITORY https://github.com/liferay/alloy-editor
-                                  GIT_TAG v1.5.10 )
+                                  GIT_TAG 1.5.0 ) # Not latest. Don't know how to make it work with CKEditor find plugin
 FetchContent_GetProperties      ( alloy )
 if( NOT alloy_POPULATED )
     FetchContent_Populate       ( alloy )
+endif()
+
+#######################################
+message                         ( STATUS "Fetching ckeditor's find and replace ..." )
+FetchContent_Declare            ( find
+                                  URL https://download.ckeditor.com/find/releases/find_4.9.2.zip )
+FetchContent_GetProperties      ( find )
+if( NOT find_POPULATED )
+    FetchContent_Populate       ( find )
 endif()
 
 #######################################
@@ -172,4 +181,7 @@ install                     ( DIRECTORY   ${alloy_SOURCE_DIR}/dist/alloy-editor/
                               DESTINATION ${SIRIL_BUILD_DIR}/static )
 install                     ( DIRECTORY   ${alloy_SOURCE_DIR}/dist/alloy-editor/skins
                               DESTINATION ${SIRIL_BUILD_DIR}/static )
+
+install                     ( DIRECTORY   ${find_SOURCE_DIR}/
+                              DESTINATION ${SIRIL_BUILD_DIR}/static/plugins/find )
                               
