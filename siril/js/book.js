@@ -113,3 +113,12 @@ function getData() {
     createPerfectScrollbars();
     return data;
 }
+
+// Removing annoying title tooltips that have been set by Alloy
+$('#leftEditor').on('mouseenter', function(e){
+    $('#leftEditor').attr('title', "");
+});
+
+$('#rightEditor').on('mouseenter', function(e){
+    $('#rightEditor').attr('title', "");
+});
