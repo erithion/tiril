@@ -311,4 +311,8 @@ bookParserTests = do
     it str2 $
       (show $ runBookParser . TL.pack $ str2) `shouldContain` 
             ("failed to parse in 'tag' at \"<h2></h2> <p></p>\"")
-                     
+
+    let str3 = "<h1>Chapter&nbsp;1</h1> <h2>Sub chapter&nbsp;1.1</h2> <p><br>non&nbsp;empty</p>"
+    it str3 $
+      (runBookParser . TL.pack $ str3) `shouldBe` 
+            (Right $ [ Chp { chpTitle = "Chapter 1", chpDesc = "Sub chapter 1.1", chpParagraphs = ["non empty"] } ] )

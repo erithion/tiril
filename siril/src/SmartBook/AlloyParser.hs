@@ -91,7 +91,8 @@ runBookParser :: Text -> Either ParseError [Chp]
 runBookParser = 
     -- treat <br> as an empty row. 
     -- this is to allow the user to align the text 'return' in editors
-    runParser parser () "Book input parser" . TexL.replace "<br>" "" 
+    -- replace twice shouldn't increase complexity much for it is lazy. not checked that though
+    runParser parser () "Book input parser" . TexL.replace "<br>" "" . TexL.replace "&nbsp;" " "
     where parser = do
             val <- many $ do
                 r <- parseChapter
