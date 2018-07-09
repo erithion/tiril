@@ -18,9 +18,9 @@ cabal.sandbox.config
 .stack-work/
 cabal.project.local
 .HTF/
-doc/tiril.stg
-doc/tiril.view.stg
-doc/tiril.export.memrise.stg
+doc/*.stg
+doc/smartbook/*.stg
+doc/smartbook/*.mp4
 viril/bin
 viril/build
 siril/.stack-work/
