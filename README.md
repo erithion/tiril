@@ -1,5 +1,48 @@
 # About Tiril
-Tiril is an open source software aiming to assist in a language learning process.
+Tiril is an open source software aiming to assist in a language learning process. At the current stage of development when the project hasn't even reached an alpha yet, it doesn't have a stable set of features, for they change and merge into each other rather fast. Luckily, a display of learning approaches which become much easier with using Tiril serves as a much better showcase for the project. This is about the practices, of which any learner has been thinking at least once in one way or another while reflecting and trying to improve the own learning process. This is exactly where Tiril strives to back you up.
+
+
+# The showcase
+
+## I enjoy watching movies. I wouldn't mind to learn in the process on occasion
+
+Unless you won't have to be buried under the piles of dictionaries, watching the movie in a language of the original sounds like fun and a pleasant way to boost your language skills. Indeed there are tons of subtitles in the Internet. There are also websites where you can translate every word of the subtitles in one click while watching the movie. However most of them are for English. Usually that means you are limited in choosing either the language or the movie of your liking. What if you want to watch some Georgian movie in Georgian for example and you've even acquired the right disc? See how to achieve that with Tiril and [VLC](https://github.com/videolan) - a very powerful and popular open source video player.  
+
+
+<details>
+ <summary>Click to see the gif-image</summary>
+  
+![alt text](https://github.com/erithion/tiril/raw/master/doc/tiril.gif "VideoLAN demo")
+</details>
+
+## I'm old-school. I'd rather a good book instead
+
+This is about reading a book in a language of the original along with some hints or translations in your mother tongue. Here we have far less available solutions let alone the decent ones. One of them is Kindle. The other is a free solution for Android devices called [SmartBook](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en). But again as soon as you step beyond the "classical" set of European languages or books, it is hard to find what you need. How nice it would be if you were able to read Harry Potter in Irish-Norwegian or Lord of the Rings in Norwegian-Russian or any other book in any other tongues of your choice. Below you will find a visual demo of the steps that Tiril would require from you to assemble yourself such a book for SmartBook application.
+
+1. Having the text of the books in both languages, this is how you would start
+<details>
+ <summary>Click to see the gif-image</summary>
+  
+![alt text](https://github.com/erithion/tiril/raw/master/doc/smartbook/tiril.smartbook.open.gif "Tiril SmartBook demo")
+
+</details>
+
+2. After that you need to align them in order SmartBook to show them properly
+<details>
+ <summary>Click to see the gif-image</summary>
+  
+![alt text](https://github.com/erithion/tiril/raw/master/ "Tiril SmartBook demo")
+
+</details>
+
+The rules for that are very intuitive
+    * Just try to keep the same number of paragraphs within a chapter and the same number of chapters for both books
+    * 
+
+ 
+## I want to remember every new word I encounter for good
+
+Tiril is an open source software aiming to assist in a language learning process. While it is on its early stage of development and hasn't even reached an alpha yet, it is reasonable to use a term "the tool-set" while referring it and talk more about use-cases it can cover rather than about concepts and ideas it strives for
 
 While it still exists in a form of Proof-Of-Concept with lots of ideas to be yet implemented, the following components have already been added
 * Siril server with an embedded UI. To date it operates merely dictionaries and handles just a few of them for now:
