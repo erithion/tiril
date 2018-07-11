@@ -1,4 +1,4 @@
-Tiril is an open source software aiming to assist in a language learning process. At the current stage of development when the project hasn't even reached an alpha yet, it doesn't have a stable set of features, for they change and merge into each other rather fast. Luckily, a display of learning approaches which become much easier with using Tiril serves as a much better showcase for the project. This is about the practices, of which any learner has been thinking at least once in one way or another while reflecting and trying to improve own learning process. This is exactly where Tiril strives to back you up.
+**Tiril** is an open source software aiming to assist in a language learning process. At the current stage of development when the project hasn't even reached an alpha yet, it doesn't have a stable set of features, for they change and merge into each other rather fast. Luckily, a display of learning approaches which become much easier with using Tiril serves as a much better showcase for the project. This is about the practices, of which any learner has been thinking at least once in one way or another while reflecting and trying to improve own learning process. This is exactly where Tiril strives to back you up.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -25,7 +25,7 @@ Tiril is an open source software aiming to assist in a language learning process
 
 ## I enjoy watching movies. I wouldn't mind to learn in the process on occasion
 
-Unless you won't have to be buried under the piles of dictionaries, watching the movie in a language of the original sounds like fun and a pleasant way to boost your language skills. Indeed there are tons of subtitles in the Internet. There are also websites where you can translate every word in the subtitled video in one click while watching the movie. However most of them are for English. Usually that means you are limited in choosing either the language or the movie of your liking. What if you want to watch some Norwegian movie in Norwegian for example and you've even acquired the right disc(s)? See how to achieve that with Tiril and [VLC](https://github.com/videolan) - a very powerful and popular open source video player.  
+Unless you won't have to be buried under the piles of dictionaries, watching the movie in a language of the original sounds like fun and a pleasant way to boost your language skills. Indeed there are tons of subtitles in the Internet. There are even well-thought websites which offer you to watch a subtitled movie and translate any word from it in one click at will. However most of them are for English and/or have small film collection. That means you are limited in choosing either the language or the movie of your liking. What if you want to watch some Norwegian movie in Norwegian for example and you've even acquired the disc(s)? See how to achieve that with Tiril and [VLC](https://github.com/videolan) - a very powerful and popular open source video player.
 
 <details>
  <summary>Click to see the gif-image</summary>
@@ -35,9 +35,9 @@ Unless you won't have to be buried under the piles of dictionaries, watching the
 
 ## I'm old-school. I'd rather a good book instead
 
-This is about reading a book in a language of the original along with some hints or translations in your mother tongue. Here we have far less available solutions let alone the decent ones. One of them is Kindle. The other is a free solution for Android devices called [SmartBook](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en). But again as soon as you step beyond the "classical" set of European languages or books, it is hard to find what you need. How nice it would be if you were able to read Harry Potter in Irish-Norwegian or Lord of the Rings in Norwegian-Russian or any other book in any other tongues of your choice. Below you will find a visual demo of how you could assemble yourself such a book for SmartBook application with Tiril.
+This is about reading a book in a language of the original along with inserts or translation in your mother tongue. Here one finds far less options let alone the decent ones. One of them is Kindle. The other solution is a free application for Android devices called [SmartBook](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en). But again as soon as you step beyond the "classical" set of European languages or books, you are on your own. How nice it would be if you were able to read Harry Potter in Irish-Georgian or Lord of the Rings in Norwegian-Russian or any book in any other tongues of your choice. And that's how you could assemble yourself such a book for SmartBook application with Tiril.
 
-* Having the text of the books in both languages, this is the start
+Searching the text of the books in both languages is nearly the hardest part in the entire process. Once it is done, load them
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -45,7 +45,7 @@ This is about reading a book in a language of the original along with some hints
 
 </details>
 
-* The books need to be aligned in order for the SmartBook application to show them properly. The rules are simple and intuitive - just keep the same number of chapters and paragraphs in both books or merge/create new paragraphs at will
+The books need to be aligned in order for SmartBook application to show them properly. The rules are simple and intuitive - just keep the same number of chapters and paragraphs in both books or merge/create new paragraphs at will. The number of empty rows doesn't matter, for only non-empty ones are accounted, but this trick often improves visual comparison.
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -53,7 +53,7 @@ This is about reading a book in a language of the original along with some hints
 
 </details>
 
-* A final step. Optionally you could also check if you missed any chapter before saving
+A final step. Optionally you could also check if you missed any chapter before saving
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -61,7 +61,7 @@ This is about reading a book in a language of the original along with some hints
 
 </details>
 
-* In case you know what JSON format is and you have some good JSON viewer you could also review the book's internals to make sure everything is placed where it should be
+In case you know what JSON format is and you have some good JSON viewer you could also review the book's internals to make sure everything is aligned as it should be
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -69,7 +69,7 @@ This is about reading a book in a language of the original along with some hints
 
 </details>
 
-* After the book was uploaded on your device ...
+After the book was uploaded on your device ...
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -77,7 +77,7 @@ This is about reading a book in a language of the original along with some hints
 
 </details>
 
-* ... you can enjoy your reading
+... you can enjoy your reading. Mind you though that SmartBook application shows the author's translation for English-Russian books only. This is the limitation set by the author of the application. Thus you will have to set this direction in the options to see the translation you have supplied with the book
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -87,11 +87,13 @@ This is about reading a book in a language of the original along with some hints
 
 ## I prefer none of the above. But I surf foreign segments of the Internet a lot
 
+TBD
+
 ## I want to remember every new word I encounter for good
 
-For the small percent of people who was blessed being born with eidetic memory this is probably not an issue at all. The situation is rather different for the rest of us who wasn't. Luckily there are lots of automated solutions for efficient memorizing which claim to use the latest scientific developments in their learning algorithms. This is about such software like Anki, Memrise, Quizlet and alike. It won't take long for you to realize how great it would be to have your own dictionary there and allow the software to decide which word you should recall today. At the same time how much efforts it would require to even write down all the words not to mention how tedious it would be to maintain such a database. Especially if you are learning more than one language or have chosen more than one such program. With Tiril it stops being a problem. It knows your dictionary well for it translated the movie pieces ~~and the web-pages~~ for you, remember? It is rather logical to ask it to create the database for you, isn't it? Below is an example of such process for Memrise.
+For the small percent of people who was blessed being born with eidetic memory this is probably not an issue at all. For the rest of us who wasn't the situation is rather different. Luckily there are lots of automated solutions for efficient memorizing which claim to use the latest scientific developments in their learning algorithms. These are Anki, Memrise, Quizlet and alike. It won't take long for you to realize how beneficial it would be to have your own dictionary there and to allow the software to decide which word you should recollect today. And also what a tremendous amount of effort it would require to implement and maintain all that. Especially if you are learning more than one language and/or have chosen more than one such program. With Tiril it is the problem no more. It knows your dictionary well for it translated the movie pieces ~~and the web-pages~~ for you, remember? It is rather logical to ask to create the database for you, isn't it? Below is an example of such process for Memrise.
 
-* Typically there are lots of meanings for each single word, lots of contexts and examples. You may decide which one of them to preserve with the word
+Typically there are lots of meanings for each single word, lots of contexts and examples. You may decide which one of them to preserve with the word
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -99,7 +101,7 @@ For the small percent of people who was blessed being born with eidetic memory t
 </details>
 
 
-* Memrise allows you to add your own custom columns. It is for you to decide what will be in every column
+Memrise allows you to add your own custom columns. It is for you to decide what to put in every column
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -118,9 +120,10 @@ And finally importing the whole set to Memrise at one stroke
 
 ## Structure
 
-Tiril was conceived as a server part which takes the burden of handling online dictionaries and maintaining the user database, and an unlimited number of agents which would ask a translation from the server. This would guarantee Tiril's presence virtually everywhere which means the user could count on the translation regardless of whether he is watching the movie, surfing the Internet in a browser or working with a textual information in any other form. Currently Tiril consists of  
+Tiril was conceived as a server part which takes the burden of handling online dictionaries and maintaining the user database, and an unlimited number of agents which would ask a translation from the server. This would guarantee Tiril's presence virtually everywhere which means the user could count on the translation regardless of whether he is watching a movie in a media player, surfing the Internet in a browser or working with a textual information in any other form or application. Currently Tiril consists of   
 * Siril - the server with an embedded UI. 
 * Viril - a [VideoLAN](https://github.com/videolan) agent to translate subtitles.
+* ...
 
 ### Siril
 
@@ -155,6 +158,8 @@ The project has dependencies that might seem unexpected, ~~Electron JS for examp
 * Run *build.bat*
 
 ### Linux
+
+TBD
 
 ## ToDo
 The section is mainly for the author to keep track of the emerging needs/ideas
