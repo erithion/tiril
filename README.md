@@ -44,7 +44,7 @@ Searching the text of the books in both languages is nearly the hardest part thr
 ![Opening books to assemble a SmartBook in Tiril](https://github.com/erithion/tiril/raw/master/doc/smartbook/tiril.smartbook.open.gif "Opening books to assemble a SmartBook in Tiril")
 
 </details>
-
+<br>
 The books need to be aligned in order for SmartBook application to show the proper translation under each paragraph. The rules are simple and intuitive - just keep the same number of chapters and paragraphs in both books or merge/create new paragraphs if needed. The number of empty rows between two paragraphs doesn't matter, for only non-empty ones are accounted, but this trick often improves visual comparison so feel free to use it.
 <details>
  <summary>Click to see the gif-image</summary>
@@ -52,7 +52,7 @@ The books need to be aligned in order for SmartBook application to show the prop
 ![Editing the SmartBook](https://github.com/erithion/tiril/raw/master/doc/smartbook/tiril.smartbook.edit.gif "Editing the SmartBook")
 
 </details>
-
+<br>
 A final step. Optionally you could also check if you missed any chapter before saving
 <details>
  <summary>Click to see the gif-image</summary>
@@ -60,7 +60,7 @@ A final step. Optionally you could also check if you missed any chapter before s
 ![Saving the SmartBook](https://github.com/erithion/tiril/raw/master/doc/smartbook/tiril.smartbook.checknsave.gif "Saving the SmartBook")
 
 </details>
-
+<br>
 In case you know what JSON is and you have some good JSON viewer you could also review the book's internals to make sure everything is aligned as it should
 <details>
  <summary>Click to see the gif-image</summary>
@@ -68,7 +68,7 @@ In case you know what JSON is and you have some good JSON viewer you could also 
 ![Review your SmartBook in unencrypted form](https://github.com/erithion/tiril/raw/master/doc/smartbook/tiril.smartbook.unencrypted.gif "Review your SmartBook in unencrypted form")
 
 </details>
-
+<br>
 After the book was uploaded on your device ...
 <details>
  <summary>Click to see the gif-image</summary>
@@ -76,7 +76,7 @@ After the book was uploaded on your device ...
 ![Copy the SmartBook on your device](https://github.com/erithion/tiril/raw/master/doc/smartbook/tiril.smartbook.copy.gif "Copy the SmartBook on your device")
 
 </details>
-
+<br>
 ... you can enjoy your reading. Mind you though that SmartBook application shows the author's translation for English-Russian books only. This is a limitation set by the creator of the application. Thus you will have to set this direction in the options to see the translation you have supplied with your book. Otherwise the application will show you a translation from Google Translate
 <details>
  <summary>Click to see the gif-image</summary>
@@ -99,16 +99,14 @@ Typically there are lots of meanings, contexts and examples for each single word
   
 ![Creating a database of words](https://github.com/erithion/tiril/raw/master/doc/tiril.view.gif "Creating a database of words")
 </details>
-
-
+<br>
 Memrise allows you to add your own custom columns. It is for you to decide what to put in every column
 <details>
  <summary>Click to see the gif-image</summary>
   
 ![Formatting and exporting](https://github.com/erithion/tiril/raw/master/doc/tiril.export.memrise.gif "Formatting and exporting")
 </details>
-
-
+<br>
 And finally importing the whole set to Memrise at one stroke
 <details>
  <summary>Click to see the gif-image</summary>
