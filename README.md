@@ -179,7 +179,7 @@ The section is mainly for the author to keep track of the emerging needs/ideas
     * [ ] Introduce a sed-like syntax in export pages to format the output at will
     * [ ] Add single word editing
   * Tools
-    * [ ] Add creation of [SmartBooks](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en)
+    * [x] Add creation of [SmartBooks](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en)
   * [ ] Move UI to a standalone Electron-app
   * [ ] Implement the server as an OS daemon
   * [ ] Add Activity page
