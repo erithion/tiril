@@ -92,9 +92,8 @@ TBD
 ## I want to remember every new word I encounter for good
 
 For the small percent of people who was blessed being born with eidetic memory this is probably not an issue at all. For the rest of us who wasn't the situation is rather different. Luckily there are lots of automated solutions for efficient memorizing. These are Anki, Memrise, Quizlet and alike. It won't take long for you to realize how convenient it would be to have your own dictionary there and let the software to decide for you which words you need recollect today. But also what a tremendous amount of effort it would require to implement and maintain all that. Furthermore it gets nearly impossible if you chose more than one such a program and/or more than one tongue. With Tiril this is a problem no more. It knows your dictionary well for it translated the movie pieces ~~and the web-pages~~ for you, remember? Below is an example of how Tiril would help you in case of using Memrise.
-
-Typically there are lots of meanings, contexts and examples for each single word. You may decide which one to preserve
 </p>
+Typically there are lots of meanings, contexts and examples for each single word. You may decide which one to preserve
 <details>
  <summary>Click to see the gif-image</summary>
   
