@@ -1,13 +1,13 @@
-**Tiril** is an open source software aiming to assist in a language learning process. At the current stage of development when the project hasn't even reached an alpha yet, it doesn't have a stable set of features, for they change and merge into each other rather fast. Luckily, a display of learning approaches which become much easier with using Tiril serves as a much better showcase for the project. This is about the practices, of which any learner has been thinking at least once in one way or another while reflecting and trying to improve own learning process. This is exactly where Tiril strives to back you up.
+**Tiril** is an open source software aiming to assist in a language learning process. At the current stage of development when the project hasn't even reached an alpha yet, it doesn't have a stable set of features, for they change and merge into each other rather fast. Luckily, a display of learning approaches which become easier with Tiril serves as a much better showcase for the project. It is about practices, of which any learner has been thinking at least once while reflecting on his own learning process and the ways of its improvement. This is exactly where Tiril strives to back you up.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
 - [The showcase](#the-showcase)
-  - [I enjoy watching movies. I wouldn't mind to learn in the process on occasion](#i-enjoy-watching-movies-i-wouldnt-mind-to-learn-in-the-process-on-occasion)
-  - [I'm old-school. I'd rather a good book instead](#im-old-school-id-rather-a-good-book-instead)
-  - [I prefer none of the above. But I surf foreign segments of the Internet a lot](#i-prefer-none-of-the-above-but-i-surf-foreign-segments-of-the-internet-a-lot)
+  - [I enjoy watching movies. I wouldn't mind to learn while watching on occasion](#i-enjoy-watching-movies-i-wouldnt-mind-to-learn-while-watching-on-occasion)
+  - [I'm old school. I'd rather a good book instead](#im-old-school-id-rather-a-good-book-instead)
+  - [I prefer none of the above. But I surf foreign websites a lot](#i-prefer-none-of-the-above-but-i-surf-foreign-websites-a-lot)
   - [I want to remember every new word I encounter for good](#i-want-to-remember-every-new-word-i-encounter-for-good)
 - [The pantry](#the-pantry)
   - [Structure](#structure)
@@ -23,9 +23,9 @@
 
 # The showcase
 
-## I enjoy watching movies. I wouldn't mind to learn in the process on occasion
+## I enjoy watching movies. I wouldn't mind to learn while watching on occasion
 
-Unless you won't have to be buried under the piles of dictionaries, watching the movie in a language of the original sounds like fun and a pleasant way to boost your language skills. Indeed there are tons of subtitles in the Internet. There are even well-thought websites which offer you to watch a subtitled movie and translate any word from it in one click at will. However most of them are for English and/or have small film collection. That means you are limited in choosing either the language or the movie of your liking. What if you want to watch some Norwegian movie in Norwegian for example and you've even acquired the disc(s)? See how to achieve that with Tiril and [VLC](https://github.com/videolan) - a very powerful and popular open source video player.
+Unless you won't have to be buried under piles of dictionaries, watching a movie in a language of the original sounds like a nice way to boost your language skills. Indeed there are tons of subtitles in the Internet. There are even well-thought websites which offer you to watch a subtitled movie and translate any word from it in one click at will. However most of them are for English and/or have a small film collection. That means you are restricted in your choice of either the language or the movie of your liking. What if you want to watch some Norwegian movie for example? Or the movie is on the disc(s)? See how you would solve this complication with Tiril and [VLC](https://github.com/videolan) - a very powerful and popular open source video player.
 
 <details>
  <summary>Click to see the gif-image</summary>
@@ -33,11 +33,11 @@ Unless you won't have to be buried under the piles of dictionaries, watching the
 ![Tiril in VideoLAN](https://github.com/erithion/tiril/raw/master/doc/tiril.gif "Tiril in VideoLAN")
 </details>
 
-## I'm old-school. I'd rather a good book instead
+## I'm old school. I'd rather a good book instead
 
-This is about reading a book in a language of the original along with inserts or translation in your mother tongue. Here one finds far less options let alone the decent ones. One of them is Kindle. The other solution is a free application for Android devices called [SmartBook](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en). But again as soon as you step beyond the "classical" set of European languages or books, you are on your own. How nice it would be if you were able to read Harry Potter in Irish-Georgian or Lord of the Rings in Norwegian-Russian or any book in any other tongues of your choice. And that's how you could assemble yourself such a book for SmartBook application with Tiril.
+It's about reading the book in a language of the original alongside  some inserts or translation in your mother tongue. Here one finds far less options let alone the decent ones. One of them is Kindle. The other solution is a free application for Android devices called [SmartBook](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en). But again as soon as you step out beyond the "mainstream" set of European languages or books, you are on your own. Perhaps you would like to read Harry Potter in Irish-Georgian? Or maybe Sherlock Holmes in Norwegian-English? See how you could assemble yourself such a book with Tiril for SmartBook application.
 
-Searching the text of the books in both languages is nearly the hardest part in the entire process. Once it is done, load them
+Searching the text of the books in both languages is nearly the hardest part throughout the entire process. But once it is done, everything else is easy. Start from opening them in Tiril
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -45,7 +45,7 @@ Searching the text of the books in both languages is nearly the hardest part in 
 
 </details>
 
-The books need to be aligned in order for SmartBook application to show them properly. The rules are simple and intuitive - just keep the same number of chapters and paragraphs in both books or merge/create new paragraphs at will. The number of empty rows doesn't matter, for only non-empty ones are accounted, but this trick often improves visual comparison.
+The books need to be aligned in order for SmartBook application to show the proper translation under each paragraph. The rules are simple and intuitive - just keep the same number of chapters and paragraphs in both books or merge/create new paragraphs if needed. The number of empty rows between two paragraphs doesn't matter, for only non-empty ones are accounted, but this trick often improves visual comparison so feel free to use it.
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -61,7 +61,7 @@ A final step. Optionally you could also check if you missed any chapter before s
 
 </details>
 
-In case you know what JSON format is and you have some good JSON viewer you could also review the book's internals to make sure everything is aligned as it should be
+In case you know what JSON is and you have some good JSON viewer you could also review the book's internals to make sure everything is aligned as it should
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -77,7 +77,7 @@ After the book was uploaded on your device ...
 
 </details>
 
-... you can enjoy your reading. Mind you though that SmartBook application shows the author's translation for English-Russian books only. This is the limitation set by the author of the application. Thus you will have to set this direction in the options to see the translation you have supplied with the book
+... you can enjoy your reading. Mind you though that SmartBook application shows the author's translation for English-Russian books only. This is a limitation set by the creator of the application. Thus you will have to set this direction in the options to see the translation you have supplied with your book. Otherwise the application will show you a translation from Google Translate
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -85,15 +85,15 @@ After the book was uploaded on your device ...
 
 </details>
 
-## I prefer none of the above. But I surf foreign segments of the Internet a lot
+## I prefer none of the above. But I surf foreign websites a lot
 
 TBD
 
 ## I want to remember every new word I encounter for good
 
-For the small percent of people who was blessed being born with eidetic memory this is probably not an issue at all. For the rest of us who wasn't the situation is rather different. Luckily there are lots of automated solutions for efficient memorizing which claim to use the latest scientific developments in their learning algorithms. These are Anki, Memrise, Quizlet and alike. It won't take long for you to realize how beneficial it would be to have your own dictionary there and to allow the software to decide which word you should recollect today. And also what a tremendous amount of effort it would require to implement and maintain all that. Especially if you are learning more than one language and/or have chosen more than one such program. With Tiril it is the problem no more. It knows your dictionary well for it translated the movie pieces ~~and the web-pages~~ for you, remember? It is rather logical to ask to create the database for you, isn't it? Below is an example of such process for Memrise.
+For the small percent of people who was blessed being born with eidetic memory this is probably not an issue at all. For the rest of us who wasn't the situation is rather different. Luckily there are lots of automated solutions for efficient memorizing. These are Anki, Memrise, Quizlet and alike. It won't take long for you to realize how convenient it would be to have your own dictionary there and let the software to decide for you which words you need recollect today. But also what a tremendous amount of effort it would require to implement and maintain all that. Furthermore it gets nearly impossible if you chose more than one such a program and/or more than one tongue. With Tiril this is a problem no more. It knows your dictionary well for it translated the movie pieces ~~and the web-pages~~ for you, remember? Below is an example of how Tiril would help you in case of using Memrise.
 
-Typically there are lots of meanings for each single word, lots of contexts and examples. You may decide which one of them to preserve with the word
+Typically there are lots of meanings, contexts and examples for each single word. You may decide which one to preserve
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -120,23 +120,28 @@ And finally importing the whole set to Memrise at one stroke
 
 ## Structure
 
-Tiril was conceived as a server part which takes the burden of handling online dictionaries and maintaining the user database, and an unlimited number of agents which would ask a translation from the server. This would guarantee Tiril's presence virtually everywhere which means the user could count on the translation regardless of whether he is watching a movie in a media player, surfing the Internet in a browser or working with a textual information in any other form or application. Currently Tiril consists of   
+Tiril was conceived as a client-server app where the server would take the burden of handling a continuously extending list of online dictionaries and maintaining the user database whereas its "client" would be a growing set of agents requesting translations from it. That guarantees Tiril's presence virtually everywhere so that the user might count upon the translation regardless of whether he is watching a movie in a media player, surfing the Internet in a browser or working with textual information of any other kind. 
+Currently Tiril consists of      
 * Siril - the server with an embedded UI. 
-* Viril - a [VideoLAN](https://github.com/videolan) agent to translate subtitles.
+* Viril - a [VLC](https://github.com/videolan) agent to translate subtitles.
 * ...
 
 ### Siril
 
-Supported dictionaries
+Supports dictionaries
 
+* Universal dictionaries
   * [x] [Google Translate](https://translate.google.com)
+  * [ ] ...
+* Specialized dictionaries
   * [x] [Lexin (Norwegian Bokmål)](http://lexin.udir.no)
   * [ ] [Teanglann (Irish)](https://www.teanglann.ie/)
   * [ ] ...
 
 ### Viril 
 
-Supported subtitle formats
+Supports subtitle formats
+
   * [x] Embedded and external SubRip 
   * [ ] ASS/SSA possibility has been confirmed and awaiting implementation
   * [ ] ...
@@ -144,7 +149,8 @@ Supported subtitle formats
 
 ## Build
 ### Prerequisites
-The project has dependencies that might seem unexpected, ~~Electron JS for example~~. While currently available build scripts seek for making the build process as easy and effortless as possible by attempting to automatically find and download every single libary that the project depends on, yet there are some steps one is manually to perform. Thus the following must be installed prior to proceed with the build process itself
+
+Some of the project dependencies might seem unexpected, ~~like Electron JS for example~~. Yet the project has scripts that seek for making the build process as effortless as possible by automatically downloading every single library that the project depends on. However there are some steps one is manually to perform. The following must be installed prior to proceed with the build
 
 * [CMake](https://cmake.org/download/) (>=3.12.0)
 * [Haskell Stack](https://docs.haskellstack.org/en/stable/README/) (>=1.6.3)
