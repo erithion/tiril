@@ -87,7 +87,7 @@ After the book was uploaded on your device ...
 
 ## I prefer none of the above. But I surf foreign websites a lot
 
-TBD
+*TBD*
 
 ## I want to remember every new word I encounter for good
 
@@ -163,7 +163,7 @@ Some of the project dependencies might seem unexpected, ~~like Electron JS for e
 
 ### Linux
 
-TBD
+*TBD*
 
 ## ToDo
 The section is mainly for the author to keep track of the emerging needs/ideas
