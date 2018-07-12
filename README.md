@@ -36,7 +36,8 @@ Unless you won't have to be buried under piles of dictionaries, watching a movie
 ## I'm old school. I'd rather a good book instead
 
 It's about reading the book in a language of the original alongside  some inserts or translation in your mother tongue. Here one finds far less options let alone the decent ones. One of them is Kindle. The other solution is a free application for Android devices called [SmartBook](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en). But again as soon as you step out beyond the "mainstream" set of European languages or books, you are on your own. Perhaps you would like to read Harry Potter in Irish-Georgian? Or maybe Sherlock Holmes in Norwegian-English? See how you could assemble yourself such a book with Tiril for SmartBook application.
-
+<br>
+<br>
 Searching the text of the books in both languages is nearly the hardest part throughout the entire process. But once it is done, everything else is easy. Start from opening them in Tiril
 <details>
  <summary>Click to see the gif-image</summary>
