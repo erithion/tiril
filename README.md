@@ -25,7 +25,7 @@
 
 ## I enjoy watching movies. I wouldn't mind to learn while watching on occasion
 
-Unless you won't have to be buried under piles of dictionaries, watching a movie in a language of the original sounds like a nice way to boost your language skills. Indeed there are tons of subtitles in the Internet. There are even well-thought websites which offer you to watch a subtitled movie and translate any word from it in one click at will. However most of them are for English and/or have a small film collection. That means you are restricted in your choice of either the language or the movie of your liking. What if you want to watch some Norwegian movie for example? Or the movie is on the disc(s)? See how you would solve this complication with Tiril and [VLC](https://github.com/videolan) - a very powerful and popular open source video player.
+Unless you won't have to be buried under piles of dictionaries, watching a movie in a language of the original sounds like a nice way to boost your language skills. Indeed there are tons of subtitles in the Internet. There are even well-thought websites which offer you to watch a subtitled movie and translate any word from it in one click. However most of them are for English. And even if you could tolerate an absense of the films of your liking or ready to put aside the discs you just bought until better times, yet if the site has no language you need, this site is no fit for you. Meanwhile let us assume that you've decided to watch a Norwegian movie. See how it would look with Tiril and [VLC](https://github.com/videolan) - a very powerful and popular open source video player.
 </p>
 <details>
  <summary>Click to see the gif-image</summary>
