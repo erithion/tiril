@@ -1,4 +1,4 @@
-**Tiril** is an open source software aiming to assist in a language learning process. At the current stage of development when the project hasn't even reached an alpha yet, it doesn't have a stable set of features, for they change and merge into each other rather fast. Luckily, a display of learning approaches which become easier with Tiril serves as a much better showcase for the project. It is about practices, of which any learner has been thinking at least once while reflecting on his own learning process and the ways of its improvement. This is exactly where Tiril strives to back you up.
+**Tiril** is an open source software aiming to assist in a language learning process. At the current stage of development when the project hasn't even reached an alpha yet, it doesn't have a stable set of features, for they change and merge into each other rather rapidly. Luckily, a display of learning approaches which become easier with Tiril serves as a much better showcase for the project. 
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
