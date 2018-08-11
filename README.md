@@ -26,6 +26,7 @@
 ## I enjoy watching movies. I wouldn't mind to learn while watching on occasion
 
 Watching a movie in a language of the original with subtitles turned on - what a nice way to boost your language skills! Indeed, the very thought of making your leisure time productive seems ever so tempting that it is hard to resist really. Only it's the necessity to look for translations of every new word is what makes the process so tiresome. "I wish there was a better way of watching the movie than just sitting here being buried under the piles of dictionaries", - you say. "There is!", - Tiril responds. 
+
 Let us assume for the sake of the demonstration that you've decided to watch a Norwegian movie. In VLC - a very powerful and popular open source video player - Tiril will give you this.
 </p>
 <details>
