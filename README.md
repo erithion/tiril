@@ -92,16 +92,17 @@ After the book was uploaded on your device ...
 
 ## I want to remember every new word I encounter for good
 
-For the small percent of people who was blessed being born with eidetic memory this is probably not an issue at all. For the rest of us who wasn't the situation is rather different. Luckily there are lots of automated solutions for efficient memorizing. These are Anki, Memrise, Quizlet and alike. It won't take long for you to realize how convenient it would be to let the software decide which word you need learn/recollect today. At the same time how much of an effort it would require to create your own dictionary and maintain it. Furthermore it gets nearly impossible if you chose more than one such a program and/or more than one tongue. With Tiril this is a problem no more. It knows your vocabulary well for it translated the movie pieces ~~and the web-pages~~ for you, remember? Below is an example of how Tiril would help you in case of using Memrise.
+There are lots of automated solutions for efficient memorizing, like Anki, Memrise, Quizlet and alike. It won't take long for you to realize what a relief it is actually, when the software is tracking which word you are to learn/recollect today. But also what a tremendous amount of effort it would need to maintain your own dictionary. 
+With Tiril this is a problem no more. It knows your vocabulary well for it translated the movie pieces ~~and the web-pages~~ for you, remember? Below is an example of how Tiril would help you to export your dictionary to Memrise.
 </p>
-Typically a single word has more than one meaning. This is true for any language. The right pane gives you the contents of online dictionaries so that you could choose which translation, example or idiomatic expression to preserve with the word
+The left pane contains your recent words. The right pane gives you the content of the various online dictionaries. They say you learn faster if you memorize words as parts of phrases or sentences. So you are free to choose what you preserve with the word
 <details>
  <summary>Click to see the gif-image</summary>
   
 ![Creating a database of words](https://github.com/erithion/tiril/raw/master/doc/tiril.view.gif "Creating a database of words")
 </details>
 <br>
-Memrise uses columns and allows you to add your custom ones too. Use filtering by tags to split your export into the columns. Delete the elements you don't need or drag the elements with the mouse if you can't apply the proper filter
+Memrise requires _at least_ two columns. Use filtering by tags to split your export into the columns. Delete the elements you don't need or drag the elements with the mouse if you can't apply the proper filter
 <details>
  <summary>Click to see the gif-image</summary>
   
