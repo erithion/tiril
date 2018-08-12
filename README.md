@@ -25,7 +25,7 @@
 
 ## I enjoy watching movies. I wouldn't mind to learn while watching on occasion
 
-Watching a movie in a language of the original with subtitles turned on - what a nice way to boost your language skills! Indeed, the very thought of making your leisure time productive seems ever so tempting that it is hard to resist really. Only it's the necessity to look for translations of every new word is what makes the process so tiresome. "I wish there was a way to avoid of being buried under the piles of dictionaries in the process", - you say. "In fact there is a way!", - Tiril responds. 
+Watching a movie in a language of the original with subtitles turned on - what a nice way to boost your language skills! Indeed, the very thought of making your leisure time productive seems ever so tempting that it is hard to resist really. Only it's the necessity to look for translations of every new word is what makes the process ever so tiresome. "I wish there was an easier way", - you say. Well guess what - there is the easier way! 
 </p>
 Let us assume for the sake of the demonstration that you've decided to watch a Norwegian movie. In <a href="https://github.com/videolan">VLC</a> - a very powerful and popular open source video player - Tiril will give you this.
 <details>
@@ -36,7 +36,7 @@ Let us assume for the sake of the demonstration that you've decided to watch a N
 
 ## I'm old school. I'd rather a good book instead
 
-It's about reading the book in a language of the original alongside some inserts or translation in your mother tongue. Here one finds not so many solutions let alone the decent ones. One of them is Kindle. The other solution is a free application for Android devices called [SmartBook](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en). Yet as soon as you step out beyond the "mainstream" set of European languages or books, you are on your own. Don't despare, though, Tiril will help you again. Let's assume you would like to read Sherlock Holmes in Norwegian-English. Check out below how you could assemble yourself such a book with Tiril for SmartBook application.
+It's about reading the book in a language of the original alongside some inserts or translation in your mother tongue. Here one finds not so many solutions let alone the decent ones. One of them is Kindle. The other is a free application for Android devices called [SmartBook](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en). Yet as soon as you step beyond the "mainstream" set of European languages or books the site is offering, you are on your own. Don't despare, though. Let us check out what Tiril has to offer if you ever decide to read Sherlock Holmes in Norwegian-English, for example. That's how you could have assembled yourself such a book.
 </p>
 Searching for the text of the books in both languages is nearly the hardest part throughout the entire process. But once it is done, everything else is easy. Start from opening them in Tiril
 <details>
@@ -95,7 +95,7 @@ After the book was uploaded on your device ...
 There are lots of automated solutions for efficient memorizing, like Anki, Memrise, Quizlet and alike. It won't take long for you to realize what a relief it is actually, when the software is tracking which word you are to learn/recollect today. But also what a tremendous amount of effort it would need to maintain your own dictionary. 
 With Tiril this is a problem no more. It knows your vocabulary well for it translated the movie pieces ~~and the web-pages~~ for you, remember? Below is an example of how Tiril would help you to export your dictionary to Memrise.
 </p>
-The left pane contains your recent words. The right pane gives you the content of various online dictionaries. They say you learn faster if you memorize words as parts of phrases or sentences. So you are free to choose what you preserve with the word
+The left pane contains your recent words, while the right one gives you the content of various online dictionaries. They say you learn faster if you memorize words as parts of phrases or sentences. So you are free to choose what you preserve with the word
 <details>
  <summary>Click to see the gif-image</summary>
   
@@ -120,7 +120,7 @@ And finally importing the whole set to Memrise at one stroke
 
 ## Structure
 
-Tiril was conceived as a client-server app where the server would take the burden of handling a continuously extending list of online dictionaries and maintaining the user database whereas its "client" would be a growing set of agents requesting translations from it. That guarantees Tiril's presence virtually everywhere so that the user might count upon the translation regardless of whether he is watching a movie in a media player, surfing the Internet in a browser or working with textual information of any other kind. 
+Tiril was conceived as a client-server app where the server would take the burden of handling a continiously-growing list of online dictionaries and maintaining the user database whereas its "client" would be a growing set of agents. That guarantees Tiril's presence virtually everywhere so that the user might count upon the translation regardless of whether he is watching a movie in a media player, surfing the Internet in a browser or working with textual information of any other kind.  
 Currently Tiril consists of      
 * Siril - the server with an embedded UI. 
 * Viril - a [VLC](https://github.com/videolan) agent to translate subtitles.
