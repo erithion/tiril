@@ -92,7 +92,7 @@ After the book was uploaded on your device ...
 
 ## I want to remember every new word I encounter for good
 
-There are lots of automated solutions for efficient memorizing, like Anki, Memrise, Quizlet and alike. It won't take long for you to realize what a relief it is actually, when the software is tracking which word you are to learn/recollect today. But also what a tremendous amount of effort it would need to maintain your own dictionary. 
+There are lots of automated solutions for efficient memorizing, like Anki, Memrise, Quizlet and alike. It won't take long for you to realize what a relief this is - to let the software to track the words you are to learn/recollect today. But also what a tremendous amount of effort it would need to maintain your own dictionary. 
 With Tiril this is a problem no more. It knows your vocabulary well for it translated the movie pieces ~~and the web-pages~~ for you, remember? Below is an example of how Tiril would help you to export your dictionary to Memrise.
 </p>
 The left pane contains your recent words, while the right one gives you the content of various online dictionaries. They say you learn faster if you memorize words as parts of phrases or sentences. So you are free to choose what you preserve with the word
