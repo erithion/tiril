@@ -18,6 +18,8 @@
     - [Windows](#windows)
     - [Linux](#linux)
   - [ToDo](#todo)
+    - [Alpha](#alpha)
+    - [Backlog](#backlog)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
