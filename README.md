@@ -95,14 +95,14 @@ After the book was uploaded on your device ...
 There are lots of automated solutions for efficient memorizing, like Anki, Memrise, Quizlet and alike. It won't take long for you to realize what a relief it is actually, when the software is tracking which word you are to learn/recollect today. But also what a tremendous amount of effort it would need to maintain your own dictionary. 
 With Tiril this is a problem no more. It knows your vocabulary well for it translated the movie pieces ~~and the web-pages~~ for you, remember? Below is an example of how Tiril would help you to export your dictionary to Memrise.
 </p>
-The left pane contains your recent words. The right pane gives you the content of the various online dictionaries. They say you learn faster if you memorize words as parts of phrases or sentences. So you are free to choose what you preserve with the word
+The left pane contains your recent words. The right pane gives you the content of various online dictionaries. They say you learn faster if you memorize words as parts of phrases or sentences. So you are free to choose what you preserve with the word
 <details>
  <summary>Click to see the gif-image</summary>
   
 ![Creating a database of words](https://github.com/erithion/tiril/raw/master/doc/tiril.view.gif "Creating a database of words")
 </details>
 <br>
-Memrise requires _at least_ two columns. Use filtering by tags to split your export into the columns. Delete the elements you don't need or drag the elements with the mouse if you can't apply the proper filter
+Memrise requires at least two columns. Use filtering by tags to split your export into the columns. Delete the elements you don't need or drag the elements with the mouse if you can't apply the proper filter
 <details>
  <summary>Click to see the gif-image</summary>
   
