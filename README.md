@@ -170,6 +170,23 @@ Some of the project dependencies might seem unexpected, ~~like Electron JS for e
 ## ToDo
 The section is mainly for the author to keep track of the emerging needs/ideas
 
+### Alpha
+
+* Siril 
+  * Tools
+    * [x] Add creation of [SmartBooks](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en)
+  * Export
+    * [ ] Introduce a sed-like syntax in export pages to format the output at will
+  * [ ] Move UI to a standalone Electron-app
+  * [ ] Implement the server as an OS daemon
+    
+* Viril
+  * [ ] Extended phrases selection
+  * [ ] Fix SubRip synchronization issues
+  * [ ] Add Options for default language settings
+
+### Backlog
+
 * Siril server
   * [ ] Add Haskell Conduit HTTP streams to parse dictionaries on-demand and speed up UI page show ups
   * [ ] Research: Consider FRP model of Threepenny GUI and evaluate if it would  reduce the amount of type-unsafe Javascript on UI-side.
@@ -178,16 +195,10 @@ The section is mainly for the author to keep track of the emerging needs/ideas
     * [ ] Norsk bokmål support: add [bøyningsformer](http://inger.uib.no/perl/search/search.cgi?appid=72&tabid=1106) parser
   * Export
     * [ ] Implement exporting to [Anki](https://apps.ankiweb.net)
-    * [ ] Introduce a sed-like syntax in export pages to format the output at will
     * [ ] Add single word editing
-  * Tools
-    * [x] Add creation of [SmartBooks](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en)
-  * [ ] Move UI to a standalone Electron-app
-  * [ ] Implement the server as an OS daemon
   * [ ] Add Activity page
 * Viril agent
   * [ ] Add ASS/SSA subitles support
-  * [ ] Extended phrases selection
   * [ ] Mouse selection support
   * [ ] Add Options to control keyboard shortcuts etc
   * [ ] Siril no-connection screen logo
