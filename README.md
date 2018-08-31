@@ -177,8 +177,8 @@ The section is mainly for the author to keep track of the emerging needs/ideas
 * Siril 
   * Tools
     * [x] Add creation of [SmartBooks](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en)
-    * [ ] Two samrtbooks should be opened and edited in one editor with color highlighting  
-    * [ ] Add opening/editing of existing smartbooks
+    * [ ] Both an original and a translation of the smartbook should be opened and edited in one editor with color highlighting  
+    * [ ] Add opening/editing of an existing smartbook
   * Export
     * [ ] Introduce a sed-like syntax in export pages to format the output at will
   * [ ] Move UI to a standalone Electron-app
