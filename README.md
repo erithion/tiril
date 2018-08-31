@@ -177,6 +177,8 @@ The section is mainly for the author to keep track of the emerging needs/ideas
 * Siril 
   * Tools
     * [x] Add creation of [SmartBooks](https://play.google.com/store/apps/details?id=com.kursx.smartbook&hl=en)
+    * [ ] Two samrtbooks should be opened and edited in one editor with color highlighting  
+    * [ ] Add opening/editing of existing smartbooks
   * Export
     * [ ] Introduce a sed-like syntax in export pages to format the output at will
   * [ ] Move UI to a standalone Electron-app
@@ -186,10 +188,15 @@ The section is mainly for the author to keep track of the emerging needs/ideas
   * [ ] Extended phrases selection
   * [ ] Fix SubRip synchronization issues
   * [ ] Add Options for default language settings
+* Web agent
+  * [ ] Opera
+    * [ ] Add [NRK](https://tv.nrksuper.no/utland) subtitles support
 
 ### Backlog
 
 * Siril server
+  * Tools
+    * [ ] Save the last session of smartbook editing
   * [ ] Add Haskell Conduit HTTP streams to parse dictionaries on-demand and speed up UI page show ups
   * [ ] Research: Consider FRP model of Threepenny GUI and evaluate if it would  reduce the amount of type-unsafe Javascript on UI-side.
   * Dictionaries
