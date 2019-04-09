@@ -1,13 +1,14 @@
-**Tiril** is an open source software aiming to assist in a language learning process. At the current stage of development when the project hasn't even reached an alpha yet, it doesn't have a stable set of features, for they change and merge into each other rather rapidly. Luckily, a display of learning approaches which become easier with Tiril serves as a much better showcase for the project. 
+# IN REWORK #
+**Tiril** is an open source software aiming to assist in a language learning process.  
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-- [The showcase](#the-showcase)
+- [Showcase](#showcase)
   - [I enjoy watching movies. I wouldn't mind to learn while watching on occasion](#i-enjoy-watching-movies-i-wouldnt-mind-to-learn-while-watching-on-occasion)
   - [I want to remember every new word I encounter for good](#i-want-to-remember-every-new-word-i-encounter-for-good)
-- [The pantry](#the-pantry)
+- [Backyard](#backyard)
   - [Structure](#structure)
     - [Siril](#siril)
     - [Viril](#viril)
@@ -15,13 +16,10 @@
     - [Prerequisites](#prerequisites)
     - [Windows](#windows)
     - [Linux](#linux)
-  - [ToDo](#todo)
-    - [Alpha](#alpha)
-    - [Backlog](#backlog)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# The showcase
+# Showcase
 
 ## I enjoy watching movies. I wouldn't mind to learn while watching on occasion
 
@@ -60,11 +58,10 @@ And finally importing the whole set to Memrise at one stroke
 ![Importing to Memrise](https://github.com/erithion/tiril/raw/master/doc/tiril.export.memrise.second.gif "Importing to Memrise")
 </details>
 
-# The pantry
+# Backyard
 
 ## Structure
 
-Tiril was conceived as a client-server app where the server would take the burden of handling a continiously-growing list of online dictionaries and maintaining the user database whereas its "client" would be a growing set of agents. That guarantees Tiril's presence virtually everywhere so that the user might count upon the translation regardless of whether he is watching a movie in a media player, surfing the Internet in a browser or working with textual information of any other kind.  
 Currently Tiril consists of      
 * Siril - the server with an embedded UI. 
 * Viril - a [VLC](https://github.com/videolan) agent to translate subtitles.
@@ -94,13 +91,12 @@ Supports subtitle formats
 ## Build
 ### Prerequisites
 
-Some of the project dependencies might seem unexpected, ~~like Electron JS for example~~. Yet the project has scripts that seek for making the build process as effortless as possible by automatically downloading every single library that the project depends on. However there are some steps one is manually to perform. The following must be installed prior to proceed with the build
+The following must be installed prior to proceed with the build
 
 * [CMake](https://cmake.org/download/) (>=3.12.0)
 * [Haskell Stack](https://docs.haskellstack.org/en/stable/README/) (>=1.6.3)
 * C++ compiler whith C++17 support. For an instance, [MSVC Community](https://www.visualstudio.com/free-developer-offers/) will do
-* [Boost library](https://www.boost.org/users/download/) (>=1.67)
-* ~~[Electron](https://electronjs.org)~~
+* [Boost library](https://www.boost.org/users/download/) (>=1.68)
 
 ### Windows
 * Review *config.bat* and set the Boost path according to your environment. Tweak the other variables if needed.  
